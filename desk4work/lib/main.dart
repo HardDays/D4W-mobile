@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'DESK4WORK',
       theme: new ThemeData(
+        backgroundColor: Colors.white,
         hintColor: Colors.white,
         primarySwatch: Colors.blue,
       ),
