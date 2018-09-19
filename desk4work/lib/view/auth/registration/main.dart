@@ -4,22 +4,22 @@ import 'package:desk4work/view/auth/registration/welcome.dart';
 import 'package:desk4work/view/common/curved_clipper.dart';
 import 'package:flutter/material.dart';
 
-class MainRegistrationScreen extends StatefulWidget{
+class RegistrationMainScreen extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => MainregistrationScreenState();
+  State<StatefulWidget> createState() => RegistrationMainScreenState();
 
 
 }
 
-class MainregistrationScreenState extends State<MainRegistrationScreen>{
+class RegistrationMainScreenState extends State<RegistrationMainScreen>{
   var _screenKey = GlobalKey<ScaffoldState>();
   Size _screenSize;
-  bool _isRegistered;
+  String _username;
 
 
   @override
   void initState() {
-    _isRegistered = false;
+    _username = null;
   }
 
   @override
@@ -56,7 +56,7 @@ class MainregistrationScreenState extends State<MainRegistrationScreen>{
             Container(
               width: (_screenSize.width * .84).toDouble(),
               height: _screenSize.height - clipperHeight,
-              child: (!_isRegistered) ?RegistrationScreen() : WelcomeScreen(),
+              child: (_username == null) ?RegistrationScreen() : WelcomeScreen(_username),
             )
           ],
         ),

@@ -26,7 +26,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
       body: Container(
         margin: EdgeInsets.only(top: (_screenSize.height * .078).toDouble()),
         width: (_screenSize.width * .84).toDouble(),
-//        height: (_screenSize.height * .7).toDouble(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -54,7 +53,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
     return Column(
       children: <Widget>[
         TextFormField(
-          keyboardType: TextInputType.emailAddress,
+          autocorrect: false,
           controller: _loginController,
           decoration: InputDecoration(
             border: OutlineInputBorder(
@@ -71,7 +70,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
-          obscureText: true,
+          keyboardType: TextInputType.emailAddress,
           controller: _emailController,
           decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -88,7 +87,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
-          obscureText: true,
+          keyboardType: TextInputType.phone,
           controller: _phoneController,
           decoration: InputDecoration(
               border: OutlineInputBorder(

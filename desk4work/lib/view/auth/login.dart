@@ -255,7 +255,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   _openPasswordRecovery() {
-//    TODO
+    Navigator.of(context).pushNamed('/recover');
   }
 
   _showToast(String message) {
