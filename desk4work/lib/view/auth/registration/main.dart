@@ -28,7 +28,8 @@ class MainregistrationScreenState extends State<MainRegistrationScreen>{
     double clipperHeight = (_screenSize.height * .1514).toDouble();
     return Theme(
       data: Theme.of(context).copyWith(
-        hintColor: Colors.white30,
+        hintColor: Colors.grey,
+
       ),
       child: Scaffold(
         backgroundColor: Colors.white,
