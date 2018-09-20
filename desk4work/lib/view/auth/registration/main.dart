@@ -32,6 +32,7 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
 
       ),
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

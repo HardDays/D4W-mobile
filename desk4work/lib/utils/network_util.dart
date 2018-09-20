@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:desk4work/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkUtil {
@@ -15,11 +16,13 @@ class NetworkUtil {
       final String res = response.body;
       final int statusCode = response.statusCode;
       print('status code: $statusCode');
-      if (statusCode < 200 || statusCode > 400 || json == null) {
+      if (statusCode < 200 || statusCode > 400) {
         print("raw response ${response.reasonPhrase}");
         print("headers : ${response.toString()}");
-        throw new Exception("Error while fetching data");
+        return {ConstantsManager.SERVER_ERROR : statusCode};
+//        throw new Exception("Error while fetching data");
       }
+      if(json == null) return null;
       return _decoder.convert(res);
     });
   }
@@ -28,16 +31,18 @@ class NetworkUtil {
     return http
         .post(url, body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
-      final String res = response.body;
-      final int statusCode = response.statusCode;
-      if (statusCode < 200 || statusCode > 400 || json == null) {
-        print('response: $statusCode ${response.body.toString()}');
-        print("error respone: ${response.reasonPhrase}");
-        print("query $url , $headers , $body");
-        throw new Exception(res);
-      }
-      print("response code ${response.statusCode}");
-      return _decoder.convert(res);
+          print('post response url ${url}');
+          print('post response headers ${response.headers}');
+          print('post response status ${response.statusCode}');
+          print('post response body ${response.body}');
+          final String res = response.body;
+          final int statusCode = response.statusCode;
+          if (statusCode < 200 || statusCode > 400) {
+    //        throw new Exception(res);
+            return {ConstantsManager.SERVER_ERROR : statusCode};
+          }
+          if (json == null) return null;
+          return _decoder.convert(res);
     });
   }
 }

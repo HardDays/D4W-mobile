@@ -1,3 +1,4 @@
+import 'package:desk4work/api/auth_api.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/auth/recover/email_sent.dart';
 import 'package:desk4work/view/common/orange_gradient.dart';
@@ -13,6 +14,7 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
   var _formKey = GlobalKey<FormState>();
   var _scaffoldState = GlobalKey<ScaffoldState>();
   TextEditingController _emailOrPhoneController = new TextEditingController();
+  AuthApi _authApi = AuthApi();
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
 
     TextStyle textStyle = Theme.of(context).textTheme.subhead.copyWith(color: Colors.white);
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         decoration: OrangeGradient.getGradient(),
         padding: EdgeInsets.only(top: (screenHeight * .0615).toDouble()),
@@ -49,19 +52,21 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
             Padding(padding: EdgeInsets.only(top: (screenHeight * .0345).toDouble()),),
             Container(
               width: (screenWidth * .84).toDouble(),
-              child: TextFormField(
-                keyboardType: TextInputType.phone,
-                controller: _emailOrPhoneController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(28.0)),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
-                    hintText: StringResources.of(context).hEmailOrPhone),
-                validator: (emailOrPhone) {
-                  if (emailOrPhone.isEmpty)
-                    return StringResources.of(context).eEmptyEmailOrPhone;
-                },
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _emailOrPhoneController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(28.0)),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+                      hintText: StringResources.of(context).hEmailOrPhone),
+                  validator: (emailOrPhone) {
+                    if (emailOrPhone.isEmpty)
+                      return StringResources.of(context).eEmptyEmailOrPhone;
+                  },
+                ),
               ),
             ),
             Padding(padding: EdgeInsets.only(top: (screenHeight * .0435).toDouble()),),
@@ -91,6 +96,18 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
 
   _sendForm(){
     String emailOrPhone = _emailOrPhoneController.text;
+    try{
+      _authApi.recoverPassword(emailOrPhone).then((recoverEmailSent){
+        print('response $recoverEmailSent');
+        if(recoverEmailSent)
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (ctx)=> RecoverEmailSentScreen()));
+//        TODO : show wrong email message
+
+      });
+    }catch (e){
+//      TODO: show error message
+    }
   }
 
 }

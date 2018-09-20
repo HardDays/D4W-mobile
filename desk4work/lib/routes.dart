@@ -7,5 +7,5 @@ final routes = {
   '/login' : (BuildContext ctx) => LoginScreen(),
   '/register' : (ctx) => RegistrationMainScreen(),
   '/recover' : (ctx) => RecoverMainScreen(),
-  
+
 };

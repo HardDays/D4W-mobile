@@ -2,9 +2,9 @@ import 'package:desk4work/utils/string_resources.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget{
-  String _name;
+  final   String _name;
 
-  WelcomeScreen(this._name);
+  const WelcomeScreen(this._name);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class WelcomeScreen extends StatelessWidget{
             fit: BoxFit.fill,
           ),
           Padding(padding: EdgeInsets.only(top: (screenHeight * .1019).toDouble())),
-          Text((StringResources.of(context).tHello + _name).toUpperCase(),
+          Text((StringResources.of(context).tHello + _name + '!').toUpperCase(),
             style: TextStyle(color: Colors.orange,
                 fontSize: (screenHeight * .0435).toDouble()) ),
           Padding(padding: EdgeInsets.only(top: (screenHeight * .042).toDouble()),),

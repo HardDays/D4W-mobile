@@ -27,6 +27,7 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
@@ -215,7 +216,10 @@ class LoginScreenState extends State<LoginScreen> {
     if (serverResult != null) {
       if (serverResult['token'] != null) {
         SharedPreferences.getInstance().then((sp) {
-          sp.setString(ConstantsManager.TOKEN_KEY, serverResult['token'])
+          sp.setString(ConstantsManager.FIRST_NAME,
+              serverResult[ConstantsManager.FIRST_NAME]);
+          sp.setString(ConstantsManager.TOKEN_KEY,
+              serverResult[ConstantsManager.TOKEN_KEY])
               .then((hasAdded) {
             if (hasAdded)
               _openMainScreen();
@@ -260,29 +264,6 @@ class LoginScreenState extends State<LoginScreen> {
 
   _showToast(String message) {
 //    TODO
+  print('error '+ message);
   }
 }
-
-//class BottomCurveClipper extends CustomClipper<Path>{
-//
-//  @override
-//  Path getClip(Size size) {
-//    Path path = Path();
-//    double upperHeight = (size.height * .8786).toDouble();
-//    path.lineTo(.0, upperHeight - 24.0);
-//    var leftControlPoint = Offset(size.width/4, upperHeight - 4.0);
-//    var startPoint = Offset(size.width/2.0, upperHeight - 2.0 );
-//    path.quadraticBezierTo(leftControlPoint.dx, leftControlPoint.dy, startPoint.dx, startPoint.dy);
-//    var rightControlPoint = Offset((size.width/4) * 3.0, upperHeight -4.0);
-//    var endPoint = Offset(size.width, upperHeight - 24.0);
-//    path.quadraticBezierTo(rightControlPoint.dx, rightControlPoint.dy, endPoint.dx, endPoint.dy);
-//    path.lineTo(size.width, 0.0);
-//    path.close();
-//    return path;
-//
-//  }
-//
-//  @override
-//  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-//
-//}

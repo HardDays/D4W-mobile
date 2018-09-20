@@ -1,8 +1,13 @@
+import 'package:desk4work/api/auth_api.dart';
+import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
+import 'package:desk4work/view/auth/registration/welcome.dart';
 import 'package:desk4work/view/common/orange_gradient.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget{
+
   @override
   State<StatefulWidget> createState() => RegistrationScreenState();
 
@@ -17,21 +22,24 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
 
+  AuthApi _authApi = AuthApi();
 
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     return Scaffold(
+//      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.transparent,
       body: Container(
         margin: EdgeInsets.only(top: (_screenSize.height * .078).toDouble()),
         width: (_screenSize.width * .84).toDouble(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
+          reverse: true,
+//          mainAxisAlignment: MainAxisAlignment.start,
+//          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset('assets/logo_horizontal_color_shaded.png',
-              fit: BoxFit.fill,
+              fit: BoxFit.contain,
               width:(_screenSize.width * .4311).toDouble() ,
               height: (_screenSize.height * .0836).toDouble(),
             ),
@@ -40,9 +48,10 @@ class RegistrationScreenState extends State<RegistrationScreen>{
               child: Form(child: _getForm(), key: _formKey,),
 
             ),
-            _getSendFormButton()
+            _getSendFormButton(),
+            Padding( padding: EdgeInsets.only(bottom: (_screenSize.height * .0735).toDouble()),)
 
-          ],
+          ].reversed.toList(),
         ),
       ),
     );
@@ -164,7 +173,32 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   }
 
   _sendForm(){
+    String login = _loginController.text;
+    String email = _emailController.text;
+    String phone = _phoneController.text;
+    String password = _passwordController.text;
+    String passwordConfirm = _passwordConfirmController.text;
 
+    try{
+      _authApi.register(login, email, phone, password, passwordConfirm)
+          .then((response){
+            if(response !=null && response[ConstantsManager.EMAIL_KEY] !=null){
+              String email = response[ConstantsManager.EMAIL_KEY];
+              String firstName= response[ConstantsManager.FIRST_NAME];
+              String password = response[ConstantsManager.PASSWORD_KEY];
+              SharedPreferences.getInstance().then((sp){
+                sp.setString(ConstantsManager.EMAIL_KEY, email);
+                sp.setString(ConstantsManager.FIRST_NAME, firstName);
+                sp.setString(ConstantsManager.PASSWORD_KEY, password);
+              }).then((_){
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (ctx)=>WelcomeScreen(firstName)));
+              });
+            }else _showMessage("ERROR"); //TODO
+      });
+    }catch (e){
+//      TODO
+    }
   }
 
   bool _passwordsMatching(){
@@ -174,6 +208,10 @@ class RegistrationScreenState extends State<RegistrationScreen>{
       return (passwordConfirm.trim() == password.trim());
     }
     return false;
+  }
+
+  _showMessage(String message){
+
   }
 
 }
