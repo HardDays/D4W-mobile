@@ -1,7 +1,7 @@
 import 'package:desk4work/api/auth_api.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/auth/recover/email_sent.dart';
-import 'package:desk4work/view/common/orange_gradient.dart';
+import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
 
 class RecoverMainScreen extends StatefulWidget{
@@ -28,7 +28,7 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
-        decoration: OrangeGradient.getGradient(),
+        decoration: BoxDecorationUtil.getOrangeGradient(),
         padding: EdgeInsets.only(top: (screenHeight * .0615).toDouble()),
         width: screenWidth,
         child: Column(

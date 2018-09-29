@@ -1,6 +1,6 @@
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/auth/login.dart';
-import 'package:desk4work/view/common/orange_gradient.dart';
+import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
 
 class RecoverEmailSentScreen extends StatelessWidget{
@@ -17,7 +17,7 @@ class RecoverEmailSentScreen extends StatelessWidget{
     TextStyle textStyleTitle = Theme.of(context).textTheme.title.copyWith(color: Colors.white);
     return Scaffold(
       body: Container(
-        decoration: OrangeGradient.getGradient(),
+        decoration: BoxDecorationUtil.getOrangeGradient(),
         padding: EdgeInsets.only(top: (screenHeight * .0615).toDouble()),
         width: screenWidth,
         child: Column(

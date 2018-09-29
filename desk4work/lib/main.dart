@@ -1,7 +1,8 @@
 import 'package:desk4work/routes.dart';
 import 'package:desk4work/utils/custom_localizations_delegate.dart';
 import 'package:desk4work/view/auth/login.dart';
-import 'package:desk4work/view/common/orange_gradient.dart';
+import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/filter/filter_root.dart';
 import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
 
     return Scaffold(
       body: Container(
-        decoration: OrangeGradient.getGradient(),
+        decoration: BoxDecorationUtil.getOrangeGradient(),
         child: Center(
           child: Image.asset('assets/logo_vertical.png',height:  _logoHeight, width: _logoWidth,),
         ),
@@ -83,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
       if(sp.getString(ConstantsManager.TOKEN_KEY) == null)
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
       else
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>MainScreen()));
+//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>MainScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()));
     });
   }
 

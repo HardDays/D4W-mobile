@@ -4,7 +4,7 @@ import 'package:desk4work/api/auth_api.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/curved_clipper.dart';
-import 'package:desk4work/view/common/orange_gradient.dart';
+import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +35,7 @@ class LoginScreenState extends State<LoginScreen> {
             child: Container(
               width: _screenSize.width,
               padding: EdgeInsets.only(top: (_screenSize.height * .1169).toDouble()),
-              decoration: OrangeGradient.getGradient(),
+              decoration: BoxDecorationUtil.getOrangeGradient(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,

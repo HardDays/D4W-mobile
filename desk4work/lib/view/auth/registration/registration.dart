@@ -2,7 +2,7 @@ import 'package:desk4work/api/auth_api.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/auth/registration/welcome.dart';
-import 'package:desk4work/view/common/orange_gradient.dart';
+import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -157,7 +157,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
         decoration:  BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,
-            gradient: OrangeGradient.getGradient().gradient,
+            gradient: BoxDecorationUtil.getOrangeGradient().gradient,
             borderRadius: BorderRadius.all(Radius.circular(28.0))),
         child: Center(
           child: InkWell(
