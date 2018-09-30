@@ -1,9 +1,13 @@
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/filter/date_filter.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
+import 'package:desk4work/view/filter/place_filter.dart';
+import 'package:desk4work/view/filter/time_filter.dart';
 import 'package:flutter/material.dart';
 
 class FilterMainScreen extends StatefulWidget{
+
 
   @override
   State<StatefulWidget> createState() => FilterMainScreenState();
@@ -30,16 +34,19 @@ class FilterMainScreenState extends State<FilterMainScreen>{
     final double placeNumberFilerWidth = (_screenWidth * .336);
     final double confirmButtonHeight = (_screenHeight * .0824);
     final double confirmButtonWidth = (_screenWidth * .84);
-    final double fieldRadiusX =(_screenWidth *  .11);
-    final double fieldRadiusY =(_screenHeight * .0615);
-    final double buttonRadiusX =(_screenWidth *  .075);
-    final double buttonRadiusY = (_screenHeight *  .042);
+//    final double fieldRadiusX =(_screenWidth *  .11);
+//    final double fieldRadiusY =(_screenHeight * .0615);
+//    final double buttonRadiusX =(_screenWidth *  .075);
+//    final double buttonRadiusY = (_screenHeight *  .042);
 
     _stringResources = StringResources.of(context);
     final container = FilterStateContainer.of(context);
     filter = container.filter;
     _container = container;
 
+    String date= (filter !=null && filter.date !=null)
+        ? filter.date[0].substring(0,5) +"-"+ filter.date[1].substring(0,5)
+        : _stringResources.hDate;
 
     return Scaffold(
       body: Container(
@@ -47,7 +54,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: (_screenHeight * .0615).toDouble(),
+              margin: EdgeInsets.only(top: (_screenHeight * .0308).toDouble(),
                   left: (_screenWidth * .04)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,7 +76,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
             ),
             Padding(
               padding: EdgeInsets.only(
-                  top: (_screenHeight * .036)),),
+                  top: (_screenHeight * .029)),),
             Container(
               padding: EdgeInsets.symmetric(horizontal: (_screenWidth * .048).toDouble()),
               child: Column(
@@ -94,7 +101,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                           ),
                         ),
                         onTap: (){
-                          _openPlaceSearch();
+                          _openPlaceSearch(context);
                         },
                       ),
                       InkWell(
@@ -108,7 +115,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                             children: <Widget>[
                               Icon(Icons.calendar_today),
                               Padding(padding: EdgeInsets.only(left: 8.0),),
-                              Text((filter?.latLong ?? _stringResources.hDate))
+                              Text(date)
                             ],
                           ),
                         ),
@@ -136,7 +143,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                             children: <Widget>[
                               Icon(Icons.access_time),
                               Padding(padding: EdgeInsets.only(left: 8.0),),
-                              Text((filter?.latLong ?? _stringResources.hStart))
+                              Text((filter?.startHour ?? _stringResources.hStart))
                             ],
                           ),
                         ),
@@ -155,7 +162,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                             children: <Widget>[
                               Icon(Icons.access_time),
                               Padding(padding: EdgeInsets.only(left: 8.0),),
-                              Text((filter?.latLong ?? _stringResources.hEnd))
+                              Text((filter?.endHour ?? _stringResources.hEnd))
                             ],
                           ),
                         ),
@@ -190,7 +197,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                       ),
                       IconButton(icon: Icon(Icons.add
                       ), onPressed: (){
-                        _reducePlaces();
+                        _addPlaces();
                       })
                     ],
                   ),
@@ -275,36 +282,83 @@ class FilterMainScreenState extends State<FilterMainScreen>{
 
 
   void _clearFilter(){
-//    TODO
+    _container.updateFilterInfo();
   }
 
   void _closeFilter(){
-//    TODO
+    Navigator.of(context).pop([false]);
   }
 
   void _search(){
-
+    Navigator.of(context).pop([true,filter]);
   }
 
 
-  void _openPlaceSearch(){
-
+  _openPlaceSearch(BuildContext context) async{
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PlaceFilterScreen(filter?.latLong))
+    );
+    if(result !=null) {
+      _container.updateFilterInfo(latLong: result);
+    }
   }
 
   void _openDatePicker(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (ctx)=> DateFilterScreen())).then((dates){
+          if(dates !=null && dates.length >0){
+            List<String> filterDates = [];
+            print('those are dates: $dates');
 
+            String dateTimeStart = _getFilterDate(dates[0]);
+            String dateTimeEnd = _getFilterDate(dates[dates.length -1 ]);
+
+
+            print("Start $dateTimeStart and end $dateTimeEnd");
+            filterDates.add(dateTimeStart);
+            filterDates.add(dateTimeEnd);
+            _container.updateFilterInfo(date: filterDates);
+          }
+    });
   }
 
+  String _getFilterDate(DateTime dateTime){
+    int dayInt = dateTime.day;
+    String day = (dayInt < 10) ? "0$dayInt" : dayInt.toString();
+    int montInt = dateTime.month;
+    String month = (montInt < 10) ? "0$montInt" : montInt.toString();
+    String year = dateTime.year.toString();
+    return "$day.$month.$year";
+  }
   void _openTimePicker(bool isForStartTime){
-
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context)=> TimeFilterScreen(
+                filter?.startHour,
+                filter?.endHour, isForStartTime))).then((result){
+      if(result !=null){
+        _container.updateFilterInfo(
+            startHour: result[0],
+            endHour: result[1]);
+      }
+    });
   }
 
   void _addPlaces(){
-
+    int places = (filter !=null )? filter.numberOfPlaces : 1;
+    places ++;
+    _container.updateFilterInfo(
+        numberOfPlaces: places);
   }
 
   void _reducePlaces(){
-
+    int places = filter?.numberOfPlaces ?? 1;
+    places --;
+    _container.updateFilterInfo(
+        numberOfPlaces: places > 0 ? places : 1);
   }
 
   Widget _getRoundedIconButton(IconData icon, String caption, bool isSelected,
@@ -316,6 +370,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
             width: (_screenWidth * .128).toDouble(),
             height: (_screenHeight * .072).toDouble(),
             child: FloatingActionButton(
+              heroTag: caption,
               onPressed: onPressed,
               backgroundColor: isSelected
                   ?Colors.white : Colors.transparent,

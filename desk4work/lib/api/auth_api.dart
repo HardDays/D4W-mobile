@@ -5,9 +5,9 @@ import 'package:desk4work/utils/network_util.dart';
 
 class AuthApi{
   NetworkUtil _networkUtil = NetworkUtil();
+  Map<String, String> _headers = {'Accept': 'application/json'};
   static const String _loginUrl = ConstantsManager.BASE_URL+"/auth/login";
   static const String _usersUrl = ConstantsManager.BASE_URL+ "users/";
-  Map<String, String> _headers = {'Accept': 'application/json'};
 
   static AuthApi _instance = AuthApi.internal();
   AuthApi.internal();
@@ -53,6 +53,17 @@ class AuthApi{
             return true;
           }
           return false;
+    });
+  }
+
+  Future<bool> checkLogin(String token){
+    assert(token !=null);
+    String url = _usersUrl +"get_me";
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    return _networkUtil.get(url,headers: _headers).then((respBody){
+      if(respBody[ConstantsManager.SERVER_ERROR] == null)
+        return true;
+      return false;
     });
   }
 }

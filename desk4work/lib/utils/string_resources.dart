@@ -8,6 +8,7 @@ class StringResources {
   static final String _buttonRecover = 'buttonRecover';
   static final String _buttonRegister = 'buttonRegister';
   static final String _buttonConfirm = 'buttonConfirm';
+  static final String _buttonSave = 'buttonSave';
 
   static final String _hintLogin = 'hintLogin';
   static final String _hintPassword = 'hintPassword';
@@ -19,6 +20,7 @@ class StringResources {
   static final String _hintStartFilter = 'hintStartFilter';
   static final String _hintEndFilter = 'hintEndFilter';
   static final String _hintPlaceFilter = 'hintPlaceFilter';
+  static final String _hintPopular = 'hintPopular';
 
 
 
@@ -36,8 +38,21 @@ class StringResources {
   static final String _textPrint = 'textPrintFilter';
   static final String _textTeaCoffee = 'textTeaCoffeeFilter';
   static final String _textConferenceRoom = 'textConferenceRoomFilter';
-  static final String _textBycicleParkFilter = 'textBycicleFilter';
+  static final String _textBicycleParkFilter = 'textBycicleFilter';
   static final String _textKitchen = 'textKitchen';
+  static final String _textWherever = 'textWherever';
+  static final String _textNearby = 'textNearby';
+  static final String _textDateExplanation = 'textDateExplanation';
+  static final String _textMonday = 'textMonday';
+  static final String _textTuesday = 'textTuesday';
+  static final String _textWednesday = 'textWednesdayn';
+  static final String _textThursday = 'textThursday';
+  static final String _textFriday = 'textFriday';
+  static final String _textSaturday = 'textSaturday';
+  static final String _textSunday = 'textSunday';
+
+
+
 
 
   static final String _errorEmptyLogin = 'errorEmptyLogin';
@@ -47,6 +62,9 @@ class StringResources {
   static final String _errorEmptyPhone = 'errorEmptyPhone';
   static final String _errorEmptyEmail = 'errorEmptyEmail';
   static final String _errorEmptyEmailOrPhone = 'errorEmptyEmailOrPhone';
+
+  static final String _messageNoInternet = 'messageNoInternet';
+  static final String _messageServerError = 'messageServerError';
 
 
 
@@ -64,6 +82,7 @@ class StringResources {
       _buttonRecover: 'RECOVER',
       _buttonRegister: 'REGISTER',
       _buttonConfirm: 'Confirm',
+      _buttonSave: 'save',
       _hintLogin: 'Login',
       _hintPassword: 'Password',
       _hintPasswordConfirm: 'Confirm password',
@@ -74,6 +93,7 @@ class StringResources {
       _hintDateFilter: 'Date',
       _hintStartFilter: 'Start',
       _hintEndFilter: 'end',
+      _hintPopular : 'Popular',
       _textForgotPassword: 'Forgot password ?',
       _textSocialLogin : 'Log in through social networks',
       _textEmailInboxCheckPrompt: 'CHECK YOUR MAILS',
@@ -89,14 +109,26 @@ class StringResources {
       _textTeaCoffee: 'Tea/Coffee',
       _textConferenceRoom: 'Conference room',
       _textKitchen: 'Kitchen',
-      _textBycicleParkFilter: 'Park for bicycle',
+      _textBicycleParkFilter: 'Bike storage',
+      _textNearby : 'Nearby',
+      _textWherever : 'Wherever',
+      _textMonday : 'Mon',
+      _textTuesday : 'Tue',
+      _textWednesday: 'Wed',
+      _textThursday: 'Thur',
+      _textFriday: 'Fri',
+      _textSaturday: 'Sat',
+      _textSunday: 'Sun',
+      _textDateExplanation: 'pick a date or date interval',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
       _errorNotMatchingPasswords: 'Passwords don\'t match, please try again',
       _errorEmptyPhone: 'This field can\'t be empty',
       _errorEmptyEmail: 'This field can\'t be empty',
-      _errorEmptyEmailOrPhone: 'This field can\'t be empty'
+      _errorEmptyEmailOrPhone: 'This field can\'t be empty',
+      _messageNoInternet: 'No internet connection',
+      _messageServerError: 'Server Error'
 
     },
     'ru': {
@@ -105,6 +137,7 @@ class StringResources {
       _buttonRecover: 'ВОССТАНОВИТЬ',
       _buttonRegister: 'ЗАРЕГИСТРИРОВАТЬСЯ',
       _buttonConfirm: 'Применить',
+      _buttonSave: 'Сохранить',
       _hintLogin: 'Логин',
       _hintPassword: 'Пароль',
       _hintPasswordConfirm: 'Подтвердите пароль',
@@ -115,6 +148,7 @@ class StringResources {
       _hintDateFilter: 'Дата',
       _hintStartFilter: 'Начало',
       _hintEndFilter: 'Конец',
+      _hintPopular : 'Популярное',
       _textForgotPassword: 'Забыли пароль ?',
       _textSocialLogin : 'Войти через соц.сети',
       _textEmailInboxCheckPrompt: 'ПРОВЕРЬТЕ ПОЧТУ!',
@@ -130,7 +164,17 @@ class StringResources {
       _textTeaCoffee: 'Чай/кофе',
       _textConferenceRoom: 'Конференц-зал',
       _textKitchen: 'Кухня',
-      _textBycicleParkFilter: 'Парковка для велосипедов',
+      _textNearby : 'Рядом',
+      _textWherever : 'Где угодно',
+      _textMonday : 'Пн',
+      _textTuesday : 'ВТ',
+      _textWednesday: 'СР',
+      _textThursday: 'ЧТ',
+      _textFriday: 'ПТ',
+      _textSaturday: 'СБ',
+      _textSunday: 'ВС',
+      _textBicycleParkFilter: 'Парковка для велосипедов',
+      _textDateExplanation: 'Выберите дату или диапазон дат',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -138,6 +182,9 @@ class StringResources {
       _errorEmptyPhone: 'Телефон не может быть пустым',
       _errorEmptyEmail: 'Email не может быть пустым',
       _errorEmptyEmailOrPhone: ' Не может быть пустым',
+      _messageNoInternet: 'Нет соединение к интернету',
+      _messageServerError: 'Ощибка сервера'
+
     }
   };
 
@@ -159,7 +206,12 @@ class StringResources {
 
   String get bConfirm {
       return _localizedValues[locale.languageCode][_buttonConfirm];
-    }
+
+  }
+
+  String get bSave {
+    return _localizedValues[locale.languageCode][_buttonSave];
+  }
 
   String get tForgotPassword {
     return _localizedValues[locale.languageCode][_textForgotPassword];
@@ -193,7 +245,7 @@ class StringResources {
       _localizedValues[locale.languageCode][_textPlace];
 
   String get tParkForBicycle =>
-      _localizedValues[locale.languageCode][_textBycicleParkFilter];
+      _localizedValues[locale.languageCode][_textBicycleParkFilter];
 
 
   String get tComfort =>
@@ -210,6 +262,29 @@ class StringResources {
 
   String get tKitchen =>
       _localizedValues[locale.languageCode][_textKitchen];
+
+  String get tNearby =>
+      _localizedValues[locale.languageCode][_textNearby];
+
+  String get tWherever =>
+      _localizedValues[locale.languageCode][_textWherever];
+
+  String get tDateExplanation =>
+      _localizedValues[locale.languageCode][_textDateExplanation];
+
+  String get tMonday => _localizedValues[locale.languageCode][_textMonday];
+
+  String get tTuesday => _localizedValues[locale.languageCode][_textTuesday];
+
+  String get tWednesday => _localizedValues[locale.languageCode][_textWednesday];
+
+  String get tThursday => _localizedValues[locale.languageCode][_textThursday];
+
+  String get tFriday => _localizedValues[locale.languageCode][_textFriday];
+
+  String get tSaturday => _localizedValues[locale.languageCode][_textSaturday];
+
+  String get tSunday => _localizedValues[locale.languageCode][_textSunday];
 
   String get eEmptyLogin {
     return _localizedValues[locale.languageCode][_errorEmptyLogin];
@@ -273,4 +348,12 @@ class StringResources {
   String get hEnd =>
       _localizedValues[locale.languageCode][_hintEndFilter];
 
+  String get hPopular =>
+      _localizedValues[locale.languageCode][_hintPopular];
+
+  String get mNoInternet =>
+      _localizedValues[locale.languageCode][_messageNoInternet];
+
+  String get mServerError =>
+      _localizedValues[locale.languageCode][_messageServerError];
 }

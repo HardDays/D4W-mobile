@@ -1,3 +1,4 @@
+import 'package:desk4work/api/auth_api.dart';
 import 'package:desk4work/routes.dart';
 import 'package:desk4work/utils/custom_localizations_delegate.dart';
 import 'package:desk4work/view/auth/login.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         backgroundColor: Colors.white,
         hintColor: Colors.white,
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
       localizationsDelegates: [
         const CustomLocalizationsDelegate(),
@@ -81,11 +82,21 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
   @override
   void afterFirstLayout(BuildContext context) {
     SharedPreferences.getInstance().then((sp){
+      String token  = sp.getString(ConstantsManager.TOKEN_KEY);
       if(sp.getString(ConstantsManager.TOKEN_KEY) == null)
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
-      else
-//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>MainScreen()));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()));
+      else{
+        AuthApi api = AuthApi();
+        api.checkLogin(token).then((isValid){
+          if(isValid)
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (ctx)=>MainScreen()));
+          else
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+        });
+      }
+//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()));
     });
   }
 

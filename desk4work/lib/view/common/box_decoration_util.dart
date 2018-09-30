@@ -24,7 +24,7 @@ class BoxDecorationUtil {
               stops: [.35, .6, .9],
               colors: [
 //                Colors.orange[200],
-                Colors.orange[300],
+                Colors.orange[400],
                 Colors.orange[500],
                 Colors.orange[600],
               ]
