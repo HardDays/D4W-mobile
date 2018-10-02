@@ -9,4 +9,12 @@ class ConstantsManager{
   static const String SEARCH_KEY = "searchKey";
   static const String RESERVATION_LIST_KEY = "reservationListKey";
   static const String PROFILE_KEY = "profileKey";
+  static const String MONDAY = "Monday";
+  static const String TUESDAY = "Tuesday";
+  static const String WEDNESDAY = "Wednesday";
+  static const String THURSDAY = "Thursday";
+  static const String FRIDAY = "Friday";
+  static const String SATURDAY = "Saturday";
+  static const String SUNDAY = "Sunday";
+
 }

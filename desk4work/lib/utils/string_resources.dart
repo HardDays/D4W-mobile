@@ -9,6 +9,7 @@ class StringResources {
   static final String _buttonRegister = 'buttonRegister';
   static final String _buttonConfirm = 'buttonConfirm';
   static final String _buttonSave = 'buttonSave';
+  static final String _buttonBook = 'buttonBook';
 
   static final String _hintLogin = 'hintLogin';
   static final String _hintPassword = 'hintPassword';
@@ -27,7 +28,7 @@ class StringResources {
   static final String _textForgotPassword = 'textForgotPassword';
   static final String _textSocialLogin = 'textSocialLogin';
   static final String _textHello = 'textHello';
-  static final String _textSuccessfulRegisration = 'textSuccessfulRegistration';
+  static final String _textSuccessfulRegistration = 'textSuccessfulRegistration';
   static final String _textEmailOrPhonePrompt = 'textEmailPromt';
   static final String _textEmailInboxCheckPrompt = 'textEmailInboxCheckPromt';
   static final String _textEmailSent = 'textEmailSent';
@@ -50,6 +51,25 @@ class StringResources {
   static final String _textFriday = 'textFriday';
   static final String _textSaturday = 'textSaturday';
   static final String _textSunday = 'textSunday';
+  static final String _textMainInfo = 'textMainInfo';
+  static final String _textFreePlaces = 'textFreePlaces';
+  static final String _textRemainingTime = 'textRemainingTime';
+  static final String _textGuests = 'textGuests';
+  static final String _textWorkingHours = 'textWorkingHours';
+  static final String _textContacts = 'textContacts';
+  static final String _textYes = 'textYes';
+  static final String _textNo = 'textNo';
+  static final String _textFreeEquipment = 'textFreeEquipment';
+  static final String _textPaidEquipment = 'textPaidEquipment';
+
+
+  static final String _tipPrinter = "toolTipPrinter";
+  static final String _tipKitchen = "toolTipKitchen";
+  static final String _tipBikeStorage = "toolTipBikeStorage";
+  static final String _tipConferenceRoom = "toolTipConferenceRoom";
+  static final String _tipCoffeTea = "toolTipCoffeeTea";
+
+
 
 
 
@@ -99,7 +119,7 @@ class StringResources {
       _textEmailInboxCheckPrompt: 'CHECK YOUR MAILS',
       _textEmailSent: 'We have sent you an email with instructions to restore your password',
       _textEmailOrPhonePrompt: 'Enter the email or phone number for the accout you want to recover',
-      _textSuccessfulRegisration: 'You have successfully registered and you can now start working with the app!',
+      _textSuccessfulRegistration: 'You have successfully registered and you can now start working with the app!',
       _textHello: 'Hello, ',
       _textClearFilter: 'Clear',
       _textFilter: 'Filter',
@@ -120,6 +140,17 @@ class StringResources {
       _textSaturday: 'Sat',
       _textSunday: 'Sun',
       _textDateExplanation: 'pick a date or date interval',
+      _textMainInfo: 'Main information',
+      _textFreePlaces : 'Free places',
+      _textRemainingTime : 'Remaining time',
+      _textGuests : 'Guests',
+      _textWorkingHours : 'Working hours',
+      _textContacts : 'Contacts',
+      _buttonBook : 'Book',
+      _textYes : 'yes',
+      _textNo : 'No',
+      _textFreeEquipment: 'Free use of ',
+      _textPaidEquipment: 'Additional fees apply for the use of',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -128,7 +159,12 @@ class StringResources {
       _errorEmptyEmail: 'This field can\'t be empty',
       _errorEmptyEmailOrPhone: 'This field can\'t be empty',
       _messageNoInternet: 'No internet connection',
-      _messageServerError: 'Server Error'
+      _messageServerError: 'Server Error',
+      _tipPrinter : "Printer and scanner",
+      _tipKitchen : "Kitchen",
+      _tipBikeStorage : "Bike storage",
+      _tipConferenceRoom : "Conference Room",
+      _tipCoffeTea : "Coffee and/or Tea"
 
     },
     'ru': {
@@ -154,7 +190,7 @@ class StringResources {
       _textEmailInboxCheckPrompt: 'ПРОВЕРЬТЕ ПОЧТУ!',
       _textEmailSent: 'Мы отправили вам  email инструкции по восстановлению пароля.',
       _textEmailOrPhonePrompt: 'Введите email или телефон аккаунта, доступ к которому был утрачен',
-      _textSuccessfulRegisration: 'Регистрация успешно завершена и ты можешь начать работу с приложением!',
+      _textSuccessfulRegistration: 'Регистрация успешно завершена и ты можешь начать работу с приложением!',
       _textHello: 'ПРИВЕТ, ',
       _textClearFilter: 'Очистить',
       _textFilter: 'Фильтр',
@@ -175,6 +211,17 @@ class StringResources {
       _textSunday: 'ВС',
       _textBicycleParkFilter: 'Парковка для велосипедов',
       _textDateExplanation: 'Выберите дату или диапазон дат',
+      _textMainInfo: 'Основная информация',
+      _textFreePlaces : 'Свободных мест',
+      _textRemainingTime : 'Оставшееся время:',
+      _textGuests : 'Гости:',
+      _textWorkingHours : 'Время работы',
+      _textContacts : 'Контакты',
+      _buttonBook : 'Забронировать',
+      _textYes : 'да',
+      _textNo : 'нет',
+      _textFreeEquipment: 'Бесплатно можно пользоваться ',
+      _textPaidEquipment: 'За дополнительную плату можно пользоваться',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -183,7 +230,12 @@ class StringResources {
       _errorEmptyEmail: 'Email не может быть пустым',
       _errorEmptyEmailOrPhone: ' Не может быть пустым',
       _messageNoInternet: 'Нет соединение к интернету',
-      _messageServerError: 'Ощибка сервера'
+      _messageServerError: 'Ощибка сервера',
+      _tipPrinter : "принтером и сканером",
+      _tipKitchen : "Кухной",
+      _tipBikeStorage : "парковкой для велосипедов",
+      _tipConferenceRoom : "конффффф",
+      _tipCoffeTea : "чай/кофе"
 
     }
   };
@@ -213,6 +265,10 @@ class StringResources {
     return _localizedValues[locale.languageCode][_buttonSave];
   }
 
+
+  String get bBook =>
+      _localizedValues[locale.languageCode][_buttonBook];
+
   String get tForgotPassword {
     return _localizedValues[locale.languageCode][_textForgotPassword];
   }
@@ -224,7 +280,7 @@ class StringResources {
   String get tHello => _localizedValues[locale.languageCode][_textHello];
 
   String get tSuccessfulRegistration =>
-      _localizedValues[locale.languageCode][_textSuccessfulRegisration];
+      _localizedValues[locale.languageCode][_textSuccessfulRegistration];
 
   String get tPromptEmailCheck =>
       _localizedValues[locale.languageCode][_textEmailInboxCheckPrompt];
@@ -356,4 +412,55 @@ class StringResources {
 
   String get mServerError =>
       _localizedValues[locale.languageCode][_messageServerError];
+
+  String get tMainInfo =>
+      _localizedValues[locale.languageCode][_textMainInfo];
+
+  String get tFreePlaces =>
+      _localizedValues[locale.languageCode][_textFreePlaces];
+
+  String get tRemainingTime =>
+      _localizedValues[locale.languageCode][_textRemainingTime];
+
+  String get tGuests =>
+      _localizedValues[locale.languageCode][_textGuests];
+
+  String get tWorkingHours =>
+      _localizedValues[locale.languageCode][_textWorkingHours];
+
+  String get tContacts =>
+      _localizedValues[locale.languageCode][_textContacts];
+
+
+
+  String get tYes =>
+      _localizedValues[locale.languageCode][_textYes];
+
+  String get tNo =>
+      _localizedValues[locale.languageCode][_textNo];
+
+  String get tFreeEquipment =>
+      _localizedValues[locale.languageCode][_textFreeEquipment];
+
+  String get tPaidEquipment =>
+      _localizedValues[locale.languageCode][_textPaidEquipment];
+
+  String get tipPrinter =>
+      _localizedValues[locale.languageCode][_tipPrinter];
+
+  String get tipTeaCoffee =>
+      _localizedValues[locale.languageCode][_tipCoffeTea];
+
+  String get tipConferenceRoom =>
+      _localizedValues[locale.languageCode][_tipConferenceRoom];
+
+
+  String get tipKitchen =>
+      _localizedValues[locale.languageCode][_tipKitchen];
+
+  String get tipBikeStorage =>
+      _localizedValues[locale.languageCode][_tipBikeStorage];
+
+
+
 }

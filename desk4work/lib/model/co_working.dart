@@ -13,8 +13,8 @@ class CoWorking{
   String subCategory;
   List<WorkingDays> workingDays;
   List<String> amenties;
-  List<int> images;
-  int imageId;
+  List<String> images;
+  String imageId;
   int creatorId;
   String createdAt;
   String updatedAt;
@@ -59,9 +59,17 @@ class CoWorking{
         workingDays.add(new WorkingDays.fromJson(v));
       });
     }
-    amenties = json['amenties'].cast<String>();
-    images = json['images'].cast<int>();
-    imageId = json['image_id'];
+    if( json['amenties'] !=null){
+      amenties = [];
+      json['amenties'].forEach((k){
+        amenties.add(k['name'].toString());
+
+
+//        amenties[k] = s.toString();
+      });
+    }
+    images = json['images'].cast<String>();
+    imageId = json['image_id'].toString();
     creatorId = json['creator_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

@@ -4,9 +4,9 @@ import 'package:desk4work/api/coworking_api.dart';
 import 'package:desk4work/model/co_working.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
-import 'package:desk4work/view/common/snack_bar_shower.dart';
 import 'package:desk4work/view/filter/filter_root.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
+import 'package:desk4work/view/main/co_working_details.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -51,7 +51,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 Icons.sort,
                 color: Colors.white,
               ),
-              onPressed: _openFilter)
+              onPressed: ()=>_openFilter())
         ],
       ),
       body: _buildCoWorkingList(),
@@ -141,7 +141,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 children: <Widget>[
                   Expanded(
                     child: Hero(
-                        tag: 'coWorking-id',
+                        tag: 'coWorking-id ${coWorking.id}',
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           placeholder: CircularProgressIndicator(),
@@ -171,8 +171,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        Text(coWorking.workingDays[0]?.beginWork ?? " " + '-'+
-                            coWorking.workingDays[0]?.endWork ?? " ",
+                        Text(" ${coWorking.workingDays[0]?.beginWork ?? " " }" + '-'+
+                            "${coWorking.workingDays[0]?.endWork ?? " "}",
                           style: TextStyle(color: Colors.green),),
                       ],
                     )
@@ -191,6 +191,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   }
 
   _openDetails(CoWorking coWorking){
-
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context)=>CoWorkingDetailsScreen(coWorking)));
   }
 }

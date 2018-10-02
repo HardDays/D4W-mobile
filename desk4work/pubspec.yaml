@@ -51,6 +51,11 @@ flutter:
     - assets/google_plus.png
     - assets/facebook.png
     - assets/vk_social_network.png
+    - assets/phone_green.png
+    - assets/fb_color.png
+    - assets/insta_color.png
+    - assets/vk_color.png
+    - assets/twitter_color.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

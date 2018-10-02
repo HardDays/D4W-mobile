@@ -87,14 +87,20 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
       else{
         AuthApi api = AuthApi();
-        api.checkLogin(token).then((isValid){
-          if(isValid)
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (ctx)=>MainScreen()));
-          else
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
-        });
+        try{
+          api.checkLogin(token).then((isValid){
+            if(isValid)
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (ctx)=>MainScreen()));
+            else
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+          });
+        }catch(e){
+          print("account check error: $e");
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+
+        }
       }
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()));
     });
