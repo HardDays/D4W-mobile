@@ -83,8 +83,10 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
   void afterFirstLayout(BuildContext context) {
     SharedPreferences.getInstance().then((sp){
       String token  = sp.getString(ConstantsManager.TOKEN_KEY);
-      if(sp.getString(ConstantsManager.TOKEN_KEY) == null)
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+      if(token == null)
+        {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+        }
       else{
         AuthApi api = AuthApi();
         try{

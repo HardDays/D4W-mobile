@@ -80,6 +80,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               else {
                 _coWorkings = snapshot.data;
                 return ListView.builder(
+                  shrinkWrap: true,
                     itemCount: _coWorkings.length,
                     itemBuilder: (ctx,index){
                       return _getCoWorkingCard(_coWorkings[index]);
@@ -125,14 +126,14 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
 
   Widget _getCoWorkingCard(CoWorking coWorking){
-    print('hop');
     return Container(
       height: (_screenHeight * .4273),
       padding: EdgeInsets.only(bottom: .015),
       child: InkWell(
         onTap: ()=> _openDetails(coWorking),
         child: Card(
-          shape: const RoundedRectangleBorder(borderRadius: const BorderRadius.all(const Radius.circular(0.0))),
+          shape: const RoundedRectangleBorder(borderRadius:
+          const BorderRadius.all(const Radius.circular(0.0))),
           margin: const EdgeInsets.all(0.0),
           elevation: 8.0,
           child: Column(
@@ -144,7 +145,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                         tag: 'coWorking-id ${coWorking.id}',
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
-                          placeholder: CircularProgressIndicator(),
+                          placeholder: Image.asset('assets/placeholder.png',
+                            height: (_screenHeight * .23),
+                          ),
                           height: (_screenHeight * .23),
                           errorWidget: Icon(Icons.error,size: (_screenHeight * .23),),
                           imageUrl: "",
@@ -155,25 +158,26 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 ],
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: (_screenWidth * .096)),
+                padding: EdgeInsets.symmetric(horizontal: (_screenWidth * .048)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
                       children: <Widget>[
                         Text(coWorking.fullName ?? ""),
+//                        TODO: get the distance and add it to the end
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        Text(coWorking.address ?? " "),
+                        Text(
+                            coWorking.address ?? " ",
+                            style: Theme.of(context).textTheme.caption),
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        Text(" ${coWorking.workingDays[0]?.beginWork ?? " " }" + '-'+
-                            "${coWorking.workingDays[0]?.endWork ?? " "}",
-                          style: TextStyle(color: Colors.green),),
+                        _getTime(coWorking)
                       ],
                     )
                   ],
@@ -195,5 +199,67 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         context,
         MaterialPageRoute(
             builder: (context)=>CoWorkingDetailsScreen(coWorking)));
+  }
+
+
+
+  List<String>  _getWorkingDay(CoWorking coWorking){
+    List<WorkingDays> workingDaysList = coWorking.workingDays;
+    if(workingDaysList != null && workingDaysList.length >0){
+      int today = DateTime.now().day;
+      Map<String,List<String>> workingDaysMap = {};
+      coWorking.workingDays.forEach((workingDay){
+        workingDaysMap[workingDay.day] = [workingDay.beginWork, workingDay.endWork];
+      });
+      switch(today){
+        case 1 : return workingDaysMap[ConstantsManager.MONDAY];
+        case 2 : return workingDaysMap[ConstantsManager.TUESDAY];
+        case 3 : return workingDaysMap[ConstantsManager.WEDNESDAY];
+        case 4 : return workingDaysMap[ConstantsManager.THURSDAY];
+        case 5 : return workingDaysMap[ConstantsManager.FRIDAY];
+        case 6 : return workingDaysMap[ConstantsManager.SATURDAY];
+        case 7 : return workingDaysMap[ConstantsManager.SUNDAY];
+      }
+    }
+    return null;
+  }
+
+  Widget _getTime(CoWorking coWorking){
+
+    List<String> endAndStartTIme = _getWorkingDay(coWorking);
+    String isClosedText = stringResources.tClosed;
+    Color color = Colors.red;
+    String text= isClosedText;
+    if(endAndStartTIme != null && endAndStartTIme.length >0){
+      String startTime = endAndStartTIme[0], endTime = endAndStartTIme[1];
+      DateTime now = DateTime.now();
+      int startHours = int.parse(startTime.substring(0,2));
+      int startMinute = int.parse(startTime.substring(3));
+      DateTime startDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          startHours,
+          startMinute);
+
+      int endHours = int.parse(endTime.substring(0,2));
+      int endMinute = int.parse(endTime.substring(3));
+      DateTime endDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          endHours,
+          endMinute);
+
+      bool isClosed = (startDate.isAfter(now) || endDate.isBefore(now));
+      color = isClosed ? Colors.red : Colors.green;
+      text = "$startHours:$startMinute" + '-'+
+          "$endHours:$endMinute";
+      text = (isClosed) ?text+"("+ isClosedText + ")" : text;
+    }
+    return Text(text,
+      style: Theme.of(context).textTheme.caption.copyWith(
+          color: color));
+
   }
 }

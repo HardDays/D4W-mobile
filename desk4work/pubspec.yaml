@@ -56,6 +56,7 @@ flutter:
     - assets/insta_color.png
     - assets/vk_color.png
     - assets/twitter_color.png
+    - assets/placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
