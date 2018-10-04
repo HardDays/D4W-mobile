@@ -1,10 +1,12 @@
+import 'package:intl/intl.dart';
+
 class CoWorking{
   int id;
   String fullName;
   String shortName;
   String address;
-  String lat;
-  String lng;
+  double lat;
+  double lng;
   String description;
   String contacts;
   double price;
@@ -18,6 +20,7 @@ class CoWorking{
   int creatorId;
   String createdAt;
   String updatedAt;
+  WorkingDays currentDay;
 
   CoWorking(
       {this.id,
@@ -45,8 +48,8 @@ class CoWorking{
     fullName = json['full_name'];
     shortName = json['short_name'];
     address = json['address'];
-    lat = json['lat'].toString();
-    lng = json['lng'].toString();
+    lat = json['lat'];
+    lng = json['lng'];
     description = json['description'];
     contacts = json['contacts'];
     price = json['price'];
@@ -54,9 +57,14 @@ class CoWorking{
     category = json['category'];
     subCategory = json['sub_category'];
     if (json['working_days'] != null) {
+      var current = DateFormat.EEEE().format(DateTime.now());
       workingDays = new List<WorkingDays>();
       json['working_days'].forEach((v) {
-        workingDays.add(new WorkingDays.fromJson(v));
+        var wd = WorkingDays.fromJson(v);
+        workingDays.add(wd);
+        if (wd.day == current){
+          currentDay = wd;
+        }
       });
     }
     if( json['amenties'] !=null){

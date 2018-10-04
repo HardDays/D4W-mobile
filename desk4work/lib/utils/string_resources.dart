@@ -59,6 +59,7 @@ class StringResources {
   static final String _textContacts = 'textContacts';
   static final String _textYes = 'textYes';
   static final String _textNo = 'textNo';
+  static final String _textMap = 'textMap';
   static final String _textFreeEquipment = 'textFreeEquipment';
   static final String _textPaidEquipment = 'textPaidEquipment';
 
@@ -149,6 +150,7 @@ class StringResources {
       _buttonBook : 'Book',
       _textYes : 'yes',
       _textNo : 'No',
+      _textMap : 'Map',
       _textFreeEquipment: 'Free use of ',
       _textPaidEquipment: 'Additional fees apply for the use of',
       _errorEmptyLogin : 'Login can\'t be empty',
@@ -217,6 +219,7 @@ class StringResources {
       _textGuests : 'Гости:',
       _textWorkingHours : 'Время работы',
       _textContacts : 'Контакты',
+      _textMap: 'Карта',
       _buttonBook : 'Забронировать',
       _textYes : 'да',
       _textNo : 'нет',
@@ -236,7 +239,6 @@ class StringResources {
       _tipBikeStorage : "парковкой для велосипедов",
       _tipConferenceRoom : "конффффф",
       _tipCoffeTea : "чай/кофе"
-
     }
   };
 
@@ -306,6 +308,9 @@ class StringResources {
 
   String get tComfort =>
       _localizedValues[locale.languageCode][_textComfort];
+
+  String get tMap =>
+      _localizedValues[locale.languageCode][_textMap];
 
   String get tPrint =>
       _localizedValues[locale.languageCode][_textPrint];

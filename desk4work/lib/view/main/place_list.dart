@@ -7,6 +7,7 @@ import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/filter/filter_root.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
 import 'package:desk4work/view/main/co_working_details.dart';
+import 'package:desk4work/view/main/place_map.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -93,7 +94,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     );
   }
 
-  _showOnMap() {}
+  _showOnMap() {
+     Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context)=>CoWorkingPlaceMapScreen(_coWorkings)));
+  }
 
   _openFilter() {
     Navigator.push(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()))

@@ -1,6 +1,7 @@
 import 'package:desk4work/model/profile.dart';
 import 'package:desk4work/model/reservation.dart';
 import 'package:desk4work/view/main/place_list.dart';
+import 'package:desk4work/view/main/profile_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:desk4work/utils/constants.dart';
 
@@ -54,11 +55,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   }
 
   FutureBuilder<List<Reservation>> _getReservationsBuilder(){
-
+    
   }
 
-  FutureBuilder<Profile> _getProfileBuilder(){
-
+  Widget _getProfileBuilder(){
+    return ProfileMenuScreen();
   }
 
   BottomNavigationBar _getBottomNavigationBar(){
