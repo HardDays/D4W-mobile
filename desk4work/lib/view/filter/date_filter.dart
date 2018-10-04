@@ -114,7 +114,7 @@ class _DateFilterScreenState extends State<DateFilterScreen>{
       iconColor: Colors.white,
       headerTextStyle: TextStyle(color: Colors.white, fontSize: 20.0),
       weekdayTextStyle: TextStyle(color: Colors.white),
-      prevDaysTextStyle: TextStyle(color: Colors.white54),
+      prevDaysTextStyle: TextStyle(color: Colors.white.withOpacity(0.54)),
       daysTextStyle: TextStyle(color: Colors.white),
       todayTextStyle: TextStyle(color: Colors.white),
       weekDayMargin: EdgeInsets.only(bottom: (_screenHeight * .0435).toDouble()),
