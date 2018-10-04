@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   StringResources stringResources;
 
   List<Booking> _bookings;
-
+  String _token;
 
   @override
   void initState() {
@@ -68,12 +68,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   FutureBuilder<List<Booking>> _getBookingsBuilder(){
 
+
     return FutureBuilder<List<Booking>>(
         future: _getBookings(),
         builder: (cxt, snapshot){
           switch(snapshot.connectionState){
             case ConnectionState.none :
-              return _showMessage(stringResources.mNoInternet);
+              return showMessage(stringResources.mNoInternet);
             case ConnectionState.waiting :
               return Container(
                   alignment: Alignment.center,
@@ -82,13 +83,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               );
             case ConnectionState.done:
               if(snapshot.hasError){
-                print("error  loading coWorkings ${snapshot.error}");
-                return _showMessage(stringResources.mServerError);
+                print("error  loading bookings ${snapshot.error}");
+                return showMessage(stringResources.mServerError);
               }else{
                 if(snapshot.data == null) return Container();
                 else {
                   _bookings = snapshot.data;
-                  return BookingsListScreen(_bookings);
+                  return BookingsListScreen(_bookings, _token);
                 }
               }
               break;
@@ -102,6 +103,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   }
 
   Future<List<Booking>> _getBookings(){
+//    List<Booking> _bookings = [];
+//    for(int i=0; i<10; i++){
+//      _bookings.add(Booking(id: i));
+//    }
+//    return Future<List<Booking>>.value(_bookings);
     return _getToken().then((token){
       return _bookingApi.getUserBookings(token);
     });
@@ -109,7 +115,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   Future<String> _getToken(){
     return SharedPreferences.getInstance().then((sp){
-      return sp.getString(ConstantsManager.TOKEN_KEY);
+      if(_token == null) _token = sp.getString(ConstantsManager.TOKEN_KEY);
+      return _token;
     });
   }
 
@@ -143,7 +150,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   }
 
 
-  Widget _showMessage(String message){
+  Widget showMessage(String message){
     return Center(child: Text(message),);
   }
 

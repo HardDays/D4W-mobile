@@ -1,6 +1,9 @@
+import 'package:desk4work/model/co_working.dart';
+
 class Booking {
   int id;
-  int coWorkingId;
+  int coworkingId;
+  int coworkingImageId;
   int userId;
   bool confirmed;
   String beginWork;
@@ -8,11 +11,12 @@ class Booking {
   String date;
   String createdAt;
   String updatedAt;
-
+  CoWorking coWorking;
 
   Booking(
       {this.id,
-        this.coWorkingId,
+        this.coworkingId,
+        this.coworkingImageId,
         this.userId,
         this.confirmed,
         this.beginWork,
@@ -22,9 +26,9 @@ class Booking {
         this.updatedAt});
 
   Booking.fromJson(Map<String, dynamic> json) {
-    print("new Booking $json");
     id = json['id'];
-    coWorkingId = json['coworking_id'];
+    coworkingId = json['coworking_id'];
+    coworkingImageId = json['coworking_image_id'];
     userId = json['user_id'];
     confirmed = json['confirmed'];
     beginWork = json['begin_work'];
@@ -37,7 +41,8 @@ class Booking {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['coworking_id'] = this.coWorkingId;
+    data['coworking_id'] = this.coworkingId;
+    data['coworking_image_id'] = this.coworkingImageId;
     data['user_id'] = this.userId;
     data['confirmed'] = this.confirmed;
     data['begin_work'] = this.beginWork;

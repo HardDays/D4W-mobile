@@ -16,5 +16,6 @@ class ConstantsManager{
   static const String FRIDAY = "Friday";
   static const String SATURDAY = "Saturday";
   static const String SUNDAY = "Sunday";
+  static const String IMAGE_BASE_URL = BASE_URL+"images/get_full/";
 
 }
