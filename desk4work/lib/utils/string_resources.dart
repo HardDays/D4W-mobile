@@ -62,6 +62,10 @@ class StringResources {
   static final String _textMap = 'textMap';
   static final String _textFreeEquipment = 'textFreeEquipment';
   static final String _textPaidEquipment = 'textPaidEquipment';
+  static final String _textClosed = 'textClosed';
+  static final String _textTerminate = 'textTerminate';
+  static final String _textExtend = 'textExtend';
+
 
 
   static final String _tipPrinter = "toolTipPrinter";
@@ -153,6 +157,9 @@ class StringResources {
       _textMap : 'Map',
       _textFreeEquipment: 'Free use of ',
       _textPaidEquipment: 'Additional fees apply for the use of',
+      _textClosed: 'Closed',
+      _textTerminate: 'Terminate',
+      _textExtend: 'Extend',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -225,6 +232,9 @@ class StringResources {
       _textNo : 'нет',
       _textFreeEquipment: 'Бесплатно можно пользоваться ',
       _textPaidEquipment: 'За дополнительную плату можно пользоваться',
+      _textClosed: 'Закрыто',
+      _textTerminate: 'Завершить',
+      _textExtend: 'Продлить',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -436,8 +446,6 @@ class StringResources {
   String get tContacts =>
       _localizedValues[locale.languageCode][_textContacts];
 
-
-
   String get tYes =>
       _localizedValues[locale.languageCode][_textYes];
 
@@ -449,6 +457,15 @@ class StringResources {
 
   String get tPaidEquipment =>
       _localizedValues[locale.languageCode][_textPaidEquipment];
+
+  String get tClosed =>
+      _localizedValues[locale.languageCode][_textClosed];
+
+  String get tTerminate =>
+      _localizedValues[locale.languageCode][_textTerminate];
+
+  String get tExtend =>
+      _localizedValues[locale.languageCode][_textExtend];
 
   String get tipPrinter =>
       _localizedValues[locale.languageCode][_tipPrinter];

@@ -260,7 +260,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                                 .caption
                                 .copyWith(color: _getTextColor(5)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.FRIDAY),
                         ],
                       ),
                     ),
@@ -282,7 +282,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                                 .caption
                                 .copyWith(color: _getTextColor(2)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.TUESDAY),
                         ],
                       ),
                     ),
@@ -299,7 +299,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                                 .caption
                                 .copyWith(color: _getTextColor(6)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.THURSDAY),
                         ],
                       ),
                     ),
@@ -321,7 +321,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                                 .caption
                                 .copyWith(color: _getTextColor(3)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.WEDNESDAY),
                         ],
                       ),
                     ),
@@ -338,7 +338,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                                 .caption
                                 .copyWith(color: _getTextColor(7)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.SUNDAY),
                         ],
                       ),
                     ),
@@ -357,7 +357,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                             _stringResources.tThursday.toUpperCase(),
                             style: TextStyle(color: _getTextColor(4)),
                           ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
+                          _getWorkgingHours(ConstantsManager.THURSDAY),
                         ],
                       ),
                     ),
