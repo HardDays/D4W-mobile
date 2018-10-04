@@ -65,6 +65,11 @@ class StringResources {
   static final String _textClosed = 'textClosed';
   static final String _textTerminate = 'textTerminate';
   static final String _textExtend = 'textExtend';
+  static final String _textFreeMinutes = 'textFreeMinutes';
+  static final String _textHours = 'textHours';
+  static final String _textMinutes = 'textMinutes';
+  static final String _textSeconds = 'textSeconds';
+
 
 
 
@@ -72,7 +77,7 @@ class StringResources {
   static final String _tipKitchen = "toolTipKitchen";
   static final String _tipBikeStorage = "toolTipBikeStorage";
   static final String _tipConferenceRoom = "toolTipConferenceRoom";
-  static final String _tipCoffeTea = "toolTipCoffeeTea";
+  static final String _tipCoffeeTea = "toolTipCoffeeTea";
 
 
 
@@ -160,6 +165,10 @@ class StringResources {
       _textClosed: 'Closed',
       _textTerminate: 'Terminate',
       _textExtend: 'Extend',
+      _textFreeMinutes: 'Free minutes',
+      _textHours: 'Hours',
+      _textMinutes: 'Minutes',
+      _textSeconds: 'Seconds',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -173,7 +182,7 @@ class StringResources {
       _tipKitchen : "Kitchen",
       _tipBikeStorage : "Bike storage",
       _tipConferenceRoom : "Conference Room",
-      _tipCoffeTea : "Coffee and/or Tea"
+      _tipCoffeeTea : "Coffee and/or Tea"
 
     },
     'ru': {
@@ -235,6 +244,10 @@ class StringResources {
       _textClosed: 'Закрыто',
       _textTerminate: 'Завершить',
       _textExtend: 'Продлить',
+      _textHours: 'Часы',
+      _textMinutes: 'минуты',
+      _textSeconds: 'секунды',
+      _textFreeMinutes: 'Бесплатные минуты',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -248,7 +261,7 @@ class StringResources {
       _tipKitchen : "Кухной",
       _tipBikeStorage : "парковкой для велосипедов",
       _tipConferenceRoom : "конффффф",
-      _tipCoffeTea : "чай/кофе"
+      _tipCoffeeTea : "чай/кофе"
     }
   };
 
@@ -356,6 +369,20 @@ class StringResources {
   String get tSaturday => _localizedValues[locale.languageCode][_textSaturday];
 
   String get tSunday => _localizedValues[locale.languageCode][_textSunday];
+
+  String get tFreeMinutes =>
+      _localizedValues[locale.languageCode][_textFreeMinutes];
+
+  String get tHours =>
+      _localizedValues[locale.languageCode][_textHours];
+
+  String get tMinutes =>
+      _localizedValues[locale.languageCode][_textMinutes];
+
+  String get tSeconds =>
+      _localizedValues[locale.languageCode][_textSeconds];
+
+
 
   String get eEmptyLogin {
     return _localizedValues[locale.languageCode][_errorEmptyLogin];
@@ -471,7 +498,7 @@ class StringResources {
       _localizedValues[locale.languageCode][_tipPrinter];
 
   String get tipTeaCoffee =>
-      _localizedValues[locale.languageCode][_tipCoffeTea];
+      _localizedValues[locale.languageCode][_tipCoffeeTea];
 
   String get tipConferenceRoom =>
       _localizedValues[locale.languageCode][_tipConferenceRoom];
