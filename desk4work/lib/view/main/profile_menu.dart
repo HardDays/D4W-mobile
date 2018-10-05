@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:desk4work/view/main/history_list.dart';
+import 'package:desk4work/view/main/profile_edit.dart';
 import 'package:desk4work/utils/string_resources.dart'; 
 import 'package:flutter/material.dart';
 
@@ -60,61 +61,69 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                  color: Colors.grey.withAlpha(100)
                )
             ),
-            child: Container(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: _screenHeight * 0.17 - 40.0,
-                        height: _screenHeight * 0.17 - 40.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                    MaterialPageRoute(
+                      builder: (context)=> ProfileEditScreen()));
+              },
+              child: Container(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          width: _screenHeight * 0.17 - 40.0,
+                          height: _screenHeight * 0.17 - 40.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: _screenWidth - (_screenHeight * 0.17 + 50),
-                        margin: EdgeInsets.only(left: 15.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text('First name',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18.0
+                        Container(
+                          width: _screenWidth - (_screenHeight * 0.17 + 50),
+                          margin: EdgeInsets.only(left: 15.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('First name',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0
+                                ),
                               ),
-                            ),
-                            Text('Email',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black,
-                                fontSize: 14.0
+                              Text('Email',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.black,
+                                  fontSize: 14.0
+                                ),
                               ),
-                            ),
-                            Text('Phone',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black,
-                                fontSize: 14.0
-                              ),
-                            ) 
-                          ],
-                        )
-                      ),
-                    ]
-                  ),
-                  IconButton(
-                    iconSize: 16.0,
-                    icon: Icon(Icons.arrow_forward_ios)
-                  )
-                ],
+                              Text('Phone',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.black,
+                                  fontSize: 14.0
+                                ),
+                              ) 
+                            ],
+                          )
+                        ),
+                      ]
+                    ),
+                    IconButton(
+                      iconSize: 16.0,
+                      icon: Icon(Icons.arrow_forward_ios)
+                    )
+                  ],
+                )
               )
-            )
+            ) 
           ),
           Container(
             margin: EdgeInsets.only(top: 7.0),
@@ -210,15 +219,15 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                     ],
                   )
                 ),
-                 Divider(height: 2.0),
+                Divider(height: 2.0),
                 Container(
                   padding: EdgeInsets.only(left: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
+                    children: <Widget> [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                        children: <Widget> [
                           Container(
                             width: 20.0,
                             height: 20.0,

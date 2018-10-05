@@ -16,7 +16,7 @@ class CoWorking{
   List<WorkingDays> workingDays;
   List<String> amenties;
   List<String> images;
-  String imageId;
+  int imageId;
   int creatorId;
   String createdAt;
   String updatedAt;
@@ -77,7 +77,7 @@ class CoWorking{
       });
     }
     images = json['images'].cast<String>();
-    imageId = json['image_id'].toString();
+    imageId = json['image_id'];
     creatorId = json['creator_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
