@@ -23,8 +23,6 @@ class StringResources {
   static final String _hintPlaceFilter = 'hintPlaceFilter';
   static final String _hintPopular = 'hintPopular';
 
-
-
   static final String _textForgotPassword = 'textForgotPassword';
   static final String _textSocialLogin = 'textSocialLogin';
   static final String _textHello = 'textHello';
@@ -60,6 +58,11 @@ class StringResources {
   static final String _textYes = 'textYes';
   static final String _textNo = 'textNo';
   static final String _textMap = 'textMap';
+  static final String _textPrivateKabinet = 'textPrivateKabinet';
+  static final String _textHistory = 'textHistory';
+  static final String _textPaymentOption = 'textPaymentOption';
+  static final String _textHelp = 'textHelp';
+  static final String _textNoBookings = 'textNoBookings';
   static final String _textFreeEquipment = 'textFreeEquipment';
   static final String _textPaidEquipment = 'textPaidEquipment';
   static final String _textClosed = 'textClosed';
@@ -160,6 +163,11 @@ class StringResources {
       _textYes : 'yes',
       _textNo : 'No',
       _textMap : 'Map',
+      _textPrivateKabinet : 'Profile',
+      _textHistory : 'History',
+      _textPaymentOption: 'Payment options',
+      _textHelp: 'Help',
+      _textNoBookings : 'No bookings yet',
       _textFreeEquipment: 'Free use of ',
       _textPaidEquipment: 'Additional fees apply for the use of',
       _textClosed: 'Closed',
@@ -236,6 +244,11 @@ class StringResources {
       _textWorkingHours : 'Время работы',
       _textContacts : 'Контакты',
       _textMap: 'Карта',
+      _textPrivateKabinet : 'Личный кабинет',
+      _textHistory : 'История',
+      _textPaymentOption: 'Способы оплаты',
+      _textHelp: 'Помощь',
+      _textNoBookings: 'История пуста',
       _buttonBook : 'Забронировать',
       _textYes : 'да',
       _textNo : 'нет',
@@ -334,6 +347,21 @@ class StringResources {
 
   String get tMap =>
       _localizedValues[locale.languageCode][_textMap];
+
+  String get tPrivateKabinet =>
+      _localizedValues[locale.languageCode][_textPrivateKabinet];
+
+  String get tHistory =>
+      _localizedValues[locale.languageCode][_textHistory];
+
+  String get tPaymentOption =>
+      _localizedValues[locale.languageCode][_textPaymentOption];
+
+  String get tHelp =>
+      _localizedValues[locale.languageCode][_textHelp];
+
+String get tNoBokings =>
+      _localizedValues[locale.languageCode][_textNoBookings];
 
   String get tPrint =>
       _localizedValues[locale.languageCode][_textPrint];
