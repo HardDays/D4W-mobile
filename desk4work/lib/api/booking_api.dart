@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
 import 'package:desk4work/model/booking.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/network_util.dart';
@@ -25,5 +26,22 @@ class BookingApi{
       });
     });
 
+  }
+
+  Future<List<Booking>> getPastBookings(String token, {DateTime date}){
+    String  url = ConstantsManager.BASE_URL+
+        "users/get_past_bookings";
+    if (date != null){
+      url += '?date=' + DateFormat.yMd().format(date);
+    }
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    return _networkUtil.get(url, headers: _headers).then((response){
+      List<Booking> bookings = [];
+      print("booking response $response");
+      response.forEach((b){
+        bookings.add(Booking.fromJson(b));
+      });
+      return bookings;
+    });
   }
 }

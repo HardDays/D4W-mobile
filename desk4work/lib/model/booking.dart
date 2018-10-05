@@ -5,10 +5,13 @@ class Booking {
   int coworkingId;
   int coworkingImageId;
   int userId;
+  int price;
   bool confirmed;
   String beginWork;
   String endWork;
   String date;
+  String beginDate;
+  String endDate;
   String createdAt;
   String updatedAt;
   CoWorking coWorking;
@@ -31,11 +34,13 @@ class Booking {
     coworkingImageId = json['coworking_image_id'];
     userId = json['user_id'];
     confirmed = json['confirmed'];
-    beginWork = json['begin_work'];
-    endWork = json['end_work'];
+    beginDate = json['begin_date'];
+    endDate = json['end_date'];
     date = json['date'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    coWorking = CoWorking.fromJson(json['coworking']);
+    price = json['price'];
   }
 
   Map<String, dynamic> toJson() {

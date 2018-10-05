@@ -60,6 +60,9 @@ flutter:
     - assets/twitter_color.png
     - assets/pin_orange.png
     - assets/placeholder.png
+    - assets/credit_card.png
+    - assets/question.png
+    - assets/history.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

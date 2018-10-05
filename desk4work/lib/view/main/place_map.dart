@@ -251,17 +251,22 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
                     height: _screenHeight * 0.11,
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(6.0), bottomLeft: Radius.circular(6.0)),
-                      child: CachedNetworkImage(
+                      child: _coworking.imageId != null ?  CachedNetworkImage(
                         fit: BoxFit.cover,
-                        placeholder: Container(
-                          alignment: Alignment.center,
-                          width: _screenHeight * 0.04,
-                          height: _screenHeight * 0.04,
-                          child: CircularProgressIndicator()
+                        placeholder: Image.asset('assets/placeholder.png',
+                          width: _screenHeight * 0.11,
+                          height: _screenHeight * 0.11,                        
                         ),
-                        errorWidget: Icon(Icons.error, size: (_screenHeight * 0.11)),
-                        imageUrl: _coworking.imageId != null ? ConstantsManager.BASE_URL + "images/get_full/${_coworking.imageId}" : ""                    
-                      )
+                        errorWidget: Image.asset('assets/placeholder.png',
+                          width: _screenHeight * 0.11,
+                          height: _screenHeight * 0.11,                        
+                        ),
+                        imageUrl: ConstantsManager.IMAGE_BASE_URL + "${_coworking.imageId}"                
+                      ) : 
+                      Image.asset('assets/placeholder.png',
+                        width: _screenHeight * 0.11,
+                        height: _screenHeight * 0.11,                        
+                      ),
                     )
                   ),
                   Container(
