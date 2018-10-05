@@ -13,7 +13,7 @@ class CoWorkingApi {
   CoWorkingApi.internal();
   factory CoWorkingApi() => _instance;
 
-  Future<List<CoWorking>> searchCoWorkingPlaces(String token, {Filter filter}){
+  Future<List<CoWorking>> searchCoWorkingPlaces  (String token, {Filter filter}) {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
     url +="?limit=10";
@@ -21,9 +21,9 @@ class CoWorkingApi {
       List<CoWorking> coWorkings = [];
 
       responseBody['coworkings'].forEach((coWorking){
-        print("coworking: $coWorking");
-        getFreeSeat(token, coWorking['id']);
-        coWorkings.add(CoWorking.fromJson(coWorking));
+        CoWorking cw = CoWorking.fromJson(coWorking);
+        coWorkings.add(cw);
+
       });
      return coWorkings;
     });
@@ -36,8 +36,11 @@ class CoWorkingApi {
       CoWorking coWorking;
 
       coWorking = responseBody['coworking'];
-      getFreeSeat(token, id);
-      return coWorking;
+      return getFreeSeat(token, id)
+          .then((freeSeats) => coWorking.freeSeats = freeSeats).then((_){
+            return coWorking;
+      });
+//      return coWorking;
     });
   }
 
@@ -46,7 +49,7 @@ class CoWorkingApi {
     String url = _coWorkingUrl+"get_free_seats/$id";
     print('url $url');
     return _networkUtil.get(url, headers: _headers).then((response){
-      print("getSeatResponse $response");
+      return response['free_seats'];
     });
 
   }

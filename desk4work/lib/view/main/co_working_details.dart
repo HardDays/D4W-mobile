@@ -1,15 +1,21 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:desk4work/api/coworking_api.dart';
 import 'package:desk4work/model/co_working.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 
 class CoWorkingDetailsScreen extends StatefulWidget {
   final CoWorking _coWorking;
+  final String _token;
 
-  CoWorkingDetailsScreen(this._coWorking);
+  CoWorkingDetailsScreen(this._coWorking, this._token);
 
   @override
   State<StatefulWidget> createState() => _CoWorkingDetailsScreenState();
@@ -26,6 +32,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   static const _kCurve = Curves.ease;
 
+
   _CoWorkingDetailsScreenState();
 
   bool _isPrinterSelected = false,
@@ -33,7 +40,18 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       _isConferenceRoomSelected = false,
       _isBikeStorageSelected = false,
       _isKitchenSelected = false;
+  String _token;
   String _explanations;
+  MapController _mapController;
+  CoWorkingApi _coWorkingApi;
+
+
+  @override
+  void initState() {
+    _mapController = MapController();
+    _coWorkingApi = CoWorkingApi();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +59,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
+    _token = widget._token; // global
 
     return SafeArea(
       child: Scaffold(
@@ -115,18 +134,19 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                         _stringResources.tFreePlaces,
                         style: Theme.of(context).textTheme.caption,
                       ),
-                      Text(widget._coWorking.capacity.toString()),
+                      _buildFreeSeats(widget._coWorking.id)
                     ],
                   ),
                   Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: _screenHeight * .009)),
-                 
+
                 ],
               ),
             ),
             Container(
               height: (_screenHeight * .276),
+              child: _buildMap(),
             ),
             Container(
               height: (_screenHeight * .0618),
@@ -181,6 +201,56 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMap(){
+    String _mapBoxUrl = "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}";
+    String _mapBoxToken = "pk.eyJ1Ijoidm92YW4xMjMiLCJhIjoiY2o3aXNicTFhMW9jbDJxbWw3bHNqMW92MCJ9.N1hCLnBrJjdX0JmYuA8bOw";
+    String _mapBoxId = "mapbox.streets";
+    double lat = widget._coWorking.lat;
+    double lng = widget._coWorking.lng;
+    return Stack(
+      children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width,
+          child: FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              center: LatLng(lat, lng),
+              zoom: 15.0,
+            ),
+            layers: [
+              TileLayerOptions(
+                urlTemplate: _mapBoxUrl,
+                additionalOptions: {
+                  'accessToken': _mapBoxToken,
+                  'id': _mapBoxId,
+                },
+              ),
+              MarkerLayerOptions(
+                markers: <Marker>[
+                  Marker(
+                    point: LatLng(lat, lng),
+                    builder: (ctx){
+                      return Container(
+                        width: 70.0,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fitHeight,
+                            image: AssetImage('assets/pin_orange.png'),
+                          ),
+                        ),
+                      );
+                    }
+                  )
+                ]
+              )
+            ]
+          ),
+        )
+      ],
     );
   }
 
@@ -641,9 +711,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _getImageForHeader(String url, int index) {
+  Widget _getImageForHeader(int imageId, int index) {
     return Hero(
-        tag: url + index.toString(),
+        tag: imageId.toString() + index.toString(),
         child: CachedNetworkImage(
           fit: BoxFit.fill,
           placeholder: CircularProgressIndicator(),
@@ -656,6 +726,40 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         ));
   }
 
+  FutureBuilder<int> _buildFreeSeats(int id){
+   return FutureBuilder<int>(
+     future: _getFreeSeats(id),
+     builder: (ctx, snapshot){
+       switch(snapshot.connectionState){
+         case ConnectionState.none :
+           return showMessage(_stringResources.mNoInternet);
+         case ConnectionState.waiting :
+           return Container(
+               alignment: Alignment.center,
+               margin: const EdgeInsets.only(top: 50.0),
+               child: new CircularProgressIndicator()
+           );
+         case ConnectionState.done:
+           if(snapshot.hasError){
+             print("error  loading bookings ${snapshot.error}");
+             return showMessage(_stringResources.mServerError);
+           }else{
+             if(snapshot.data == null) return Container();
+             else {
+               return Text(snapshot.data.toString() ?? '0');
+             }
+           }
+           break;
+         case ConnectionState.active: break;
+       }
+     },
+   );
+  }
+
+  Future<int> _getFreeSeats(int id){
+    return _coWorkingApi.getFreeSeat(_token, id);
+  }
+
   BoxDecoration _getOrangeBoxDecoration(int dayOfTheWeek) {
     return (DateTime.now().day == dayOfTheWeek)
         ? BoxDecorationUtil.getOrangeRoundedCornerBoxDecoration()
@@ -664,5 +768,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   Color _getTextColor(int dayOfTheWeek, {Color defaultColor = Colors.grey}) {
     return (DateTime.now().day == dayOfTheWeek) ? Colors.white : defaultColor;
+  }
+
+  Widget showMessage(String message){
+    return Center(child: Text(message),);
   }
 }

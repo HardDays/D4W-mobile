@@ -65,7 +65,7 @@ class _BookingDetailsState extends State<BookingDetails>{
     });
   }
 
-  Widget _buildHeader(List<String> imageIds){
+  Widget _buildHeader(List<int> imageIds){
     return Container(
       height: _screenHeight * .03238,
     );

@@ -338,9 +338,13 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
   }
 
   _openDetails(CoWorking coWorking){
-    Navigator.push(
-      context,
-        MaterialPageRoute(
-          builder: (context)=>CoWorkingDetailsScreen(coWorking)));
+    SharedPreferences.getInstance().then((sp){
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context)=>CoWorkingDetailsScreen(coWorking, token)));
+    });
+
   }
 }
