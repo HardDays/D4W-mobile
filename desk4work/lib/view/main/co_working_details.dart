@@ -121,25 +121,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: _screenHeight * .009)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(_stringResources.tRemainingTime,
-                          style: Theme.of(context).textTheme.caption),
-                      Text(widget._coWorking.capacity.toString()),
-                    ],
-                  ),
-                  Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: _screenHeight * .009)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(_stringResources.tGuests,
-                          style: Theme.of(context).textTheme.caption),
-                      Text(widget._coWorking.capacity.toString()),
-                    ],
-                  ),
+                 
                 ],
               ),
             ),
@@ -224,162 +206,27 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             ),
           ),
           Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      decoration: _getOrangeBoxDecoration(1),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tMonday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(1)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.MONDAY),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: _getOrangeBoxDecoration(5),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tFriday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(5)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.FRIDAY),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      decoration: _getOrangeBoxDecoration(2),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tTuesday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(2)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.TUESDAY),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: _getOrangeBoxDecoration(6),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tSaturday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(6)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.THURSDAY),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      decoration: _getOrangeBoxDecoration(3),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tWednesday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(3)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.WEDNESDAY),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: _getOrangeBoxDecoration(7),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tSunday.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption
-                                .copyWith(color: _getTextColor(7)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.SUNDAY),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      decoration: _getOrangeBoxDecoration(4),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            _stringResources.tThursday.toUpperCase(),
-                            style: TextStyle(color: _getTextColor(4)),
-                          ),
-                          _getWorkgingHours(ConstantsManager.THURSDAY),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: _getOrangeBoxDecoration(4),
-                      padding: EdgeInsets.all(4.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "mmmmmmm",
-                            style: TextStyle(color: _getTextColor(4)),
-                          ),
-                          Text("mmmm")
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
+            child: Container(
+              width: _screenWidth * .7387,
+              height: _screenHeight * .15,
+              child: GridView.count(
+                childAspectRatio: 4.0833,
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                children:
+                  List.generate(widget._coWorking.workingDays.length, (index){
+                    return Container(
+                        child: _getWorkgingHours(
+                            widget._coWorking.workingDays[index]));
+                  }),
+              ),
             ),
-          )
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: _screenHeight * .03,
+            ),
+          ),
         ],
       ),
     );
@@ -422,16 +269,88 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Text _getWorkgingHours(String day){
-    String start = "//://";
-    String end = "//://";
-    widget._coWorking.workingDays.forEach((workingDay){
-      if(workingDay.day == day){
-        start = workingDay.beginWork;
-        end = workingDay.endWork;
-      }
-    });
-    return Text(start + " - "+ end);
+  Widget _getWorkgingHours(WorkingDays workingDay){
+    String start =  workingDay.beginWork;
+    String end = workingDay.endWork;
+    String day;
+    Color dayTextColor;
+    Color timeTextColor;
+    int weekDay;
+
+    switch(workingDay.day){
+      case ConstantsManager.MONDAY :
+        day = _stringResources.tMonday;
+        dayTextColor = _getTextColor(1);
+        timeTextColor = _getTextColor(1, defaultColor: Colors.black);
+        weekDay =1;
+        break;
+
+      case ConstantsManager.TUESDAY:
+        day = _stringResources.tTuesday;
+        dayTextColor = _getTextColor(2);
+        timeTextColor = _getTextColor(2, defaultColor: Colors.black);
+        weekDay =2;
+        break;
+
+        case ConstantsManager.WEDNESDAY:
+          day = _stringResources.tWednesday;
+          dayTextColor = _getTextColor(3);
+          timeTextColor = _getTextColor(3, defaultColor: Colors.black);
+          weekDay =3;
+          break;
+
+        case ConstantsManager.THURSDAY:
+          day = _stringResources.tThursday;
+          dayTextColor = _getTextColor(4);
+          timeTextColor = _getTextColor(4, defaultColor: Colors.black);
+          weekDay = 4;
+          break;
+
+        case ConstantsManager.FRIDAY:
+          day = _stringResources.tFriday;
+          dayTextColor = _getTextColor(5);
+          timeTextColor = _getTextColor(5, defaultColor: Colors.black);
+          weekDay = 5;
+          break;
+
+        case ConstantsManager.SATURDAY:
+          day = _stringResources.tSaturday;
+          dayTextColor = _getTextColor(6);
+          timeTextColor = _getTextColor(6, defaultColor: Colors.black);
+          weekDay = 6;
+          break;
+
+
+        case ConstantsManager.SUNDAY:
+          day = _stringResources.tSunday;
+          dayTextColor = _getTextColor(7);
+          timeTextColor = _getTextColor(7, defaultColor: Colors.black);
+          weekDay = 7;
+          break;
+
+    }
+    TextStyle textStyle = Theme.of(context).textTheme.caption;
+    Text dayText = Text(day, style: textStyle.copyWith(color: dayTextColor), );
+    Text hoursText = Text(
+      "$start-$end",
+      style: textStyle.copyWith(color: timeTextColor), );
+    bool isToday = DateTime.now().day == weekDay;
+    return Container(
+      width: _screenWidth * .3653,
+      margin: EdgeInsets.only(bottom: 5.0),
+      decoration: (isToday)
+          ? BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.all(Radius.circular(36.0))
+      ) : null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          dayText,
+          hoursText
+        ],
+      ),
+    );
   }
 
   Widget _getContactContainer() {
@@ -743,7 +662,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         : null;
   }
 
-  Color _getTextColor(int dayOfTheWeek) {
-    return (DateTime.now().day == dayOfTheWeek) ? Colors.black : Colors.black;
+  Color _getTextColor(int dayOfTheWeek, {Color defaultColor = Colors.grey}) {
+    return (DateTime.now().day == dayOfTheWeek) ? Colors.white : defaultColor;
   }
 }

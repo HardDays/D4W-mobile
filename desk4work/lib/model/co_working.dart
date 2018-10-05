@@ -21,6 +21,7 @@ class CoWorking{
   String createdAt;
   String updatedAt;
   WorkingDays currentDay;
+  int freeSeats;
 
   CoWorking(
       {this.id,
