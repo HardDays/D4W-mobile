@@ -72,6 +72,7 @@ class StringResources {
   static final String _textHours = 'textHours';
   static final String _textMinutes = 'textMinutes';
   static final String _textSeconds = 'textSeconds';
+  static final String _textPrice = 'textPrice';
 
 
 
@@ -177,6 +178,7 @@ class StringResources {
       _textHours: 'Hours',
       _textMinutes: 'Minutes',
       _textSeconds: 'Seconds',
+      _textPrice: 'Price',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -260,6 +262,7 @@ class StringResources {
       _textHours: 'Часы',
       _textMinutes: 'минуты',
       _textSeconds: 'секунды',
+      _textPrice: 'Цена',
       _textFreeMinutes: 'Бесплатные минуты',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
@@ -521,6 +524,9 @@ String get tNoBokings =>
 
   String get tExtend =>
       _localizedValues[locale.languageCode][_textExtend];
+
+  String get tPrice =>
+      _localizedValues[locale.languageCode][_textPrice];
 
   String get tipPrinter =>
       _localizedValues[locale.languageCode][_tipPrinter];

@@ -7,6 +7,7 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/main/new_booking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -671,7 +672,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     }
   }
 
-  _bookPlace() {}
+  _bookPlace() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx)=> NewBookingScreen(widget._coWorking)));
+  }
 
   _showOnMap() {}
 
