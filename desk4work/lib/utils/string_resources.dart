@@ -22,6 +22,8 @@ class StringResources {
   static final String _hintEndFilter = 'hintEndFilter';
   static final String _hintPlaceFilter = 'hintPlaceFilter';
   static final String _hintPopular = 'hintPopular';
+  static final String _hintFirstName = 'hintFirstName';
+  static final String _hintLastName = 'hintLastName';
 
   static final String _textForgotPassword = 'textForgotPassword';
   static final String _textSocialLogin = 'textSocialLogin';
@@ -73,9 +75,7 @@ class StringResources {
   static final String _textMinutes = 'textMinutes';
   static final String _textSeconds = 'textSeconds';
   static final String _textPrice = 'textPrice';
-
-
-
+  static final String _textProfile = 'textProfile';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -128,6 +128,8 @@ class StringResources {
       _hintStartFilter: 'Start',
       _hintEndFilter: 'end',
       _hintPopular : 'Popular',
+      _hintFirstName : 'First name',
+      _hintLastName : 'Last name',
       _textForgotPassword: 'Forgot password ?',
       _textSocialLogin : 'Log in through social networks',
       _textEmailInboxCheckPrompt: 'CHECK YOUR MAILS',
@@ -179,6 +181,7 @@ class StringResources {
       _textMinutes: 'Minutes',
       _textSeconds: 'Seconds',
       _textPrice: 'Price',
+      _textProfile: 'Profile',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -213,6 +216,8 @@ class StringResources {
       _hintStartFilter: 'Начало',
       _hintEndFilter: 'Конец',
       _hintPopular : 'Популярное',
+      _hintFirstName : 'Имя',
+      _hintLastName : 'Фамилия',
       _textForgotPassword: 'Забыли пароль ?',
       _textSocialLogin : 'Войти через соц.сети',
       _textEmailInboxCheckPrompt: 'ПРОВЕРЬТЕ ПОЧТУ!',
@@ -264,6 +269,7 @@ class StringResources {
       _textSeconds: 'секунды',
       _textPrice: 'Цена',
       _textFreeMinutes: 'Бесплатные минуты',
+      _textProfile: 'Профиль',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -413,7 +419,8 @@ String get tNoBokings =>
   String get tSeconds =>
       _localizedValues[locale.languageCode][_textSeconds];
 
-
+  String get tProfile =>
+      _localizedValues[locale.languageCode][_textProfile];
 
   String get eEmptyLogin {
     return _localizedValues[locale.languageCode][_errorEmptyLogin];
@@ -479,6 +486,12 @@ String get tNoBokings =>
 
   String get hPopular =>
       _localizedValues[locale.languageCode][_hintPopular];
+
+  String get hLastName =>
+      _localizedValues[locale.languageCode][_hintLastName];
+      
+  String get hFirstName =>
+      _localizedValues[locale.languageCode][_hintFirstName];
 
   String get mNoInternet =>
       _localizedValues[locale.languageCode][_messageNoInternet];

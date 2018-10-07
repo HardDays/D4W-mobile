@@ -2,18 +2,27 @@ import 'dart:async';
 
 import 'package:desk4work/view/main/history_list.dart';
 import 'package:desk4work/utils/string_resources.dart'; 
+import 'package:desk4work/utils/constants.dart';
+import 'package:desk4work/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class ProfileEditScreen extends StatefulWidget {
-  
+
+  User _user;
+
+  ProfileEditScreen(User user){
+    _user = user;
+  }
+
   @override
   State<StatefulWidget> createState() => _ProfileEditState();
 }
 
 class _ProfileEditState extends State<ProfileEditScreen> {
   GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
-  StringResources stringResources;
+  StringResources _stringResources;
   Size _screenSize;
   TextEditingController _firstNameController;
   TextEditingController _lastNameController;
@@ -30,14 +39,14 @@ class _ProfileEditState extends State<ProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    stringResources = StringResources.of(context);
+    _stringResources = StringResources.of(context);
     _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
-    _firstNameController = TextEditingController(text: 'First name');
-    _lastNameController = TextEditingController(text: 'Last name');
-    _emailController = TextEditingController(text: 'Email');
-    _phoneController = TextEditingController(text: 'Phone');
+    _firstNameController = TextEditingController(text: widget._user.firstName);
+    _lastNameController = TextEditingController(text: widget._user.lastName);
+    _emailController = TextEditingController(text: widget._user.email);
+    _phoneController = TextEditingController(text: widget._user.phone);
     
     return Scaffold(
       key: _scaffoldState,
@@ -47,7 +56,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
         ),
         centerTitle: true,
         title: Text(
-          stringResources.tPrivateKabinet,
+          _stringResources.tPrivateKabinet,
           style: TextStyle(color: Colors.white),
         ),
         actions: <Widget>[]
@@ -78,13 +87,63 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: _screenHeight * 0.17 - 40.0,
-                        height: _screenHeight * 0.17 - 40.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red
-                        ),
+                      Stack(
+                        children: <Widget>[
+                          Container(
+                            width: _screenHeight * 0.17 - 40.0,
+                            height: _screenHeight * 0.17 - 40.0,
+                            child: ClipRRect( 
+                              borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                              child: widget._user.imageId != null ? 
+                                CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  placeholder: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.grey)
+                                  ),
+                                  child: Icon(Icons.person,
+                                    size: _screenHeight * 0.15 - 40.0,
+                                    color: Colors.grey,
+                                  )
+                                ),
+                                errorWidget: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.grey)
+                                  ),
+                                  child: Icon(Icons.person,
+                                    size: _screenHeight * 0.15 - 40.0,
+                                    color: Colors.grey,
+                                  )
+                                ),
+                                imageUrl: ConstantsManager.IMAGE_BASE_URL + "${widget._user.imageId}"                 
+                              ) :   
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.grey)
+                                ),
+                                child: Icon(Icons.person,
+                                  size: _screenHeight * 0.15 - 40.0,
+                                  color: Colors.grey,
+                                )
+                              )
+                            )
+                          ),
+                          Container(
+                            width: _screenHeight * 0.17 - 40.0,
+                            height: _screenHeight * 0.17 - 40.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withAlpha(180)
+                            ),
+                            child: Icon(Icons.camera_alt,
+                              size: _screenHeight * 0.1 - 40.0,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
                       ),
                       Container(
                         width: _screenWidth - (_screenHeight * 0.17 + 50),
@@ -104,6 +163,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                                   color: Colors.black
                                 ),
                                 decoration: InputDecoration(
+                                  hintText: _stringResources.hFirstName,
                                   contentPadding: EdgeInsets.only(top: 3.0, bottom: 4.0),
                                 ),
                                 controller: _firstNameController,  
@@ -121,6 +181,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                                   color: Colors.black
                                 ),
                                 decoration: InputDecoration(
+                                  hintText: _stringResources.hLastName,
                                   contentPadding: EdgeInsets.only(top: 3.0, bottom: 4.0),
                                 ),
                                 controller: _lastNameController,  
@@ -235,7 +296,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(left: 20.0),
+                      margin: EdgeInsets.only(left: 0.0),
                       width: _screenWidth - 120,
                       child: Text('Смена пароля',
                         style: TextStyle(
@@ -251,6 +312,33 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                   iconSize: 16.0,
                   icon: Icon(Icons.arrow_forward_ios)
                 )
+              ],
+            )
+          ),
+          Padding(padding: EdgeInsets.only(top: 8.0)),
+          Container(
+            color: Colors.white,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 14.0, bottom: 14.0),
+                      alignment: Alignment.center,
+                      width: _screenWidth,
+                      child: Text('Выйти',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Color(0xFFFE0B05),
+                          fontSize: 16.0
+                        ),
+                      ),  
+                    ),
+                  ]
+                ),
               ],
             )
           ),
