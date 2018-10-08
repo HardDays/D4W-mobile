@@ -2,7 +2,12 @@ import 'dart:async';
 
 import 'package:desk4work/view/main/history_list.dart';
 import 'package:desk4work/view/main/profile_edit.dart';
+import 'package:desk4work/api/users_api.dart';
+import 'package:desk4work/model/user.dart';
 import 'package:desk4work/utils/string_resources.dart'; 
+import 'package:desk4work/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,8 +19,9 @@ class ProfileMenuScreen extends StatefulWidget {
 
 class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
   GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
-  StringResources stringResources;
+  StringResources _stringResources;
   Size _screenSize ;
+  UsersApi _usersApi = UsersApi();
   double _screenHeight, _screenWidth;
 
   @override
@@ -26,10 +32,11 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    stringResources = StringResources.of(context);
+    _stringResources = StringResources.of(context);
     _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
+
     return Scaffold(
       key: _scaffoldState,
       appBar: AppBar(
@@ -38,7 +45,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
         ),
         centerTitle: true,
         title: Text(
-          stringResources.tPrivateKabinet,
+          _stringResources.tPrivateKabinet,
           style: TextStyle(color: Colors.white),
         ),
         actions: <Widget>[]
@@ -46,8 +53,47 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
       body: _buildProfilePage(),
     );
   }
-  
-  Widget _buildProfilePage(){
+
+  FutureBuilder<User> _buildProfilePage(){
+    return FutureBuilder<User>(
+      future: _getMe(),
+      builder: (ctx, snapshot){
+        switch(snapshot.connectionState){
+          case ConnectionState.none :
+            return _showMessage(_stringResources.mNoInternet);
+          case ConnectionState.waiting :
+            return Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(top: 50.0),
+                child: new CircularProgressIndicator()
+            );
+          case ConnectionState.done:
+            if(snapshot.hasError){
+              print("error  loading booking ${snapshot.error}");
+              return _showMessage(_stringResources.mServerError);
+            }else{
+              if(snapshot.data == null) return _showMessage(_stringResources.mServerError);
+              else {
+                return _getUserProfile(snapshot.data);
+              }
+            }
+            break;
+          case ConnectionState.active: break;
+        }
+      }
+    );
+  }
+
+  Future<User> _getMe(){
+    return SharedPreferences.getInstance().then((sp){
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      return _usersApi.getMe(token).then((user){
+        return user;
+      });
+    });
+  }
+
+  Widget _getUserProfile(User user){
     return Container(
       color: Color(0xFFE5E5E5),
       child: Column(
@@ -66,7 +112,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                 Navigator.push(
                   context,
                     MaterialPageRoute(
-                      builder: (context)=> ProfileEditScreen()));
+                      builder: (context)=> ProfileEditScreen(user)));
               },
               child: Container(
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0),
@@ -79,10 +125,44 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                         Container(
                           width: _screenHeight * 0.17 - 40.0,
                           height: _screenHeight * 0.17 - 40.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red
-                          ),
+                          child: ClipRRect( 
+                            borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                            child: user.imageId != null ? 
+                              CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                placeholder: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.grey)
+                                ),
+                                child: Icon(Icons.person,
+                                  size: _screenHeight * 0.15 - 40.0,
+                                  color: Colors.grey,
+                                )
+                              ),
+                              errorWidget: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.grey)
+                                ),
+                                child: Icon(Icons.person,
+                                  size: _screenHeight * 0.15 - 40.0,
+                                  color: Colors.grey,
+                                )
+                              ),
+                              imageUrl: ConstantsManager.IMAGE_BASE_URL + "${user.imageId}"                 
+                            ) :   
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey)
+                              ),
+                              child: Icon(Icons.person,
+                                size: _screenHeight * 0.15 - 40.0,
+                                color: Colors.grey,
+                              )
+                            )
+                          )
                         ),
                         Container(
                           width: _screenWidth - (_screenHeight * 0.17 + 50),
@@ -91,20 +171,20 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('First name',
+                              Text(user.firstName != null && user.lastName != null ? '${user.firstName} ${user.lastName}' : _stringResources.tProfile,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 18.0
                                 ),
                               ),
-                              Text('Email',
+                              Text(user.email,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
                                   fontSize: 14.0
                                 ),
                               ),
-                              Text('Phone',
+                              Text(user.phone ?? '',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
@@ -163,7 +243,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 20.0),
                               width: _screenWidth - 120,
-                              child: Text(stringResources.tHistory,
+                              child: Text(_stringResources.tHistory,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
@@ -202,7 +282,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                           Container(
                             margin: EdgeInsets.only(left: 20.0),
                             width: _screenWidth - 120,
-                            child: Text(stringResources.tPaymentOption,
+                            child: Text(_stringResources.tPaymentOption,
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
                                 color: Colors.black,
@@ -240,7 +320,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                           Container(
                             margin: EdgeInsets.only(left: 20.0),
                             width: _screenWidth - 120,
-                            child: Text(stringResources.tHelp,
+                            child: Text(_stringResources.tHelp,
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
                                 color: Colors.black,
@@ -261,6 +341,17 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
             )
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _showMessage(String message){
+    return Center(
+      child: Text(message,
+        style: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w300
+        )
       ),
     );
   }
