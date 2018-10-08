@@ -106,15 +106,19 @@ class TimeFilterState extends State<TimeFilterScreen>{
                   mode: CupertinoTimerPickerMode.hm,
                   onTimerDurationChanged: (duration){
                     String hh = (duration.inMinutes / 60).truncate().toString();
+                    if(int.parse(hh) < 10)
+                      hh ='0'+hh;
                     String mm = (duration.inMinutes % 60).toString();
+                    if(int.parse(mm) < 10)
+                      mm = '0'+mm;
                     if(widget._isStart){
                       setState(() {
-                        _tempStart = "$hh : $mm";
+                        _tempStart = "$hh:$mm";
                       });
                     }
                     else {
                       setState(() {
-                        _tempEnd = "$hh : $mm";
+                        _tempEnd = "$hh:$mm";
                       });
                     }
                   },

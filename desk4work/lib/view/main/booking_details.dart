@@ -27,13 +27,15 @@ class _BookingDetailsState extends State<BookingDetails>{
     _screenWidth = size.width;
     _screenHeight = size.height;
 
+    _stringResources = StringResources.of(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(color: Colors.white,),
         centerTitle: true,
         title: Title(
             color: Colors.white,
-            child: Text(widget._booking.coWorking.shortName)),
+            child: Text(widget._booking.coWorking.shortName, style: TextStyle(color: Colors.white),)),
       ),
       body: Column(
         children: <Widget>[
@@ -58,7 +60,8 @@ class _BookingDetailsState extends State<BookingDetails>{
   void initState() {
     _isTimeUp = false;
     _progress = .0;
-    _remainingTime = "00:00";
+    _remainingTime = "00:00:00";
+    _hasFreeMinutes = false;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
       _startCountDown();
@@ -67,7 +70,7 @@ class _BookingDetailsState extends State<BookingDetails>{
 
   Widget _buildHeader(List<int> imageIds){
     return Container(
-      height: _screenHeight * .03238,
+      height: _screenHeight * .3283,
     );
   }
 
@@ -81,8 +84,8 @@ class _BookingDetailsState extends State<BookingDetails>{
   }
 
   Widget _buildStartEndWidget(){
-    String startTime = widget._booking.beginWork;
-    String endTime = widget._booking.endWork;
+    String startTime = widget._booking.beginWork ?? "--:--";
+    String endTime = widget._booking.endWork ?? "--:--";
 
     return Container(
       decoration: BoxDecoration(
@@ -93,6 +96,7 @@ class _BookingDetailsState extends State<BookingDetails>{
       ),
       child: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Container(
               child: Column(
@@ -106,12 +110,11 @@ class _BookingDetailsState extends State<BookingDetails>{
                 ],
               ),
             ),
-            Container(decoration: BoxDecoration(
-                border: BorderDirectional(
-                    start: BorderSide(
-                        color: Colors.black26,
-                        width: .5))
-            ),),
+            Container(
+              width: .5,
+              height: _screenHeight * .1094,
+              decoration: BoxDecoration(color: Colors.black26),
+            ),
             Container(
               child: Column(
                 children: <Widget>[
@@ -139,21 +142,24 @@ class _BookingDetailsState extends State<BookingDetails>{
         children: <Widget>[
           Text(
             _remainingTime,
-            style: Theme.of(context).textTheme.display3.copyWith(
+            style: Theme.of(context).textTheme.display2.copyWith(
                 color: Colors.black),),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                _stringResources.tHours,
-                style: Theme.of(context).textTheme.caption,),
-              Text(
-                _stringResources.tMinutes,
-                style: Theme.of(context).textTheme.caption,),
-              Text(
-                _stringResources.tSeconds,
-                style: Theme.of(context).textTheme.caption,),
-            ],
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: _screenWidth * .1589),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  _stringResources.tHours,
+                  style: Theme.of(context).textTheme.caption,),
+                Text(
+                  _stringResources.tMinutes,
+                  style: Theme.of(context).textTheme.caption,),
+                Text(
+                  _stringResources.tSeconds,
+                  style: Theme.of(context).textTheme.caption,),
+              ],
+            ),
           )
         ],
       ),
@@ -165,11 +171,23 @@ class _BookingDetailsState extends State<BookingDetails>{
         ? _stringResources.tExtend
         : _stringResources.tTerminate;
 
+    Gradient oragandeGradient = BoxDecorationUtil.getDarkOrangeGradient().gradient;
+
     return Center(
       child: InkWell(
         child: Container(
-          decoration: BoxDecorationUtil.getOrangeGradient(),
-          child: Text(buttonText, style: Theme.of(context).textTheme.button,),
+          width: _screenWidth * .872,
+          height: _screenHeight * .0825,
+          decoration: BoxDecoration(
+            gradient: oragandeGradient,
+            borderRadius: BorderRadius.all(Radius.circular(48.0))
+          ),
+          child: Center(
+            child: Text(
+              buttonText,
+              style: Theme.of(context).textTheme.button.copyWith(
+                  color: Colors.white),),
+          ),
         ),
         onTap: (_isTimeUp) ? _extendBooking() : _terminateBooking(),
       ),
@@ -184,11 +202,18 @@ class _BookingDetailsState extends State<BookingDetails>{
 
 
   double _getProgress(){
-    String endWork = widget._booking.endWork;
-    String startWork = widget._booking.beginWork;
-    double progress =  ((DateTime.parse(startWork).millisecondsSinceEpoch * 100)
-        / DateTime.parse(endWork).millisecondsSinceEpoch ).toDouble();
-    return progress;
+    if(widget._booking.beginWork !=null && widget._booking.endWork !=null){
+      try{
+        String endWork = widget._booking.endWork;
+        String startWork = widget._booking.beginWork;
+        double progress =  ((DateTime.parse(startWork).millisecondsSinceEpoch * 100)
+            / DateTime.parse(endWork).millisecondsSinceEpoch ).toDouble();
+        return progress;
+      }catch(e){
+        print('date parsing error: $e');
+      }
+    }
+    return .0;
 
   }
 
@@ -208,12 +233,12 @@ class _BookingDetailsState extends State<BookingDetails>{
       setState(() {
         _isTimeUp = true;
       });
-      remainingTime = '00:00';
+      remainingTime = '00 : 00 : 00';
     }
     else {
       int hours = (remaining ~/ 24);
       int minutes = (remaining %24);
-      remainingTime  = '$hours:$minutes';
+      remainingTime  = '$hours : $minutes : 00';
     }
 
     return remainingTime;

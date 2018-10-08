@@ -1,10 +1,14 @@
+import 'package:desk4work/api/booking_api.dart';
 import 'package:desk4work/model/co_working.dart';
+import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/common/theme_util.dart';
 import 'package:desk4work/view/filter/date_filter.dart';
-import 'package:desk4work/view/filter/filter_state_container.dart';
 import 'package:desk4work/view/filter/time_filter.dart';
+import 'package:desk4work/view/main/booking_details.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NewBookingScreen extends StatefulWidget{
   final CoWorking _coWorking;
@@ -17,7 +21,6 @@ class NewBookingScreen extends StatefulWidget{
 }
 
 class _NewBookingScreenState extends State<NewBookingScreen>{
-  Filter _filter;
   double _screenWidth, _screenHeight;
   StringResources _stringResources;
   double _textFilterParameterHeight ;
@@ -25,9 +28,19 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   double _placeNumberFilerWidth;
   double _confirmButtonHeight ;
   double _confirmButtonWidth ;
-  String _date, _starWork, _endWork;
+  String _screenDate, _starWork, _endWork, _serverDate;
   int _neededNumberOfSeats, _availableSeats;
   num _price;
+  BookingApi _bookingApi;
+
+
+  @override
+  void initState() {
+    _availableSeats = widget._coWorking.freeSeats;
+    _neededNumberOfSeats = 1;
+    _bookingApi = BookingApi();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,96 +54,121 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
     _confirmButtonWidth = (_screenWidth * .84);
 
     _stringResources = StringResources.of(context);
-    _date = _stringResources.hDate;
-    _starWork = _stringResources.hStart;
-    _endWork = _stringResources.hEnd;
-    _availableSeats = widget._coWorking.freeSeats;
-    _neededNumberOfSeats = 1;
     _price = _neededNumberOfSeats * widget._coWorking.price;
 
     Gradient orangeBoxDecorationGradient =
     BoxDecorationUtil.getDarkOrangeGradient().gradient;
 
-   return Scaffold(
-     body: Container(
-       decoration: BoxDecoration(
-         gradient: orangeBoxDecorationGradient,
-         border: BorderDirectional(bottom: BorderSide(
-             color: Colors.grey,
-             width: .5))
-       ),
-       child: Column(
-         children: <Widget>[
-           Container(
-             margin: EdgeInsets.only(top: (_screenHeight * .0308).toDouble(),
-                 right: (_screenWidth * .04)),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.end,
-               children: <Widget>[
-                 IconButton(icon: Icon(Icons.close),
-                     onPressed: (){
-                       Navigator.of(context).pop();
-                     }),
+   return Theme(
+     data:  ThemeUtil.getThemeForOrangeBackground(context),
+     child: Scaffold(
+       body: Container(
+         decoration: BoxDecoration(
+           gradient: orangeBoxDecorationGradient,
+           border: BorderDirectional(bottom: BorderSide(
+               color: Colors.grey,
+               width: .5))
+         ),
+         child: Column(
 
-               ],
-             ),
-           ),
-           _buildFourUpperWidgets(),
-           Padding(
-             padding: EdgeInsets.only(
-                 top: (_screenHeight * .036)),),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: <Widget>[
-               IconButton(icon: Icon(Icons.remove
-               ), onPressed: (){
-                 _reducePlaces();
-               }),
-               InkWell(
-                 child: Container(
-                     height: _textFilterParameterHeight,
-                     width: _placeNumberFilerWidth,
-                     decoration: BoxDecorationUtil
-                         .getGreyRoundedCornerBoxDecoration(),
-                     child: Center(
-                       child: Text(_neededNumberOfSeats.toString()),
-                     )
-                 ),
+           children: <Widget>[
+             Container(
+               margin: EdgeInsets.only(top: (_screenHeight * .0308).toDouble(),
+//                 right: (_screenWidth * .04)
                ),
-               IconButton(icon: Icon(Icons.add
-               ), onPressed: (){
-                 _addPlaces();
-               })
-             ],
-           ),
-           Padding(
-             padding: EdgeInsets.only(
-                 top: (_screenHeight * .036)),),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: <Widget>[
-               Text(_stringResources.tPrice + ':'),
-               Text(_price.toString() + " ₽")
-             ],
-           ),
-           Container(
-             width: _confirmButtonWidth,
-             height: _confirmButtonHeight,
-             decoration: BoxDecoration(
-                 color: Colors.white,
-                 borderRadius: BorderRadius.all(Radius.circular(28.0))
-             ),
-             child: InkWell(
-               onTap: (){
-                 _book();
-               },
-               child: Center(
-                 child: Text(_stringResources.bConfirm,
-                   style: TextStyle(color: Colors.orange),),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.end,
+                 children: <Widget>[
+                   IconButton(icon: Icon(Icons.close),
+                       onPressed: (){
+                         Navigator.of(context).pop();
+                       }),
+
+                 ],
                ),
              ),
-           )
-         ],
+             Container(
+               margin: EdgeInsets.symmetric(
+                 horizontal: _screenWidth * .064
+               ),
+               child: Column(
+                 children: <Widget>[
+                   _buildFourUpperWidgets(),
+                   Padding(
+                     padding: EdgeInsets.only(
+                         top: (_screenHeight * .036)),),
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: <Widget>[
+                       IconButton(icon: Icon(Icons.remove
+                       ), onPressed: (){
+                         _reducePlaces();
+                       }),
+                       InkWell(
+                         child: Container(
+                             height: _textFilterParameterHeight,
+                             width: _placeNumberFilerWidth,
+                             decoration: BoxDecorationUtil
+                                 .getGreyRoundedCornerBoxDecoration(),
+                             child: Center(
+                               child: Text('${_neededNumberOfSeats.toString()} '
+                                   '${_stringResources.hPlace
+                               }',),
+                             )
+                         ),
+                       ),
+                       IconButton(icon: Icon(Icons.add
+                       ), onPressed: (){
+                         _addPlaces();
+                       })
+                     ],
+                   ),
+                   Padding(
+                     padding: EdgeInsets.only(
+                         top: (_screenHeight * .036)),),
+                   Container(
+                     decoration: BoxDecoration(
+                       border: BorderDirectional(
+                           bottom: BorderSide(
+                             color: Colors.white,
+                             width: .5
+                           ))
+                     ),
+                   ),
+                   Padding(
+                     padding: EdgeInsets.only(
+                         top: (_screenHeight * .036)),),
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     children: <Widget>[
+                       Text(_stringResources.tPrice + ':'),
+                       Text(_price.toString() + " ₽")
+                     ],
+                   ),
+                   Padding(padding: EdgeInsets.symmetric(
+                       vertical: _screenHeight * .15)),
+                   Container(
+                     width: _confirmButtonWidth,
+                     height: _confirmButtonHeight,
+                     decoration: BoxDecoration(
+                         color: Colors.white,
+                         borderRadius: BorderRadius.all(Radius.circular(28.0))
+                     ),
+                     child: InkWell(
+                       onTap: (){
+                         _book();
+                       },
+                       child: Center(
+                         child: Text(_stringResources.bConfirm,
+                           style: TextStyle(color: Colors.orange),),
+                       ),
+                     ),
+                   )
+                 ],
+               ),
+             ),
+           ],
+         ),
        ),
      ),
    );
@@ -139,24 +177,25 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
 
   Widget _buildFourUpperWidgets(){
     return Container(
-      margin: EdgeInsets.only(
-          top: _screenHeight * .0124,
-          left: _screenWidth  * .08,
-          right: _screenWidth  * .08,
-          bottom: _screenHeight * .075
-      ),
+
       child: Column(
         children: <Widget>[
           Text(
             widget._coWorking.shortName,
-            style: Theme.of(context).textTheme.headline,),
+            style: Theme.of(context)
+                .textTheme.headline.copyWith(color: Colors.white),
+          ),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: (_screenWidth * .048).toDouble()),
+                vertical: (_screenWidth * .036).toDouble()),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: _screenHeight * .045,
+              )),
               Container(
                 height: _textFilterParameterHeight,
                 width: _textFilterParameterWidth,
@@ -167,7 +206,15 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                   children: <Widget>[
                     Icon(Icons.place),
                     Padding(padding: EdgeInsets.only(left: 8.0),),
-                    Text(widget._coWorking.address)
+                    Container(
+                      width: _screenWidth * .288,
+                      child: Text(
+                        widget._coWorking.address,
+                        overflow: TextOverflow.ellipsis,
+                        textScaleFactor: .75,
+                        softWrap: true,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -182,7 +229,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                     children: <Widget>[
                       Icon(Icons.calendar_today),
                       Padding(padding: EdgeInsets.only(left: 8.0),),
-                      Text(_date)
+                      Text(_screenDate ?? _stringResources.hDate)
                     ],
                   ),
                 ),
@@ -252,16 +299,18 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
         context,
         MaterialPageRoute(builder: (ctx)=> DateFilterScreen())).then((dates){
       if(dates !=null && dates.length >0){
-        List<String> filterDates = [];
-        print('those are dates: $dates');
+
+        print('format ${dates[0]}');
+
 
         String dateTimeStart = _getFilterDate(dates[0]);
-        String dateTimeEnd = _getFilterDate(dates[dates.length -1 ]);
 
+        setState(() {
+          _screenDate = dateTimeStart;
+          DateTime serverDate = dates[0];
 
-        print("Start $dateTimeStart and end $dateTimeEnd");
-        filterDates.add(dateTimeStart);
-        filterDates.add(dateTimeEnd);
+          _serverDate = '${serverDate.year}-${serverDate.month}-${serverDate.day}';
+        });
 //        _container.updateFilterInfo(date: filterDates); TODO
       }
     });
@@ -283,15 +332,17 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                 _starWork,
                 _endWork, isForStartTime))).then((result){
       if(result !=null){
-//        _container.updateFilterInfo(
-//            startHour: result[0],
-//            endHour: result[1]);  TODO
+        setState(() {
+          _starWork =  result[0] ?? _starWork;
+          _endWork = result[1] ?? _endWork;
+        });
+
       }
     });
   }
 
   void _addPlaces(){
-    if(_neededNumberOfSeats < widget._coWorking.freeSeats)
+    if(_neededNumberOfSeats < _availableSeats)
       setState(() {
         _neededNumberOfSeats ++;
       });
@@ -306,6 +357,19 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   }
 
   void _book(){
+    if(_serverDate != null && _starWork != null && _endWork != null
+        && _neededNumberOfSeats != null){
+      SharedPreferences.getInstance().then((sp){
+        String token = sp.getString(ConstantsManager.TOKEN_KEY);
+        _bookingApi.book(token, widget._coWorking.id,
+            _neededNumberOfSeats, _starWork, _endWork, _serverDate)
+            .then((booking){
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx)=> BookingDetails(booking)));
+        });
+
+      });
+    }
 
   }
 }

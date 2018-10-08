@@ -5,7 +5,7 @@ class ThemeUtil {
     return Theme.of(context).copyWith(
       textTheme : Theme.of(context).textTheme.apply(
         bodyColor: Colors.white,
-        displayColor: Colors.white
+        displayColor: Colors.white,
       ),
       iconTheme: Theme.of(context).iconTheme.copyWith(
         color: Colors.white

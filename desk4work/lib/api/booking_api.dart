@@ -37,11 +37,33 @@ class BookingApi{
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response){
       List<Booking> bookings = [];
-      print("booking response $response");
       response.forEach((b){
         bookings.add(Booking.fromJson(b));
       });
       return bookings;
     });
+  }
+
+  Future<Booking> book(String token, int coWorkingId, int numberOfSeats,
+      String startHour, endHour, date){
+    String startDate = date+"T"+startHour;
+    String endDate = date+"T"+endHour;
+    String url = ConstantsManager.BASE_URL+ "/bookings/create";
+
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    Map<String,String>  body = {
+      ConstantsManager.CO_WORKING_ID : coWorkingId.toString(),
+      ConstantsManager.VISITORS_COUNT : numberOfSeats.toString(),
+      ConstantsManager.BEGIN_DATE : startDate,
+      ConstantsManager.END_DATE : endDate
+    };
+
+
+     return _networkUtil.post(url, headers: _headers, body: body)
+        .then((serverResponse){
+          return Booking.fromJson(serverResponse);
+    });
+
+
   }
 }

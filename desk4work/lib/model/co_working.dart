@@ -77,7 +77,14 @@ class CoWorking{
 //        amenties[k] = s.toString();
       });
     }
-    images = json['images'].cast<int>();
+    List imagesJson = json['images'];
+    if(imagesJson !=null && imagesJson.length >0){
+      images = [];
+      imagesJson.forEach((img){
+
+        images.add(img['id']);
+      });
+    }
     imageId = json['image_id'].toString();
     creatorId = json['creator_id'];
     createdAt = json['created_at'];
@@ -109,6 +116,17 @@ class CoWorking{
     data['updated_at'] = this.updatedAt;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'CoWorking{id: $id, fullName: $fullName, shortName: $shortName, '
+        'address: $address, lat: $lat, lng: $lng, description: $description,'
+        ' contacts: $contacts, price: $price, capacity: $capacity,'
+        ' category: $category, workingDays: $workingDays, amenties: $amenties,'
+        ' images: $images, imageId: $imageId, currentDay: $currentDay,'
+        ' freeSeats: $freeSeats}';
+  }
+
 }
 
 class WorkingDays {

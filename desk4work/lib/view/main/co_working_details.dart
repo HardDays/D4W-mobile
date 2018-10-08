@@ -750,6 +750,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
            }else{
              if(snapshot.data == null) return Container();
              else {
+               widget._coWorking.freeSeats = snapshot.data;
                return Text(snapshot.data.toString() ?? '0');
              }
            }

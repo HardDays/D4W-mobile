@@ -57,4 +57,15 @@ class Booking {
     data['updated_at'] = this.updatedAt;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'Booking{id: $id, coworkingId: $coworkingId,'
+        ' coworkingImageId: $coworkingImageId, userId: $userId, price: $price, '
+        'confirmed: $confirmed, beginWork: $beginWork, endWork: $endWork, '
+        'date: $date, beginDate: $beginDate, endDate: $endDate, '
+        'createdAt: $createdAt}';
+  }
+
+
 }
