@@ -93,7 +93,6 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
     });
   }
 
-
   Widget _getUserProfile(User user){
     return Container(
       color: Color(0xFFE5E5E5),
@@ -172,7 +171,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(((user.firstName ?? '') + (user.lastName ?? '')).isEmpty ? _stringResources.tProfile : ((user.firstName ?? '') + (user.lastName ?? '')),
+                              Text(user.firstName != null && user.lastName != null ? '${user.firstName} ${user.lastName}' : _stringResources.tProfile,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 18.0

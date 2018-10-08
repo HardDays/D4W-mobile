@@ -24,6 +24,7 @@ class StringResources {
   static final String _hintPopular = 'hintPopular';
   static final String _hintFirstName = 'hintFirstName';
   static final String _hintLastName = 'hintLastName';
+  static final String _hintOldPassword = 'textOldPassword';
 
   static final String _textForgotPassword = 'textForgotPassword';
   static final String _textSocialLogin = 'textSocialLogin';
@@ -76,6 +77,18 @@ class StringResources {
   static final String _textSeconds = 'textSeconds';
   static final String _textPrice = 'textPrice';
   static final String _textProfile = 'textProfile';
+  static final String _textChangeEmail = 'textChangeEmail';
+  static final String _textChangePhone = 'textChangePhone';
+  static final String _textChangePassword = 'textChangePassword';
+  static final String _textLogout = 'textLogout';
+  static final String _textOk = 'textOk';
+  static final String _textSuccess = 'textSuccess';
+  static final String _textError = 'textError';
+  static final String _textProfileChanged = 'textProfileChanged';
+  static final String _textTryAgain = 'textTryAgain';
+  static final String _textPasswordChanged = 'textPasswordChanged';
+  static final String _textWrongOldPassword = 'textWrongOldPassword';
+  static final String _textNewPassowrd = 'textNewPassword';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -96,6 +109,7 @@ class StringResources {
   static final String _errorEmptyPhone = 'errorEmptyPhone';
   static final String _errorEmptyEmail = 'errorEmptyEmail';
   static final String _errorEmptyEmailOrPhone = 'errorEmptyEmailOrPhone';
+  static final String _errorWrongEmail = 'errorWrongEmail';
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
@@ -182,6 +196,19 @@ class StringResources {
       _textSeconds: 'Seconds',
       _textPrice: 'Price',
       _textProfile: 'Profile',
+      _textChangeEmail: 'Change email',
+      _textChangePhone: 'Change phone',
+      _textChangePassword: 'Change password',
+      _textLogout: 'Logout',
+      _textOk: 'Ok',
+      _textSuccess: 'Success',
+      _textError: 'Error',
+      _textProfileChanged: 'Profile successfully changed',
+      _textPasswordChanged: 'Password sucessfully changed',
+      _textWrongOldPassword: 'Wrong old password',
+      _hintOldPassword: 'Old password',
+      _textNewPassowrd: 'New password',
+      _textTryAgain: 'Please, try again later',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -189,6 +216,7 @@ class StringResources {
       _errorEmptyPhone: 'This field can\'t be empty',
       _errorEmptyEmail: 'This field can\'t be empty',
       _errorEmptyEmailOrPhone: 'This field can\'t be empty',
+      _errorWrongEmail: 'Wrong email',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Server Error',
       _tipPrinter : "Printer and scanner",
@@ -218,6 +246,7 @@ class StringResources {
       _hintPopular : 'Популярное',
       _hintFirstName : 'Имя',
       _hintLastName : 'Фамилия',
+      _hintOldPassword: 'Старый пароль',
       _textForgotPassword: 'Забыли пароль ?',
       _textSocialLogin : 'Войти через соц.сети',
       _textEmailInboxCheckPrompt: 'ПРОВЕРЬТЕ ПОЧТУ!',
@@ -270,6 +299,19 @@ class StringResources {
       _textPrice: 'Цена',
       _textFreeMinutes: 'Бесплатные минуты',
       _textProfile: 'Профиль',
+      _textChangeEmail: 'Изменить email',
+      _textChangePhone: 'Изменить телефон',
+      _textChangePassword: 'Сменить пароль',
+      _textLogout: 'Выйти',
+      _textOk: 'ОК',
+      _textSuccess: 'Успешно',
+      _textError: 'Ошибка',
+      _textProfileChanged: 'Профиль успешно обновлен',
+      _textTryAgain: 'Пожалуйста, попробуйте позже',
+      _textPasswordChanged: 'Пароль успешно изменен',
+      _textWrongOldPassword: 'Неверный старый пароль',
+      _textNewPassowrd: 'Новый парроль',
+
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -277,6 +319,7 @@ class StringResources {
       _errorEmptyPhone: 'Телефон не может быть пустым',
       _errorEmptyEmail: 'Email не может быть пустым',
       _errorEmptyEmailOrPhone: ' Не может быть пустым',
+      _errorWrongEmail: 'Неверный email',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Ощибка сервера',
       _tipPrinter : "принтером и сканером",
@@ -422,6 +465,40 @@ String get tNoBokings =>
   String get tProfile =>
       _localizedValues[locale.languageCode][_textProfile];
 
+  String get tChangeEmail =>
+      _localizedValues[locale.languageCode][_textChangeEmail];
+
+  String get tChangePhone =>
+      _localizedValues[locale.languageCode][_textChangePhone];
+
+  String get tChangePassword =>
+      _localizedValues[locale.languageCode][_textChangePassword];
+
+  String get tLogout =>
+      _localizedValues[locale.languageCode][_textLogout];
+      
+  String get tOk =>
+      _localizedValues[locale.languageCode][_textOk];
+
+  String get tSuccess =>
+      _localizedValues[locale.languageCode][_textSuccess];
+
+  String get tError =>
+      _localizedValues[locale.languageCode][_textError];
+  
+  String get tProfileChanged =>
+      _localizedValues[locale.languageCode][_textProfileChanged];
+
+  String get tTryAgain =>
+      _localizedValues[locale.languageCode][_textTryAgain];
+
+  String get tPasswordChanged =>
+      _localizedValues[locale.languageCode][_textPasswordChanged];
+
+  String get tWrongOldPassword =>
+      _localizedValues[locale.languageCode][_textWrongOldPassword];
+  
+
   String get eEmptyLogin {
     return _localizedValues[locale.languageCode][_errorEmptyLogin];
   }
@@ -442,6 +519,12 @@ String get tNoBokings =>
     return _localizedValues[locale.languageCode][_errorEmptyEmail];
   }
 
+  
+  String get eWrongEmail {
+    return _localizedValues[locale.languageCode][_errorWrongEmail];
+  }
+
+
   String get eNotMatchingPasswords =>
       _localizedValues[locale.languageCode][_errorNotMatchingPasswords];
 
@@ -454,6 +537,10 @@ String get tNoBokings =>
   String get hPassword {
     return _localizedValues[locale.languageCode][_hintPassword];
   }
+
+    String get hOldPassword =>
+      _localizedValues[locale.languageCode][_hintOldPassword];
+
 
 
   String get hPasswordConfirm {
