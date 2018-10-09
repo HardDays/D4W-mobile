@@ -86,7 +86,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         body: ListView(
           children: <Widget>[
             Container(
-                height: (_screenHeight * .3238), child: _buildImagesSlide()),
+                height: (_screenHeight * .3238),
+                child: _buildImagesSlide()),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: _screenHeight * .03,
@@ -684,7 +685,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       children: <Widget>[
         PageView.builder(
           itemBuilder: (context, index) {
-            return _getImageForHeader(widget._coWorking.images[index], index);
+            return _getImageForHeader(widget._coWorking.images);
           },
           itemCount: widget._coWorking.images.length,
           physics: AlwaysScrollableScrollPhysics(),
@@ -715,9 +716,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _getImageForHeader(int imageId, int index) {
+  Widget _getImageForHeader(List<int> images) {
     return Hero(
-        tag: imageId.toString() + index.toString(),
+        tag: "cowinkingdetails "+images[0].toString() ,
         child: CachedNetworkImage(
           fit: BoxFit.fill,
           placeholder: CircularProgressIndicator(),
@@ -726,7 +727,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             Icons.error,
             size: (_screenHeight * .3238),
           ),
-          imageUrl: "",
+          imageUrl:  ConstantsManager.BASE_URL
+              +"images/get_full/${images[0]}",
         ));
   }
 

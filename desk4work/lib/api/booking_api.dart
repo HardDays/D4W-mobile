@@ -21,7 +21,8 @@ class BookingApi{
     return _networkUtil.get(url, headers: _headers).then((response){
       List<Booking> bookings = [];
       print("booking response $response");
-      response['bookgins'].forEach((Booking b){
+      response.forEach((r){
+        Booking b = Booking.fromJson(r);
         bookings.add(b);
       });
     });
