@@ -34,8 +34,7 @@ class CoWorkingApi {
     String url = _coWorkingUrl+ "get/$id";
     return _networkUtil.get(url, headers: _headers).then((responseBody){
       CoWorking coWorking;
-
-      coWorking = responseBody['coworking'];
+      coWorking = CoWorking.fromJson(responseBody);
       return getFreeSeat(token, id)
           .then((freeSeats) => coWorking.freeSeats = freeSeats).then((_){
             return coWorking;

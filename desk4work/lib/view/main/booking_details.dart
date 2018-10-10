@@ -237,7 +237,7 @@ class _BookingDetailsState extends State<BookingDetails>{
     }
     else {
       int hours = (remaining ~/ 24);
-      int minutes = (remaining %24);
+      int minutes = (remaining %24) ;
       remainingTime  = '$hours : $minutes : 00';
     }
 

@@ -25,6 +25,7 @@ class BookingApi{
         Booking b = Booking.fromJson(r);
         bookings.add(b);
       });
+      return bookings;
     });
 
   }

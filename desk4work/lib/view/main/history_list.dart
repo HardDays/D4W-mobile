@@ -70,7 +70,7 @@ FutureBuilder<List<Booking>> _buildCoWorkingList(){
               return _showMessage(_stringResources.mServerError);
             }else{
               if  (snapshot.data == null  || snapshot.data.isEmpty){
-                return _showMessage(_stringResources.tNoBokings);
+                return _showMessage(_stringResources.tNoBookings);
               }
               else {
                 _bookings = snapshot.data;

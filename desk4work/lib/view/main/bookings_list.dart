@@ -42,69 +42,70 @@ class _BookingsListState extends State<BookingsListScreen> {
     return Scaffold(
       body: Container(
         margin: EdgeInsets.symmetric(
-            horizontal: _screenWidth * .293, vertical: _screenHeight * .0225),
+//            horizontal: _screenWidth * .0293,
+            vertical: _screenHeight * .0225),
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: _bookings.length,
           itemBuilder: (ctx, index) {
-            _getBookingBuilder(_bookings[index]);
+            return Container(
+                padding: EdgeInsets.only(top: _screenHeight * .015),
+                child: _getBookingBuilder(_bookings[index])
+            );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _newBooking,
-        child: Container(
-          decoration: BoxDecorationUtil.getOrangeGradient(),
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      )
     );
   }
 
   Widget _getBookingCard(Booking booking) {
+
     return Card(
       margin: EdgeInsets.all(.0),
       child: Container(
         height: _screenHeight * .1409,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Hero(
-              tag: booking.id,
-              child: CachedNetworkImage(
-                imageUrl: ConstantsManager.IMAGE_BASE_URL+
-                    "${booking.coworkingImageId}",
-                width: _screenWidth * .2773,
-                errorWidget: Image.asset(
-                  'assets/placeholder.png',
+        width: _screenWidth * .9413,
+        child: Container(
+          height: _screenHeight * .1409,
+          width: _screenWidth * .9413,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Hero(
+                tag: booking.id,
+                child: CachedNetworkImage(
+                  imageUrl: ConstantsManager.IMAGE_BASE_URL+
+                      "${booking.coWorking.imageId}",
                   width: _screenWidth * .2773,
+                  height: _screenHeight * .1409,
+                  errorWidget: Image.asset(
+                    'assets/placeholder.png',
+                    width: _screenWidth * .2773,
+                    height: _screenHeight * .1409,
+                  ),
+                )
+              ),
+//
+              Container(
+                height: _screenHeight * .1409,
+                padding: EdgeInsets.only(
+                    left: _screenWidth * .0386,
+                    top: _screenHeight * .0179),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      booking.coWorking?.shortName ?? " ",
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    _buildDate(DateTime.parse(booking.createdAt)),
+                    _getLowerCardPart(booking.endWork) ?? " ",
+                  ],
                 ),
               )
-            ),
-//
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: _screenWidth * .0386,
-                  vertical: _screenHeight * .0179),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    booking.coWorking?.shortName ?? " ",
-                  ),
-                  Text(
-                    booking.beginWork ?? " ",
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                  _getLowerCardPart(booking.endWork) ?? " ",
-                ],
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -126,23 +127,37 @@ class _BookingsListState extends State<BookingsListScreen> {
       int minutes = (remaining %24);
       remainingTime  = '$hours:$minutes';
     }
+
     bool isTimeUp = (remainingTime.substring(0, 2) == '00' &&
-        remainingTime.substring(2) == '00');
-    Color color = isTimeUp ? Colors.red : Colors.black;
+        remainingTime.substring(3) == '00');
+    Color textColor = isTimeUp ? Colors.orange : Colors.black;
+    Color iconColor = isTimeUp
+        ? Colors.orange : Theme.of(context).textTheme.caption.color;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Icon(
-              Icons.access_time,
-              color: color,
-            ),
-            Text(
-              remainingTime,
-              style: Theme.of(context).textTheme.body1.copyWith(color: color),
-            )
-          ],
+        Container(
+          height: _screenHeight * .01799,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Icon(
+                Icons.access_time,
+                color: iconColor,
+              ),
+              Container(
+                height: _screenHeight * .01799,
+                child: Text(
+                  remainingTime,
+                  style: Theme.of(context).textTheme.body1.copyWith(
+                      color: textColor),
+                  textAlign: TextAlign.end,
+
+                ),
+              )
+            ],
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -162,6 +177,7 @@ class _BookingsListState extends State<BookingsListScreen> {
       ],
     );
   }
+
 
   Future<CoWorking> _getCoWorking(int id){
     return _coWorkingApi.getCoWorking(_token, id);
@@ -189,7 +205,9 @@ class _BookingsListState extends State<BookingsListScreen> {
               if(snapshot.data == null) return Container();
               else {
                 booking.coWorking = snapshot.data;
-                return _getBookingCard(booking);
+                return Container(
+                    child: _getBookingCard(booking)
+                );
               }
             }
             break;
@@ -199,14 +217,75 @@ class _BookingsListState extends State<BookingsListScreen> {
     );
   }
 
-
-  _newBooking() {}
-
   _endBooking(int id) {}
 
   _extendBooking(int id) {}
 
   _openBooking(Booking booking) {}
+
+  Text _buildDate(DateTime dateTime){
+    String day  = dateTime.day.toString();
+    String year = dateTime.year.toString();
+    String month;
+    switch(dateTime.month){
+      case 1: month = _stringResources.tJanuary;
+      break;
+      case 2: month = _stringResources.tFebruary;
+      break;
+      case 3: month = _stringResources.tMarch;
+      break;
+      case 4: month = _stringResources.tApril;
+      break;
+      case 5: month = _stringResources.tMay;
+      break;
+      case 6: month = _stringResources.tJune;
+      break;
+      case 7: month = _stringResources.tJuly;
+      break;
+      case 8: month = _stringResources.tAugust;
+      break;
+      case 9: month = _stringResources.tSeptember;
+      break;
+      case 10: month = _stringResources.tOctober;
+      break;
+      case 11: month = _stringResources.tNovember;
+      break;
+      case 12: month = _stringResources.tDecember;
+      break;
+
+    }
+
+    return Text("$day $month $year", style: Theme.of(context).textTheme.caption,);
+  }
+
+//  Widget _buildRemainingTime(String end){
+//    Duration remaining = DateTime.parse(end).difference(DateTime.now());
+//    String remainingTime;
+//    Color textColor;
+//    Color iconColor;
+//    bool isTimeOver = remaining.isNegative;
+//    if(!isTimeOver){
+//      int  hours = (remaining.inMinutes ~/60);
+//      int minutes = remaining.inMinutes % 60;
+//      remainingTime = '$hours:$minutes';
+//      textColor = Colors.black;
+//      iconColor = Theme.of(context).textTheme.caption.color;
+//    }else{
+//      remainingTime = "00:00";
+//      textColor =  Colors.orange;
+//      iconColor =  Colors.orange;
+//
+//    }
+//    return Row(
+//      children: <Widget>[
+//        Icon(Icons.access_time, color: iconColor,),
+//        Text(
+//          remainingTime,
+//          style: Theme.of(context).textTheme.subhead.copyWith(color: textColor))
+//      ],
+//    );
+//
+//  }
 
   Widget showMessage(String message){
     return Center(child: Text(message),);

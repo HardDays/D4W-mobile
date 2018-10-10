@@ -88,19 +88,25 @@ class StringResources {
   static final String _textTryAgain = 'textTryAgain';
   static final String _textPasswordChanged = 'textPasswordChanged';
   static final String _textWrongOldPassword = 'textWrongOldPassword';
-  static final String _textNewPassowrd = 'textNewPassword';
+  static final String _textNewPassword = 'textNewPassword';
+  static final String _textJanuary = 'textJanuary';
+  static final String _textFebruary = 'textFebruary';
+  static final String _textMarch = 'textMarch';
+  static final String _textApril = 'textApril';
+  static final String _textMay = 'textMay';
+  static final String _textJune = 'textJune';
+  static final String _textJuly = 'textJuly';
+  static final String _textAugust = 'textAugust';
+  static final String _textSeptember = 'textSeptember';
+  static final String _textOctober = 'textOctober';
+  static final String _textNovember = 'textNovember';
+  static final String _textDecember = 'textDecember';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
   static final String _tipBikeStorage = "toolTipBikeStorage";
   static final String _tipConferenceRoom = "toolTipConferenceRoom";
   static final String _tipCoffeeTea = "toolTipCoffeeTea";
-
-
-
-
-
-
 
   static final String _errorEmptyLogin = 'errorEmptyLogin';
   static final String _errorEmptyPassword = 'errorEmptyPassword';
@@ -206,8 +212,20 @@ class StringResources {
       _textProfileChanged: 'Profile successfully changed',
       _textPasswordChanged: 'Password sucessfully changed',
       _textWrongOldPassword: 'Wrong old password',
+      _textJanuary: 'January',
+      _textFebruary: 'February',
+      _textMarch: 'March',
+      _textApril: 'April',
+      _textMay: 'May',
+      _textJune: 'June',
+      _textJuly: 'July',
+      _textAugust: 'August',
+      _textSeptember: 'September',
+      _textOctober: 'October',
+      _textNovember: 'November',
+      _textDecember: 'December',
       _hintOldPassword: 'Old password',
-      _textNewPassowrd: 'New password',
+      _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
       _errorEmptyLogin : 'Login can\'t be empty',
       _errorEmptyPassword: 'Password can\'t be empty',
@@ -310,8 +328,19 @@ class StringResources {
       _textTryAgain: 'Пожалуйста, попробуйте позже',
       _textPasswordChanged: 'Пароль успешно изменен',
       _textWrongOldPassword: 'Неверный старый пароль',
-      _textNewPassowrd: 'Новый парроль',
-
+      _textNewPassword: 'Новый парроль',
+      _textJanuary: 'Января',
+      _textFebruary: 'Февраля',
+      _textMarch: 'Марта',
+      _textApril: 'Апреля',
+      _textMay: 'Мая',
+      _textJune: 'Июня',
+      _textJuly: 'Июля',
+      _textAugust: 'Августа',
+      _textSeptember: 'Сентября',
+      _textOctober: 'Октября',
+      _textNovember: 'Ноября',
+      _textDecember: 'Декабря',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -355,7 +384,6 @@ class StringResources {
     return _localizedValues[locale.languageCode][_buttonSave];
   }
 
-
   String get bBook =>
       _localizedValues[locale.languageCode][_buttonBook];
 
@@ -393,7 +421,6 @@ class StringResources {
   String get tParkForBicycle =>
       _localizedValues[locale.languageCode][_textBicycleParkFilter];
 
-
   String get tComfort =>
       _localizedValues[locale.languageCode][_textComfort];
 
@@ -412,7 +439,7 @@ class StringResources {
   String get tHelp =>
       _localizedValues[locale.languageCode][_textHelp];
 
-String get tNoBokings =>
+String get tNoBookings =>
       _localizedValues[locale.languageCode][_textNoBookings];
 
   String get tPrint =>
@@ -449,6 +476,19 @@ String get tNoBokings =>
   String get tSaturday => _localizedValues[locale.languageCode][_textSaturday];
 
   String get tSunday => _localizedValues[locale.languageCode][_textSunday];
+
+  String get tJanuary => _localizedValues[locale.languageCode][_textJanuary];
+  String get tFebruary => _localizedValues[locale.languageCode][_textFebruary];
+  String get tMarch => _localizedValues[locale.languageCode][_textMarch];
+  String get tApril => _localizedValues[locale.languageCode][_textApril];
+  String get tMay => _localizedValues[locale.languageCode][_textMay];
+  String get tJune => _localizedValues[locale.languageCode][_textJune];
+  String get tJuly => _localizedValues[locale.languageCode][_textJuly];
+  String get tAugust => _localizedValues[locale.languageCode][_textAugust];
+  String get tSeptember => _localizedValues[locale.languageCode][_textSeptember];
+  String get tOctober => _localizedValues[locale.languageCode][_textOctober];
+  String get tNovember => _localizedValues[locale.languageCode][_textNovember];
+  String get tDecember => _localizedValues[locale.languageCode][_textDecember];
 
   String get tFreeMinutes =>
       _localizedValues[locale.languageCode][_textFreeMinutes];
