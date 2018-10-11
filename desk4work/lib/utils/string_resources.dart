@@ -101,6 +101,7 @@ class StringResources {
   static final String _textOctober = 'textOctober';
   static final String _textNovember = 'textNovember';
   static final String _textDecember = 'textDecember';
+  static final String _textBookings = 'textBookings';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -224,6 +225,7 @@ class StringResources {
       _textOctober: 'October',
       _textNovember: 'November',
       _textDecember: 'December',
+      _textBookings: 'Bookings',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
@@ -341,6 +343,7 @@ class StringResources {
       _textOctober: 'Октября',
       _textNovember: 'Ноября',
       _textDecember: 'Декабря',
+      _textBookings: 'Бронирование',
       _errorEmptyLogin : 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль не может быть пустым',
       _errorEmptyPasswordConfirm: '\'Подтврерждение пароль\' не может быть пустым',
@@ -537,6 +540,9 @@ String get tNoBookings =>
 
   String get tWrongOldPassword =>
       _localizedValues[locale.languageCode][_textWrongOldPassword];
+
+  String get tBookings =>
+      _localizedValues[locale.languageCode][_textBookings];
   
 
   String get eEmptyLogin {

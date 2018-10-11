@@ -1,25 +1,28 @@
 import 'dart:async';
 
+import 'package:after_layout/after_layout.dart';
+import 'package:desk4work/api/booking_api.dart';
 import 'package:desk4work/model/booking.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
 
-class BookingDetails extends StatefulWidget{
+class BookingDetails extends StatefulWidget {
   final Booking _booking;
 
   BookingDetails(this._booking);
 
   @override
-  State<StatefulWidget> createState() =>_BookingDetailsState();
-
+  State<StatefulWidget> createState() => _BookingDetailsState();
 }
 
-class _BookingDetailsState extends State<BookingDetails>{
+class _BookingDetailsState extends State<BookingDetails> {
   double _screenHeight, _screenWidth, _progress;
   bool _isTimeUp, _hasFreeMinutes;
   String _remainingTime;
   StringResources _stringResources;
+  BookingApi _bookingApi;
+  String _token;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +34,16 @@ class _BookingDetailsState extends State<BookingDetails>{
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(color: Colors.white,),
+        leading: BackButton(
+          color: Colors.white,
+        ),
         centerTitle: true,
         title: Title(
             color: Colors.white,
-            child: Text(widget._booking.coWorking.shortName, style: TextStyle(color: Colors.white),)),
+            child: Text(
+              widget._booking.coWorking.shortName,
+              style: TextStyle(color: Colors.white),
+            )),
       ),
       body: Column(
         children: <Widget>[
@@ -55,45 +63,71 @@ class _BookingDetailsState extends State<BookingDetails>{
     );
   }
 
-
   @override
   void initState() {
     _isTimeUp = false;
-    _progress = .0;
-    _remainingTime = "00:00:00";
+    _progress = _getProgress();
+    _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    _bookingApi = BookingApi();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _startCountDown();
     });
+    super.initState();
   }
 
-  Widget _buildHeader(List<int> imageIds){
+  Widget _buildHeader(List<int> imageIds) {
     return Container(
       height: _screenHeight * .3283,
     );
   }
 
-  Widget _buildProgressBar(){
+  Widget _buildProgressBar() {
     return Container(
       height: _screenHeight * .0045,
       child: LinearProgressIndicator(
-        backgroundColor: Colors.orange,
-        value: _progress,),
+        backgroundColor: Colors.grey,
+        value: _progress,
+      ),
     );
   }
 
-  Widget _buildStartEndWidget(){
-    String startTime = widget._booking.beginWork ?? "--:--";
-    String endTime = widget._booking.endWork ?? "--:--";
+  Widget _buildStartEndWidget() {
+    String start;
+    String end;
+
+    try {
+      DateTime startTime = DateTime.parse(widget._booking.beginDate);
+      DateTime endTime = DateTime.parse(widget._booking.endDate);
+      int startHours = startTime.hour;
+      int startMinutes = startTime.minute;
+
+      String startHoursAsString =
+          (startHours < 10) ? '0$startHours' : startHours.toString();
+      String startMinutesAsString =
+          (startMinutes < 10) ? '0$startMinutes' : startMinutes.toString();
+
+      start = '$startHoursAsString:$startMinutesAsString';
+
+      int endHours = endTime.hour;
+      int endMinutes = endTime.minute;
+
+      String endHoursAsString =
+          (endHours < 10) ? '0$endHours' : endHours.toString();
+      String endMinutesAsString =
+          (endMinutes < 10) ? '0$endMinutes' : endMinutes.toString();
+
+      end = '$endHoursAsString:$endMinutesAsString';
+    } catch (e) {
+      print('parsing error $e');
+      start = "--:--";
+      end = "--:--";
+    }
 
     return Container(
       decoration: BoxDecoration(
-        border: BorderDirectional(
-            bottom: BorderSide(
-                color: Colors.black26,
-                width: .5))
-      ),
+          border: BorderDirectional(
+              bottom: BorderSide(color: Colors.black26, width: .5))),
       child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -102,11 +136,13 @@ class _BookingDetailsState extends State<BookingDetails>{
               child: Column(
                 children: <Widget>[
                   Text(
-                    startTime,
-                    style: Theme.of(context).textTheme.headline,),
+                    start,
+                    style: Theme.of(context).textTheme.headline,
+                  ),
                   Text(
                     _stringResources.hStart,
-                    style: Theme.of(context).textTheme.caption,)
+                    style: Theme.of(context).textTheme.caption,
+                  )
                 ],
               ),
             ),
@@ -119,13 +155,15 @@ class _BookingDetailsState extends State<BookingDetails>{
               child: Column(
                 children: <Widget>[
                   Text(
-                    endTime,
-                    style: Theme.of(context).textTheme.headline,),
+                    end,
+                    style: Theme.of(context).textTheme.headline,
+                  ),
                   Text(
                     _hasFreeMinutes
                         ? _stringResources.tFreeMinutes
-                        :_stringResources.hEnd,
-                    style: Theme.of(context).textTheme.caption,)
+                        : _stringResources.hEnd,
+                    style: Theme.of(context).textTheme.caption,
+                  )
                 ],
               ),
             )
@@ -135,15 +173,18 @@ class _BookingDetailsState extends State<BookingDetails>{
     );
   }
 
-  Widget _buildChronoWidget(){
+  Widget _buildChronoWidget() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text(
             _remainingTime,
-            style: Theme.of(context).textTheme.display2.copyWith(
-                color: Colors.black),),
+            style: Theme.of(context)
+                .textTheme
+                .display2
+                .copyWith(color: Colors.black),
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: _screenWidth * .1589),
             child: Row(
@@ -151,13 +192,16 @@ class _BookingDetailsState extends State<BookingDetails>{
               children: <Widget>[
                 Text(
                   _stringResources.tHours,
-                  style: Theme.of(context).textTheme.caption,),
+                  style: Theme.of(context).textTheme.caption,
+                ),
                 Text(
                   _stringResources.tMinutes,
-                  style: Theme.of(context).textTheme.caption,),
+                  style: Theme.of(context).textTheme.caption,
+                ),
                 Text(
                   _stringResources.tSeconds,
-                  style: Theme.of(context).textTheme.caption,),
+                  style: Theme.of(context).textTheme.caption,
+                ),
               ],
             ),
           )
@@ -166,12 +210,12 @@ class _BookingDetailsState extends State<BookingDetails>{
     );
   }
 
-  Widget _buildTerminatedExtendButton(){
-    String buttonText = (_isTimeUp)
-        ? _stringResources.tExtend
-        : _stringResources.tTerminate;
+  Widget _buildTerminatedExtendButton() {
+    String buttonText =
+        (_isTimeUp) ? _stringResources.tExtend : _stringResources.tTerminate;
 
-    Gradient oragandeGradient = BoxDecorationUtil.getDarkOrangeGradient().gradient;
+    Gradient oragandeGradient =
+        BoxDecorationUtil.getDarkOrangeGradient().gradient;
 
     return Center(
       child: InkWell(
@@ -179,87 +223,117 @@ class _BookingDetailsState extends State<BookingDetails>{
           width: _screenWidth * .872,
           height: _screenHeight * .0825,
           decoration: BoxDecoration(
-            gradient: oragandeGradient,
-            borderRadius: BorderRadius.all(Radius.circular(48.0))
-          ),
+              gradient: oragandeGradient,
+              borderRadius: BorderRadius.all(Radius.circular(48.0))),
           child: Center(
             child: Text(
               buttonText,
-              style: Theme.of(context).textTheme.button.copyWith(
-                  color: Colors.white),),
+              style: Theme.of(context)
+                  .textTheme
+                  .button
+                  .copyWith(color: Colors.white),
+            ),
           ),
         ),
-        onTap: (_isTimeUp) ? _extendBooking() : _terminateBooking(),
+        onTap: (_isTimeUp) ?()=> _extendBooking() :()=> _terminateBooking(),
       ),
     );
   }
 
-  _terminateBooking(){
+  _terminateBooking() {
+    _bookingApi.cancelBooking(_token, widget._booking.id).then((isCanceled){
+      if(isCanceled)
+        Navigator.of(context).pop(widget._booking);
+      else{
+        print('can\'t cancel the booking');
+      }
+    });
+  }
+
+  _extendBooking() {
 
   }
 
-  _extendBooking(){}
+  double _getProgress() {
+    String start = widget._booking.beginDate;
+    String end = widget._booking.endDate;
+    DateTime now = DateTime.now();
+    if (start != null && end != null) {
+      try {
+        DateTime startTime = DateTime.parse(start);
+        DateTime endTime = DateTime.parse(end);
+        if (now.isAfter(startTime) && now.isBefore(endTime)) {
+          int totalTime = endTime.difference(startTime).inSeconds;
+          int consumedTime = now.difference(startTime).inSeconds;
+          double progress = ((consumedTime * 100) / totalTime).toDouble();
+          return progress;
+        } else if(now.isBefore(startTime)) {
+          return .0;
+        }else return 1.0;
 
-
-  double _getProgress(){
-    if(widget._booking.beginWork !=null && widget._booking.endWork !=null){
-      try{
-        String endWork = widget._booking.endWork;
-        String startWork = widget._booking.beginWork;
-        double progress =  ((DateTime.parse(startWork).millisecondsSinceEpoch * 100)
-            / DateTime.parse(endWork).millisecondsSinceEpoch ).toDouble();
-        return progress;
-      }catch(e){
+      } catch (e) {
         print('date parsing error: $e');
       }
     }
     return .0;
-
   }
 
-  String _getRemainingTime(){
-    int remaining;
-    try{
-      remaining = DateTime.now()
-          .difference(DateTime.parse(widget._booking.endWork)).inHours;
-    }catch(e){
+  String _getRemainingTime() {
+    Duration remaining;
+    String start = widget._booking.beginDate;
+    String end = widget._booking.endDate;
+    try {
+      DateTime startTime = DateTime.parse(start);
+      DateTime endTime = DateTime.parse(end);
+      DateTime now = DateTime.now();
+      if (now.isBefore(startTime))
+        remaining = DateTime.parse(end).difference(DateTime.parse(start));
+      else if (now.isAfter(startTime) && now.isBefore(endTime))
+        remaining = DateTime.parse(end).difference(now);
+      else
+        remaining = Duration();
+    } catch (e) {
       print("error parsing leaving time in booking list $e");
-      remaining = 0;
+      remaining = Duration();
     }
 
-
     String remainingTime;
-    if(remaining.isNegative || remaining == 0) {
+    if (remaining.isNegative || remaining.inMinutes == 0) {
       setState(() {
         _isTimeUp = true;
       });
       remainingTime = '00 : 00 : 00';
-    }
-    else {
-      int hours = (remaining ~/ 24);
-      int minutes = (remaining %24) ;
-      remainingTime  = '$hours : $minutes : 00';
+    } else {
+      int hours = (remaining.inMinutes ~/ 60);
+      int minutes = (remaining.inMinutes % 60);
+      int seconds = (remaining.inSeconds % 3600);
+
+      String hoursAsString = (hours < 10) ? '0$hours' : hours.toString();
+      String minutesAsString =
+          (minutes < 10) ? '0$minutes' : minutes.toString();
+      String secAsString = (seconds < 10) ? '0$seconds' : seconds.toString();
+
+      remainingTime = '$hoursAsString : $minutesAsString : $secAsString';
     }
 
     return remainingTime;
-
   }
 
-  _startCountDown(){
-    const oneSec = const Duration(seconds:1);
-    Timer.periodic(oneSec, (Timer t) {
-     if(_isTimeUp){
-       t.cancel();
-     }else{
-       setState(() {
-         _progress = _getProgress();
-         _remainingTime = _getRemainingTime();
-       });
-     }
-
-
-    });
+  _startCountDown() {
+    try {
+      const oneSec = const Duration(seconds: 1);
+      Timer.periodic(oneSec, (Timer t) {
+        if (_isTimeUp) {
+          t.cancel();
+        } else {
+          setState(() {
+            _progress = _getProgress();
+            _remainingTime = _getRemainingTime();
+          });
+        }
+      });
+    } catch (e) {
+      print('contDown error $e');
+    }
   }
-
-
 }

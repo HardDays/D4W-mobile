@@ -38,9 +38,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   @override
   Widget build(BuildContext context) {
     stringResources = StringResources.of(context);
-    _screenSize = MediaQuery
-        .of(context)
-        .size;
+    _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
     return Scaffold(
@@ -143,7 +141,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   Widget _getCoWorkingCard(CoWorking coWorking) {
     return Container(
-      height: (_screenHeight * .4273),
+      height: (_screenHeight * .42728),
       padding: EdgeInsets.only(bottom: .015),
       child: InkWell(
         onTap: () => _openDetails(coWorking),
@@ -154,61 +152,67 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
           elevation: 8.0,
           child: Column(
             children: <Widget>[
-          Row(
-          children: <Widget>[
-            Expanded(
-              child: Hero(
-                  tag: 'coWorkingImage-id ${coWorking.imageId}',
-                  child: CachedNetworkImage(
-                    fit: BoxFit.fill,
-                    placeholder: Image.asset(
-                      'assets/placeholder.png',
-                      height: (_screenHeight * .23),
-                    ),
-                    height: (_screenHeight * .23),
-                    errorWidget: Icon(
-                      Icons.error,
-                      size: (_screenHeight * .23),
-                    ),
-                    imageUrl: ConstantsManager.BASE_URL
-                        +"images/get_full/${coWorking.imageId}",
-                  )),
-            )
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Hero(
+                        tag: 'coWorkingImage-id ${coWorking.imageId}',
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fill,
+                          placeholder: Image.asset(
+                            'assets/placeholder.png',
+                            height: (_screenHeight * .23),
+                          ),
+                          height: (_screenHeight * .23),
+                          errorWidget: Icon(
+                            Icons.error,
+                            size: (_screenHeight * .23),
+                          ),
+                          imageUrl: ConstantsManager.BASE_URL +
+                              "images/get_full/${coWorking.imageId}",
+                        )),
+                  )
 //                  _buildImage(coWorking.imageId)
-        ],
-      ),
-      Container(
-        padding:
-        EdgeInsets.symmetric(horizontal: (_screenWidth * .048)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text(coWorking.fullName ?? ""),
+                ],
+              ),
+              Container(
+                padding:
+                    EdgeInsets.symmetric(horizontal: (_screenWidth * .048)),
+                height: _screenHeight * .127,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                        padding:
+                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                    Row(
+                      children: <Widget>[
+                        Text(coWorking.fullName ?? ""),
 //                        TODO: get the distance and add it to the end
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Text(coWorking.address ?? " ",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .caption),
-              ],
-            ),
-            Row(
-              children: <Widget>[_getTime(coWorking)],
-            )
-          ],
+                      ],
+                    ),
+                    Padding(
+                        padding:
+                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                    Row(
+                      children: <Widget>[
+                        Text(coWorking.address ?? " ",
+                            style: Theme.of(context).textTheme.caption),
+                      ],
+                    ),
+                    Padding(
+                        padding:
+                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                    Row(
+                      children: <Widget>[_getTime(coWorking)],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      )
-      ],
-    ),)
-    ,
-    )
-    ,
+      ),
     );
   }
 
@@ -231,9 +235,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<String> _getWorkingDay(CoWorking coWorking) {
     List<WorkingDays> workingDaysList = coWorking.workingDays;
     if (workingDaysList != null && workingDaysList.length > 0) {
-      int today = DateTime
-          .now()
-          .day;
+      int today = DateTime.now().day;
       Map<String, List<String>> workingDaysMap = {};
       coWorking.workingDays.forEach((workingDay) {
         workingDaysMap[workingDay.day] = [
@@ -267,18 +269,17 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     Color color = Colors.red;
     String text = isClosedText;
     if (endAndStartTIme != null && endAndStartTIme.length > 0) {
-      String startTime = endAndStartTIme[0],
-          endTime = endAndStartTIme[1];
+      String startTime = endAndStartTIme[0], endTime = endAndStartTIme[1];
       DateTime now = DateTime.now();
       int startHours = int.parse(startTime.substring(0, 2));
       int startMinute = int.parse(startTime.substring(3));
       DateTime startDate =
-      DateTime(now.year, now.month, now.day, startHours, startMinute);
+          DateTime(now.year, now.month, now.day, startHours, startMinute);
 
       int endHours = int.parse(endTime.substring(0, 2));
       int endMinute = int.parse(endTime.substring(3));
       DateTime endDate =
-      DateTime(now.year, now.month, now.day, endHours, endMinute);
+          DateTime(now.year, now.month, now.day, endHours, endMinute);
 
       bool isClosed = (startDate.isAfter(now) || endDate.isBefore(now));
       color = isClosed ? Colors.red : Colors.green;
@@ -286,11 +287,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       text = (isClosed) ? text + "(" + isClosedText + ")" : text;
     }
     return Text(text,
-        style: Theme
-            .of(context)
-            .textTheme
-            .caption
-            .copyWith(color: color));
+        style: Theme.of(context).textTheme.caption.copyWith(color: color));
   }
 
   Future<String> _getPictureUrl(int id) {

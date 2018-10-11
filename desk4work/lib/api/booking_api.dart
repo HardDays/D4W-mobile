@@ -68,4 +68,18 @@ class BookingApi{
 
 
   }
+
+  Future<bool> cancelBooking(String token, int id){
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    String url = _bookingUrl+'cancel_booking';
+    Map<String, String> body = {ConstantsManager.BOOKING_ID : id.toString()};
+    return _networkUtil.post(url, headers: _headers, body: body).then((res){
+      if(res[ConstantsManager.SERVER_ERROR] ==null)
+        return true;
+      else return false;
+    });
+
+  }
+
+
 }

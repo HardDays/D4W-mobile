@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:desk4work/api/booking_api.dart';
 import 'package:desk4work/api/coworking_api.dart';
 import 'package:desk4work/model/booking.dart';
 import 'package:desk4work/model/co_working.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/main/booking_details.dart';
 import 'package:flutter/material.dart';
 
 class BookingsListScreen extends StatefulWidget {
@@ -26,10 +28,17 @@ class _BookingsListState extends State<BookingsListScreen> {
   StringResources _stringResources;
   CoWorkingApi _coWorkingApi;
   String _token;
+  BookingApi _bookingApi;
 
-  _BookingsListState(){
+
+  @override
+  void initState() {
+    _bookingApi = BookingApi();
+    _token = widget._token;
     _coWorkingApi = CoWorkingApi();
+    super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +47,15 @@ class _BookingsListState extends State<BookingsListScreen> {
     _screenWidth = _screenSize.width;
     _stringResources = StringResources.of(context);
     _bookings = widget._bookings; //TODO change it to the global model
-    _token = widget._token;
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text(
+          _stringResources.tBookings,
+          style: Theme.of(context).textTheme.title.copyWith(color: Colors.white)
+        ),
+      ),
       body: Container(
         margin: EdgeInsets.symmetric(
 //            horizontal: _screenWidth * .0293,
@@ -49,7 +65,10 @@ class _BookingsListState extends State<BookingsListScreen> {
           itemCount: _bookings.length,
           itemBuilder: (ctx, index) {
             return Container(
-                padding: EdgeInsets.only(top: _screenHeight * .015),
+                padding: EdgeInsets.symmetric(
+                    vertical: _screenHeight * .015,
+                    horizontal: _screenWidth * .0293
+                ),
                 child: _getBookingBuilder(_bookings[index])
             );
           },
@@ -60,121 +79,92 @@ class _BookingsListState extends State<BookingsListScreen> {
 
   Widget _getBookingCard(Booking booking) {
 
-    return Card(
-      margin: EdgeInsets.all(.0),
-      child: Container(
-        height: _screenHeight * .1409,
-        width: _screenWidth * .9413,
+    return InkWell(
+      onTap: ()=> _openBooking(booking),
+      child: Card(
+        margin: EdgeInsets.all(.0),
+        elevation: 2.0,
         child: Container(
           height: _screenHeight * .1409,
-          width: _screenWidth * .9413,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Hero(
-                tag: booking.id,
-                child: CachedNetworkImage(
-                  imageUrl: ConstantsManager.IMAGE_BASE_URL+
-                      "${booking.coWorking.imageId}",
-                  width: _screenWidth * .2773,
-                  height: _screenHeight * .1409,
-                  errorWidget: Image.asset(
-                    'assets/placeholder.png',
+//        width: _screenWidth * .9413,
+          child: Container(
+            height: _screenHeight * .1409,
+//          width: _screenWidth * .9413,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Hero(
+                  tag: booking.id,
+                  child: CachedNetworkImage(
+                    imageUrl: ConstantsManager.IMAGE_BASE_URL+
+                        "${booking.coWorking.imageId}",
+                    fit: BoxFit.fill,
                     width: _screenWidth * .2773,
                     height: _screenHeight * .1409,
+                    errorWidget: Image.asset(
+                      'assets/placeholder.png',
+                      width: _screenWidth * .2773,
+                      height: _screenHeight * .1409,
+                      fit: BoxFit.fill,
+                    ),
+                  )
+                ),
+//
+                Container(
+                  height: _screenHeight * .1409,
+                  width: _screenWidth * .6613,
+                  padding: EdgeInsets.only(
+                      left: _screenWidth * .0386,
+                      top: _screenHeight * .0179),
+                  child: Stack(
+                    children: <Widget>[
+                      Text(
+                        booking.coWorking?.shortName ?? " ",
+                        style: Theme.of(context).textTheme.body2,
+                      ),
+                      Positioned(
+                          top: _screenHeight * .050,
+                          child: _buildDate(DateTime.parse(booking.createdAt))
+                      ),
+                      Positioned(
+                        child: _buildRemainingTime(
+                            booking.beginDate,
+                            booking.endDate),
+                        top: _screenHeight * .0809,
+                      ),
+                      Positioned(
+                          top: _screenHeight * .0915,
+                          left: _screenWidth * .4373,
+                          child: _buildTerminateOrExtendTextButton(booking)
+                      )
+
+//                    _getLowerCardPart(booking.endWork) ?? " ",
+                    ],
                   ),
                 )
-              ),
-//
-              Container(
-                height: _screenHeight * .1409,
-                padding: EdgeInsets.only(
-                    left: _screenWidth * .0386,
-                    top: _screenHeight * .0179),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      booking.coWorking?.shortName ?? " ",
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    _buildDate(DateTime.parse(booking.createdAt)),
-                    _getLowerCardPart(booking.endWork) ?? " ",
-                  ],
-                ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _getLowerCardPart(String leavingTime) {
-    int remaining;
-    try{
-      remaining = DateTime.now()
-          .difference(DateTime.parse(leavingTime)).inHours;
-    }catch(e){
-      print("error parsing leaving time in booking list $e");
-      remaining = 0;
-    }
-    String remainingTime;
-    if(remaining.isNegative || remaining == 0) remainingTime = '00:00';
-    else {
-      int hours = (remaining ~/ 24);
-      int minutes = (remaining %24);
-      remainingTime  = '$hours:$minutes';
-    }
-
-    bool isTimeUp = (remainingTime.substring(0, 2) == '00' &&
-        remainingTime.substring(3) == '00');
-    Color textColor = isTimeUp ? Colors.orange : Colors.black;
-    Color iconColor = isTimeUp
-        ? Colors.orange : Theme.of(context).textTheme.caption.color;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          height: _screenHeight * .01799,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Icon(
-                Icons.access_time,
-                color: iconColor,
-              ),
-              Container(
-                height: _screenHeight * .01799,
-                child: Text(
-                  remainingTime,
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                      color: textColor),
-                  textAlign: TextAlign.end,
-
-                ),
-              )
-            ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            InkWell(
-              onTap: isTimeUp ? _extendBooking(1) : _endBooking(1),
-              child: Text(
-                isTimeUp ? _stringResources.tExtend : _stringResources.tTerminate,
-                style: Theme.of(context)
-                    .textTheme
-                    .button
-                    .copyWith(color: Colors.orange),
-              ),
-            )
-          ],
-        )
-      ],
+  InkWell _buildTerminateOrExtendTextButton(Booking booking){
+    bool isBookingTimeUp = _isBookingTimeUp(booking);
+    return InkWell(
+      onTap: isBookingTimeUp
+          ? ()=> _extendBooking(booking.id)
+          : ()=> _endBooking(booking.id),
+      child: Text(
+        isBookingTimeUp
+            ? _stringResources.tExtend
+            : _stringResources.tTerminate,
+        style: Theme.of(context)
+            .textTheme
+            .button
+            .copyWith(color: Colors.orange),
+      ),
     );
   }
 
@@ -194,7 +184,7 @@ class _BookingsListState extends State<BookingsListScreen> {
           case ConnectionState.waiting :
             return Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 50.0),
+                margin: const EdgeInsets.only(top: 8.0),
                 child: new CircularProgressIndicator()
             );
           case ConnectionState.done:
@@ -217,11 +207,34 @@ class _BookingsListState extends State<BookingsListScreen> {
     );
   }
 
-  _endBooking(int id) {}
+  _endBooking(int id) {
+    _bookingApi.cancelBooking(_token, id).then((isCanceled){
+      if(isCanceled) {
+        Booking toRemove ;
+        widget._bookings.forEach((b){
+          if(b.id == id){
+            toRemove = b;
+          }
+        });
+        if(toRemove !=null) widget._bookings.remove(toRemove);
+      }
+      else{
+        print('can\'t cancel the booking');
+      }
+    });
+  }
 
   _extendBooking(int id) {}
 
-  _openBooking(Booking booking) {}
+  _openBooking(Booking booking) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx)=> BookingDetails(booking))).then((b){
+          if(b !=null){
+            Booking booking = b;
+            widget._bookings.remove(booking);
+          }
+    });
+  }
 
   Text _buildDate(DateTime dateTime){
     String day  = dateTime.day.toString();
@@ -258,34 +271,71 @@ class _BookingsListState extends State<BookingsListScreen> {
     return Text("$day $month $year", style: Theme.of(context).textTheme.caption,);
   }
 
-//  Widget _buildRemainingTime(String end){
-//    Duration remaining = DateTime.parse(end).difference(DateTime.now());
-//    String remainingTime;
-//    Color textColor;
-//    Color iconColor;
-//    bool isTimeOver = remaining.isNegative;
-//    if(!isTimeOver){
-//      int  hours = (remaining.inMinutes ~/60);
-//      int minutes = remaining.inMinutes % 60;
-//      remainingTime = '$hours:$minutes';
-//      textColor = Colors.black;
-//      iconColor = Theme.of(context).textTheme.caption.color;
-//    }else{
-//      remainingTime = "00:00";
-//      textColor =  Colors.orange;
-//      iconColor =  Colors.orange;
-//
-//    }
-//    return Row(
-//      children: <Widget>[
-//        Icon(Icons.access_time, color: iconColor,),
-//        Text(
-//          remainingTime,
-//          style: Theme.of(context).textTheme.subhead.copyWith(color: textColor))
-//      ],
-//    );
-//
-//  }
+  Widget _buildRemainingTime(String start, String end){
+    Duration remaining;
+
+
+    try{
+      DateTime startTime = DateTime.parse(start);
+      DateTime endTime = DateTime.parse(end);
+      DateTime now = DateTime.now();
+      if(now.isBefore(startTime))
+        remaining = DateTime.parse(end).difference(DateTime.parse(start));
+      else if(now.isAfter(startTime) && now.isBefore(endTime))
+        remaining = DateTime.parse(end).difference(now);
+      else
+        remaining = Duration();
+    }catch(e){
+      print('remaining time parsing error: $e');
+      remaining = Duration(minutes: 0, hours: 0);
+    }
+    String remainingTime;
+    Color textColor;
+    Color iconColor;
+    bool isTimeOver = remaining.isNegative;
+    if(!isTimeOver){
+      int  hours = (remaining.inMinutes ~/60);
+      int minutes = remaining.inMinutes % 60;
+      String hoursAsString = hours.toString();
+      String minutesAsString = minutes.toString();
+      if(hours < 10)
+        hoursAsString = '0$hoursAsString';
+      if(minutes <10)
+        minutesAsString = '0$minutesAsString';
+
+      remainingTime = '$hoursAsString:$minutesAsString';
+      textColor = Colors.black;
+      iconColor = Theme.of(context).textTheme.caption.color;
+    }else{
+      remainingTime = "00:00";
+      textColor =  Colors.orange;
+      iconColor =  Colors.orange;
+
+    }
+    return Row(
+      children: <Widget>[
+        Icon(Icons.access_time, color: iconColor,),
+        Text(
+          remainingTime,
+          style: Theme.of(context).textTheme.body1.copyWith(color: textColor))
+      ],
+    );
+
+  }
+
+
+  bool _isBookingTimeUp(Booking b){
+    try {
+      DateTime beginDate  = DateTime.parse(b.beginDate);
+      if (beginDate.isAfter(DateTime.now()))
+        return false;
+      DateTime endWork = DateTime.parse(b.endDate);
+      return endWork.difference(DateTime.now()).isNegative;
+    } catch (e) {
+      print('dateparsing error: $e');
+      return true;
+    }
+  }
 
   Widget showMessage(String message){
     return Center(child: Text(message),);
