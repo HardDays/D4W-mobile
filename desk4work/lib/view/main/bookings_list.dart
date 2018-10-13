@@ -87,63 +87,59 @@ class _BookingsListState extends State<BookingsListScreen> {
         child: Container(
           height: _screenHeight * .1409,
 //        width: _screenWidth * .9413,
-          child: Container(
-            height: _screenHeight * .1409,
-//          width: _screenWidth * .9413,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Hero(
-                  tag: booking.id,
-                  child: CachedNetworkImage(
-                    imageUrl: ConstantsManager.IMAGE_BASE_URL+
-                        "${booking.coWorking.imageId}",
-                    fit: BoxFit.fill,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Hero(
+                tag: booking.id,
+                child: CachedNetworkImage(
+                  imageUrl: ConstantsManager.IMAGE_BASE_URL+
+                      "${booking.coWorking.imageId}",
+                  fit: BoxFit.fill,
+                  width: _screenWidth * .2773,
+                  height: _screenHeight * .1409,
+                  errorWidget: Image.asset(
+                    'assets/placeholder.png',
                     width: _screenWidth * .2773,
                     height: _screenHeight * .1409,
-                    errorWidget: Image.asset(
-                      'assets/placeholder.png',
-                      width: _screenWidth * .2773,
-                      height: _screenHeight * .1409,
-                      fit: BoxFit.fill,
-                    ),
-                  )
-                ),
-//
-                Container(
-                  height: _screenHeight * .1409,
-                  width: _screenWidth * .6613,
-                  padding: EdgeInsets.only(
-                      left: _screenWidth * .0386,
-                      top: _screenHeight * .0179),
-                  child: Stack(
-                    children: <Widget>[
-                      Text(
-                        booking.coWorking?.shortName ?? " ",
-                        style: Theme.of(context).textTheme.body2,
-                      ),
-                      Positioned(
-                          top: _screenHeight * .050,
-                          child: _buildDate(DateTime.parse(booking.createdAt))
-                      ),
-                      Positioned(
-                        child: _buildRemainingTime(
-                            booking.beginDate,
-                            booking.endDate),
-                        top: _screenHeight * .0809,
-                      ),
-                      Positioned(
-                          top: _screenHeight * .0915,
-                          left: _screenWidth * .4373,
-                          child: _buildTerminateOrExtendTextButton(booking)
-                      )
-
-//                    _getLowerCardPart(booking.endWork) ?? " ",
-                    ],
+                    fit: BoxFit.fill,
                   ),
                 )
-              ],
-            ),
+              ),
+//
+              Container(
+                height: _screenHeight * .1409,
+                width: _screenWidth * .6613,
+                padding: EdgeInsets.only(
+                    left: _screenWidth * .0386,
+                    top: _screenHeight * .0179),
+                child: Stack(
+                  children: <Widget>[
+                    Text(
+                      booking.coWorking?.shortName ?? " ",
+                      style: Theme.of(context).textTheme.body2,
+                    ),
+                    Positioned(
+                        top: _screenHeight * .050,
+                        child: _buildDate(DateTime.parse(booking.createdAt))
+                    ),
+                    Positioned(
+                      child: _buildRemainingTime(
+                          booking.beginDate,
+                          booking.endDate),
+                      top: _screenHeight * .0809,
+                    ),
+                    Positioned(
+                        top: _screenHeight * .0915,
+                        left: _screenWidth * .4373,
+                        child: _buildTerminateOrExtendTextButton(booking)
+                    )
+
+//                    _getLowerCardPart(booking.endWork) ?? " ",
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -214,9 +210,15 @@ class _BookingsListState extends State<BookingsListScreen> {
         widget._bookings.forEach((b){
           if(b.id == id){
             toRemove = b;
+            print('removing $toRemove');
           }
         });
-        if(toRemove !=null) widget._bookings.remove(toRemove);
+        if(toRemove !=null) {
+          widget._bookings.remove(toRemove);
+          setState(() {
+            _bookings = widget._bookings;
+          });
+        }
       }
       else{
         print('can\'t cancel the booking');
@@ -232,6 +234,9 @@ class _BookingsListState extends State<BookingsListScreen> {
           if(b !=null){
             Booking booking = b;
             widget._bookings.remove(booking);
+            setState(() {
+              _bookings = widget._bookings;
+            });
           }
     });
   }

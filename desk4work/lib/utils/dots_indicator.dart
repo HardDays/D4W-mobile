@@ -29,10 +29,10 @@ class DotsIndicator extends AnimatedWidget {
   static const double _kDotSize = 8.0;
 
   // The increase in the size of the selected dot
-  static const double _kMaxZoom = 2.0;
+  static const double _kMaxZoom = 1.5;
 
   // The distance between the center of each dot
-  static const double _kDotSpacing = 25.0;
+  static const double _kDotSpacing = 16.0;
 
   Widget _buildDot(int index) {
     double selectedness = Curves.easeOut.transform(

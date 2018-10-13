@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:desk4work/api/booking_api.dart';
 import 'package:desk4work/model/booking.dart';
+import 'package:desk4work/utils/constants.dart';
+import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingDetails extends StatefulWidget {
   final Booking _booking;
@@ -22,7 +26,12 @@ class _BookingDetailsState extends State<BookingDetails> {
   String _remainingTime;
   StringResources _stringResources;
   BookingApi _bookingApi;
-  String _token;
+  final _controller = new PageController();
+
+  static const _kDuration = const Duration(milliseconds: 300);
+
+  static const _kCurve = Curves.ease;
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +40,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     _screenHeight = size.height;
 
     _stringResources = StringResources.of(context);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -79,6 +89,50 @@ class _BookingDetailsState extends State<BookingDetails> {
   Widget _buildHeader(List<int> imageIds) {
     return Container(
       height: _screenHeight * .3283,
+      child: Stack(
+        children: <Widget>[
+          PageView.builder(
+            itemBuilder: (context, index) {
+              return CachedNetworkImage(
+                fit: BoxFit.fill,
+                placeholder: CircularProgressIndicator(),
+                height: (_screenHeight * .3238),
+                errorWidget: Icon(
+                  Icons.error,
+                  size: (_screenHeight * .3238),
+                ),
+                imageUrl:  ConstantsManager.BASE_URL
+                    +"images/get_full/${imageIds[index]}",
+              );
+            },
+            itemCount:imageIds.length,
+            controller: _controller,
+            physics: AlwaysScrollableScrollPhysics(),
+          ),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: new Container(
+              color: Colors.grey[800].withOpacity(0.5),
+              padding: const EdgeInsets.all(8.0),
+              child: new Center(
+                child: new DotsIndicator(
+                  controller: _controller,
+                  itemCount: imageIds.length,
+                  onPageSelected: (int page) {
+                    _controller.animateToPage(
+                      page,
+                      duration: _kDuration,
+                      curve: _kCurve,
+                    );
+                  },
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -241,13 +295,17 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _terminateBooking() {
-    _bookingApi.cancelBooking(_token, widget._booking.id).then((isCanceled){
-      if(isCanceled)
-        Navigator.of(context).pop(widget._booking);
-      else{
-        print('can\'t cancel the booking');
-      }
+    SharedPreferences.getInstance().then((sp){
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      _bookingApi.cancelBooking(token, widget._booking.id).then((isCanceled){
+        if(isCanceled)
+          Navigator.of(context).pop(widget._booking);
+        else{
+          print('can\'t cancel the booking');
+        }
+      });
     });
+
   }
 
   _extendBooking() {

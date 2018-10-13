@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:desk4work/api/auth_api.dart';
+import 'package:desk4work/api/vkapi/lib/vkapi.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/curved_clipper.dart';
@@ -8,6 +9,8 @@ import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,6 +25,23 @@ class LoginScreenState extends State<LoginScreen> {
   Size _screenSize;
   AuthApi _authApi = AuthApi();
   int _attempts = 1;
+  var auth = StandaloneAuth();
+  StreamSubscription<String> _onUrlChanged;
+  final FlutterWebviewPlugin flutterWebViewPlugin = new FlutterWebviewPlugin();
+  String _authToken;
+
+
+  @override
+  void initState() {
+    super.initState();
+    try{
+      flutterWebViewPlugin.close();
+    }catch(e){
+      print('close webview error : $e');
+    }finally{
+      _initOnRedirect();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +267,54 @@ class LoginScreenState extends State<LoginScreen> {
 
   _handleFacebookSignIn() {}
 
-  _handleVkSignIn() {}
+  _handleVkSignIn() {
+    try{
+      print('${ConstantsManager.VK_APPLICATION_ID}');
+      auth..appId = '${ConstantsManager.VK_APPLICATION_ID}'
+        ..version = '5.27'
+        ..redirectUri = "https://oauth.vk.com/blank.html"
+        ..secret = ConstantsManager.VK_APPLICATION_KEY
+        ..scopes = [Scope.Email, Scope.Offline];
+
+      String url = auth.authUri.toString();
+
+      if(_authToken!=null && _authToken.isNotEmpty) {
+        _authApi.vkOrFacebookLogin(_authToken, false).then((token){
+          SharedPreferences.getInstance().then((sp){
+            sp.setString(ConstantsManager.TOKEN_KEY, token).then((_){
+              _openMainScreen();
+            });
+          });
+        });
+      }
+      else {
+        flutterWebViewPlugin.launch(url, withZoom: true);
+
+      }
+
+    }catch(e){
+      print("shit happened: $e");
+    }
+  }
+
+  void _initOnRedirect(){
+    _onUrlChanged = flutterWebViewPlugin.onUrlChanged.listen((String url){
+      try{
+        if(auth.getToken(url)!=null){
+          if(RegExp(r'access_token=([\w\d]+)').firstMatch(url) !=null){
+            setState(() {
+              _authToken = new RegExp(r'access_token=([\w\d]+)').firstMatch(url).group(1);
+              flutterWebViewPlugin.close();
+            });
+
+          }
+        }
+      }catch(e){
+        print('vk login exception : $e');
+
+      }
+    });
+  }
 
   _openMainScreen() {
     Navigator.of(context)

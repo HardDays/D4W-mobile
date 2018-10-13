@@ -64,7 +64,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               onPressed: () => _openFilter())
         ],
       ),
-      body: _buildCoWorkingList(),
+      body: Container(
+        padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
+          child: _buildCoWorkingList()
+      ),
     );
   }
 

@@ -88,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
         }
       else{
+
+//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+
         AuthApi api = AuthApi();
         try{
           api.checkLogin(token).then((isValid){

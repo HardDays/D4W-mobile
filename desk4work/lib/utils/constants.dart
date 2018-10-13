@@ -22,5 +22,12 @@ class ConstantsManager{
   static const String VISITORS_COUNT = "visitors_count";
   static const String BEGIN_DATE = "begin_date";
   static const String END_DATE = "end_date";
+  static const String CONTENT_TYPE = "Content-type";
+  static const String CONTENT_TYPE_APPLICATION_JSON = "application/json";
+
+  static const String VK_APPLICATION_ID ='6720107';
+  static const String VK_APPLICATION_KEY ='21m3goIBLJYRW6M9j4cV';
+
+
 
 }

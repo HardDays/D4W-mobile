@@ -103,11 +103,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   }
 
   Future<List<Booking>> _getBookings(){
-//    List<Booking> _bookings = [];
-//    for(int i=0; i<10; i++){
-//      _bookings.add(Booking(id: i));
-//    }
-//    return Future<List<Booking>>.value(_bookings);
     return _getToken().then((token){
       return _bookingApi.getUserBookings(token);
     });

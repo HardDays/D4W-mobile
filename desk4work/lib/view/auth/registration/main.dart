@@ -20,6 +20,7 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
   @override
   void initState() {
     _username = null;
+    super.initState();
   }
 
   @override

@@ -685,9 +685,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       children: <Widget>[
         PageView.builder(
           itemBuilder: (context, index) {
-            return _getImageForHeader(widget._coWorking.images);
+            return _getImageForHeader(widget._coWorking.images, index);
           },
           itemCount: widget._coWorking.images.length,
+          controller: _controller,
           physics: AlwaysScrollableScrollPhysics(),
         ),
         Positioned(
@@ -696,7 +697,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           right: 0.0,
           child: new Container(
             color: Colors.grey[800].withOpacity(0.5),
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(8.0),
             child: new Center(
               child: new DotsIndicator(
                 controller: _controller,
@@ -716,9 +717,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _getImageForHeader(List<int> images) {
+  Widget _getImageForHeader(List<int> images, int index) {
     return Hero(
-        tag: "cowinkingdetails "+images[0].toString() ,
+        tag: "cowinkingdetails "+images[index].toString() ,
         child: CachedNetworkImage(
           fit: BoxFit.fill,
           placeholder: CircularProgressIndicator(),
@@ -728,8 +729,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             size: (_screenHeight * .3238),
           ),
           imageUrl:  ConstantsManager.BASE_URL
-              +"images/get_full/${images[0]}",
-        ));
+              +"images/get_full/${images[index]}",
+        )
+    );
   }
 
   FutureBuilder<int> _buildFreeSeats(int id){
