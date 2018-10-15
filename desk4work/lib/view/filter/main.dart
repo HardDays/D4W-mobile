@@ -21,6 +21,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
   StringResources _stringResources;
   Filter filter;
   FilterStateContainerState _container;
+  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
 
 
@@ -34,10 +35,6 @@ class FilterMainScreenState extends State<FilterMainScreen>{
     final double placeNumberFilerWidth = (_screenWidth * .336);
     final double confirmButtonHeight = (_screenHeight * .0824);
     final double confirmButtonWidth = (_screenWidth * .84);
-//    final double fieldRadiusX =(_screenWidth *  .11);
-//    final double fieldRadiusY =(_screenHeight * .0615);
-//    final double buttonRadiusX =(_screenWidth *  .075);
-//    final double buttonRadiusY = (_screenHeight *  .042);
 
     _stringResources = StringResources.of(context);
     final container = FilterStateContainer.of(context);
@@ -49,6 +46,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
         : _stringResources.hDate;
 
     return Scaffold(
+      key: _scaffoldState,
       body: Container(
         decoration: BoxDecorationUtil.getDarkOrangeGradient(),
         child: Column(
@@ -96,7 +94,7 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                             children: <Widget>[
                               Icon(Icons.place),
                               Padding(padding: EdgeInsets.only(left: 8.0),),
-                              Text((filter?.latLong ?? _stringResources.hPlace))
+                              Text((filter?.place ?? _stringResources.hPlace))
                             ],
                           ),
                         ),
@@ -290,14 +288,31 @@ class FilterMainScreenState extends State<FilterMainScreen>{
   }
 
   void _search(){
-    Navigator.of(context).pop([true,filter]);
-  }
+    String prefix = _stringResources.tFilterSettingsPrefix;
+    String suffix = _stringResources.tFilterSettingsSuffix;
+    if (filter != null){
+      if(filter.place ==null)
+        _showMessage(prefix + _stringResources.hPlace + suffix);
+      else if(filter.date == null || filter.date.length <1)
+        _showMessage(prefix + _stringResources.hDate + suffix);
+      else if (filter.startHour == null)
+        _showMessage(prefix + _stringResources.hStart + suffix);
+      else if(filter.endHour == null)
+        _showMessage(prefix + _stringResources.hEnd + suffix);
+      else{
+        Navigator.of(context).pop([true,filter]);
+      }
+    }
+    }
 
+  _showMessage(String message){
+    _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
+  }
 
   _openPlaceSearch(BuildContext context) async{
     final result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PlaceFilterScreen(filter?.latLong))
+        MaterialPageRoute(builder: (context) => PlaceFilterScreen(filter?.place))
     );
     if(result !=null) {
       _container.updateFilterInfo(latLong: result);

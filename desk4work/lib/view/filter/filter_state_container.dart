@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Filter {
-  String latLong;
+  String place;
   String startHour;
   String endHour;
   List<String> date;
@@ -13,7 +13,7 @@ class Filter {
   bool parkForBicycleNeeded;
 
   Filter(
-      {this.latLong,
+      {this.place,
       this.date,
       this.startHour,
       this.endHour,
@@ -23,12 +23,21 @@ class Filter {
       this.conferenceRoomNeeded = false,
       this.kitchenNeeded = false,
       this.parkForBicycleNeeded = false});
+
+  @override
+  String toString() {
+    return 'Filter{place: $place, startHour: $startHour, endHour: $endHour, '
+        'date: $date, numberOfPlaces: $numberOfPlaces,'
+        ' printerNeeded: $printerNeeded, teaOrCoffeeNeeded: $teaOrCoffeeNeeded,'
+        ' conferenceRoomNeeded: $conferenceRoomNeeded, '
+        'kitchenNeeded: $kitchenNeeded,'
+        ' parkForBicycleNeeded: $parkForBicycleNeeded}';
+  }
 }
 
 class FilterStateContainer extends StatefulWidget {
   final Widget child;
   final Filter filter;
-
 
   FilterStateContainer({@required this.child, this.filter});
 
@@ -58,7 +67,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
       parkForBicycleNeeded}) {
     if (filter == null) {
       filter = Filter(
-          latLong: latLong,
+          place: latLong,
           date: date,
           startHour: startHour,
           endHour: endHour,
@@ -74,7 +83,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
       });
     } else {
       setState(() {
-        filter.latLong = latLong ?? filter.latLong;
+        filter.place = latLong ?? filter.place;
         filter.date = date ?? filter.date;
         filter.startHour = startHour ?? filter.startHour;
         filter.endHour = endHour ?? filter.endHour;
@@ -87,10 +96,8 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         filter.kitchenNeeded = kitchenNeeded ?? filter.kitchenNeeded;
         filter.parkForBicycleNeeded =
             parkForBicycleNeeded ?? filter.parkForBicycleNeeded;
-
       });
     }
-
   }
 
   void clearFilter() {

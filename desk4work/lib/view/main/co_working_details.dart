@@ -8,6 +8,7 @@ import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/main/new_booking.dart';
+import 'package:desk4work/view/main/place_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -33,7 +34,6 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   static const _kCurve = Curves.ease;
 
-
   _CoWorkingDetailsScreenState();
 
   bool _isPrinterSelected = false,
@@ -45,7 +45,6 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   String _explanations;
   MapController _mapController;
   CoWorkingApi _coWorkingApi;
-
 
   @override
   void initState() {
@@ -79,15 +78,16 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 Icons.place,
                 color: Colors.white,
               ),
-              onPressed: _showOnMap(),
+              onPressed:(){
+                _showOnMap();
+              }
             )
           ],
         ),
         body: ListView(
           children: <Widget>[
             Container(
-                height: (_screenHeight * .3238),
-                child: _buildImagesSlide()),
+                height: (_screenHeight * .3238), child: _buildImagesSlide()),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: _screenHeight * .03,
@@ -142,7 +142,6 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: _screenHeight * .009)),
-
                 ],
               ),
             ),
@@ -159,7 +158,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   border: BorderDirectional(
                       bottom: BorderSide(color: Colors.black26, width: .5))),
               child: InkWell(
-                onTap: _showOnMap(),
+                onTap: ()=>_showOnMap(),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,9 +205,11 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _buildMap(){
-    String _mapBoxUrl = "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}";
-    String _mapBoxToken = "pk.eyJ1Ijoidm92YW4xMjMiLCJhIjoiY2o3aXNicTFhMW9jbDJxbWw3bHNqMW92MCJ9.N1hCLnBrJjdX0JmYuA8bOw";
+  Widget _buildMap() {
+    String _mapBoxUrl =
+        "https://api.mapbox.com/v4/{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}";
+    String _mapBoxToken =
+        "pk.eyJ1Ijoidm92YW4xMjMiLCJhIjoiY2o3aXNicTFhMW9jbDJxbWw3bHNqMW92MCJ9.N1hCLnBrJjdX0JmYuA8bOw";
     String _mapBoxId = "mapbox.streets";
     double lat = widget._coWorking.lat;
     double lng = widget._coWorking.lng;
@@ -217,40 +218,36 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         Container(
           width: MediaQuery.of(context).size.width,
           child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              center: LatLng(lat, lng),
-              zoom: 15.0,
-            ),
-            layers: [
-              TileLayerOptions(
-                urlTemplate: _mapBoxUrl,
-                additionalOptions: {
-                  'accessToken': _mapBoxToken,
-                  'id': _mapBoxId,
-                },
+              mapController: _mapController,
+              options: MapOptions(
+                center: LatLng(lat, lng),
+                zoom: 15.0,
               ),
-              MarkerLayerOptions(
-                markers: <Marker>[
+              layers: [
+                TileLayerOptions(
+                  urlTemplate: _mapBoxUrl,
+                  additionalOptions: {
+                    'accessToken': _mapBoxToken,
+                    'id': _mapBoxId,
+                  },
+                ),
+                MarkerLayerOptions(markers: <Marker>[
                   Marker(
-                    point: LatLng(lat, lng),
-                    builder: (ctx){
-                      return Container(
-                        width: 70.0,
-                        height: 70.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image: AssetImage('assets/pin_orange.png'),
+                      point: LatLng(lat, lng),
+                      builder: (ctx) {
+                        return Container(
+                          width: 70.0,
+                          height: 70.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fitHeight,
+                              image: AssetImage('assets/pin_orange.png'),
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  )
-                ]
-              )
-            ]
-          ),
+                        );
+                      })
+                ])
+              ]),
         )
       ],
     );
@@ -285,12 +282,12 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 childAspectRatio: 4.0833,
                 crossAxisCount: 2,
                 shrinkWrap: true,
-                children:
-                  List.generate(widget._coWorking.workingDays.length, (index){
-                    return Container(
-                        child: _getWorkgingHours(
-                            widget._coWorking.workingDays[index]));
-                  }),
+                children: List.generate(widget._coWorking.workingDays.length,
+                    (index) {
+                  return Container(
+                      child: _getWorkgingHours(
+                          widget._coWorking.workingDays[index]));
+                }),
               ),
             ),
           ),
@@ -341,86 +338,85 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _getWorkgingHours(WorkingDays workingDay){
-    String start =  workingDay.beginWork;
+  Widget _getWorkgingHours(WorkingDays workingDay) {
+    String start = workingDay.beginWork;
     String end = workingDay.endWork;
     String day;
     Color dayTextColor;
     Color timeTextColor;
     int weekDay;
 
-    switch(workingDay.day){
-      case ConstantsManager.MONDAY :
+    switch (workingDay.day) {
+      case ConstantsManager.MONDAY:
         day = _stringResources.tMonday;
         dayTextColor = _getTextColor(1);
         timeTextColor = _getTextColor(1, defaultColor: Colors.black);
-        weekDay =1;
+        weekDay = 1;
         break;
 
       case ConstantsManager.TUESDAY:
         day = _stringResources.tTuesday;
         dayTextColor = _getTextColor(2);
         timeTextColor = _getTextColor(2, defaultColor: Colors.black);
-        weekDay =2;
+        weekDay = 2;
         break;
 
-        case ConstantsManager.WEDNESDAY:
-          day = _stringResources.tWednesday;
-          dayTextColor = _getTextColor(3);
-          timeTextColor = _getTextColor(3, defaultColor: Colors.black);
-          weekDay =3;
-          break;
+      case ConstantsManager.WEDNESDAY:
+        day = _stringResources.tWednesday;
+        dayTextColor = _getTextColor(3);
+        timeTextColor = _getTextColor(3, defaultColor: Colors.black);
+        weekDay = 3;
+        break;
 
-        case ConstantsManager.THURSDAY:
-          day = _stringResources.tThursday;
-          dayTextColor = _getTextColor(4);
-          timeTextColor = _getTextColor(4, defaultColor: Colors.black);
-          weekDay = 4;
-          break;
+      case ConstantsManager.THURSDAY:
+        day = _stringResources.tThursday;
+        dayTextColor = _getTextColor(4);
+        timeTextColor = _getTextColor(4, defaultColor: Colors.black);
+        weekDay = 4;
+        break;
 
-        case ConstantsManager.FRIDAY:
-          day = _stringResources.tFriday;
-          dayTextColor = _getTextColor(5);
-          timeTextColor = _getTextColor(5, defaultColor: Colors.black);
-          weekDay = 5;
-          break;
+      case ConstantsManager.FRIDAY:
+        day = _stringResources.tFriday;
+        dayTextColor = _getTextColor(5);
+        timeTextColor = _getTextColor(5, defaultColor: Colors.black);
+        weekDay = 5;
+        break;
 
-        case ConstantsManager.SATURDAY:
-          day = _stringResources.tSaturday;
-          dayTextColor = _getTextColor(6);
-          timeTextColor = _getTextColor(6, defaultColor: Colors.black);
-          weekDay = 6;
-          break;
+      case ConstantsManager.SATURDAY:
+        day = _stringResources.tSaturday;
+        dayTextColor = _getTextColor(6);
+        timeTextColor = _getTextColor(6, defaultColor: Colors.black);
+        weekDay = 6;
+        break;
 
-
-        case ConstantsManager.SUNDAY:
-          day = _stringResources.tSunday;
-          dayTextColor = _getTextColor(7);
-          timeTextColor = _getTextColor(7, defaultColor: Colors.black);
-          weekDay = 7;
-          break;
-
+      case ConstantsManager.SUNDAY:
+        day = _stringResources.tSunday;
+        dayTextColor = _getTextColor(7);
+        timeTextColor = _getTextColor(7, defaultColor: Colors.black);
+        weekDay = 7;
+        break;
     }
     TextStyle textStyle = Theme.of(context).textTheme.caption;
-    Text dayText = Text(day, style: textStyle.copyWith(color: dayTextColor), );
+    Text dayText = Text(
+      day,
+      style: textStyle.copyWith(color: dayTextColor),
+    );
     Text hoursText = Text(
       "$start-$end",
-      style: textStyle.copyWith(color: timeTextColor), );
+      style: textStyle.copyWith(color: timeTextColor),
+    );
     bool isToday = DateTime.now().day == weekDay;
     return Container(
       width: _screenWidth * .3653,
       margin: EdgeInsets.only(bottom: 5.0),
       decoration: (isToday)
           ? BoxDecoration(
-          color: Colors.orange,
-          borderRadius: BorderRadius.all(Radius.circular(36.0))
-      ) : null,
+              color: Colors.orange,
+              borderRadius: BorderRadius.all(Radius.circular(36.0)))
+          : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          dayText,
-          hoursText
-        ],
+        children: <Widget>[dayText, hoursText],
       ),
     );
   }
@@ -675,10 +671,17 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   _bookPlace() {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx)=> NewBookingScreen(widget._coWorking)));
+        builder: (ctx) => NewBookingScreen(widget._coWorking)));
   }
 
-  _showOnMap() {}
+  _showOnMap() {
+    List<CoWorking> coWorkings = [];
+    coWorkings.add(widget._coWorking);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (ctx) => CoWorkingPlaceMapScreen(coWorkings)));
+  }
 
   Widget _buildImagesSlide() {
     return Stack(
@@ -719,7 +722,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   Widget _getImageForHeader(List<int> images, int index) {
     return Hero(
-        tag: "cowinkingdetails "+images[index].toString() ,
+        tag: "cowinkingdetails " + images[index].toString(),
         child: CachedNetworkImage(
           fit: BoxFit.fill,
           placeholder: CircularProgressIndicator(),
@@ -728,44 +731,44 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             Icons.error,
             size: (_screenHeight * .3238),
           ),
-          imageUrl:  ConstantsManager.BASE_URL
-              +"images/get_full/${images[index]}",
-        )
+          imageUrl:
+              ConstantsManager.BASE_URL + "images/get_full/${images[index]}",
+        ));
+  }
+
+  FutureBuilder<int> _buildFreeSeats(int id) {
+    return FutureBuilder<int>(
+      future: _getFreeSeats(id),
+      builder: (ctx, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return showMessage(_stringResources.mNoInternet);
+          case ConnectionState.waiting:
+            return Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(top: 50.0),
+                child: new CircularProgressIndicator());
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              print("error  loading bookings ${snapshot.error}");
+              return showMessage(_stringResources.mServerError);
+            } else {
+              if (snapshot.data == null)
+                return Container();
+              else {
+                widget._coWorking.freeSeats = snapshot.data;
+                return Text(snapshot.data.toString() ?? '0');
+              }
+            }
+            break;
+          case ConnectionState.active:
+            break;
+        }
+      },
     );
   }
 
-  FutureBuilder<int> _buildFreeSeats(int id){
-   return FutureBuilder<int>(
-     future: _getFreeSeats(id),
-     builder: (ctx, snapshot){
-       switch(snapshot.connectionState){
-         case ConnectionState.none :
-           return showMessage(_stringResources.mNoInternet);
-         case ConnectionState.waiting :
-           return Container(
-               alignment: Alignment.center,
-               margin: const EdgeInsets.only(top: 50.0),
-               child: new CircularProgressIndicator()
-           );
-         case ConnectionState.done:
-           if(snapshot.hasError){
-             print("error  loading bookings ${snapshot.error}");
-             return showMessage(_stringResources.mServerError);
-           }else{
-             if(snapshot.data == null) return Container();
-             else {
-               widget._coWorking.freeSeats = snapshot.data;
-               return Text(snapshot.data.toString() ?? '0');
-             }
-           }
-           break;
-         case ConnectionState.active: break;
-       }
-     },
-   );
-  }
-
-  Future<int> _getFreeSeats(int id){
+  Future<int> _getFreeSeats(int id) {
     return _coWorkingApi.getFreeSeat(_token, id);
   }
 
@@ -779,7 +782,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     return (DateTime.now().day == dayOfTheWeek) ? Colors.white : defaultColor;
   }
 
-  Widget showMessage(String message){
-    return Center(child: Text(message),);
+  Widget showMessage(String message) {
+    return Center(
+      child: Text(message),
+    );
   }
 }

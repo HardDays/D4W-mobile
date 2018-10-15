@@ -14,10 +14,28 @@ class CoWorkingApi {
   factory CoWorkingApi() => _instance;
 
   Future<List<CoWorking>> searchCoWorkingPlaces  (String token, {Filter filter}) {
+
+    print('filter settings : $filter');
+    String stringFilter;
+    if(filter != null) {
+      String beginWork = filter.startHour;
+      String endWork = filter.endHour;
+      List<String> workingDays= [];
+      String beginDate = filter.date[0];
+      String endDate = filter.date[1];
+      stringFilter = "?begin_work=$beginWork?end_work=$endWork"
+          "?begin_date=$beginDate?end_date=$endDate";
+    }
+//      limit=10&offset=10&creator_id=1&full_name=aaa&description=bbb
+//      &address=ccc&additional_info=ddd&begin_work=10:20&end_work=15:30
+//    &working_days[]=Monday&working_days[]=Sunday&free=true
+//    &begin_date=25.01.1994&end_date=25.01.1994&lat=10.2&lng=20.3&radius=1
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
-    url +="?limit=10";
+//    url +="?limit=10";
+    url=(stringFilter==null) ? url+"?limit=10" : url+stringFilter+"?limit=10";
     return _networkUtil.get(url, headers: _headers).then((responseBody){
+      print("urllllll $url");
       List<CoWorking> coWorkings = [];
 
       responseBody['coworkings'].forEach((coWorking){

@@ -101,7 +101,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
       child: Column(
         children: <Widget>[
           Container(
-            height: _screenHeight * 0.17,
+            height: _screenHeight * 0.19,
             width: _screenWidth,
             decoration: BoxDecoration(
                color: Colors.white,

@@ -60,11 +60,16 @@ class AuthApi{
     assert(token !=null);
     String url = _usersUrl +"get_me";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
-    return _networkUtil.get(url,headers: _headers).then((respBody){
-      if(respBody[ConstantsManager.SERVER_ERROR] == null)
-        return true;
-      return false;
-    });
+    try{
+      return _networkUtil.get(url,headers: _headers).then((respBody){
+        if(respBody[ConstantsManager.SERVER_ERROR] == null)
+          return true;
+        return false;
+      });
+    }catch(e){
+      print('error fetching result : $e');
+      return Future.value(false);
+    }
   }
 
 
