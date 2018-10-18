@@ -25,16 +25,16 @@ class CoWorkingApi {
       String endDate = filter.date[1];
       stringFilter = "?begin_work=$beginWork&end_work=$endWork"
           "&begin_date=$beginDate&end_date=$endDate";
-//      if(filter.conferenceRoomNeeded ?? false)
-//        stringFilter+= '&ementies[]=conference_room';
-//      if(filter.kitchenNeeded ?? false)
-//              stringFilter+= '&ementies[]=kitchen';
-//      if(filter.printerNeeded ?? false)
-//              stringFilter+= '&ementies[]=printing';
-//      if(filter.teaOrCoffeeNeeded ?? false)
-//        stringFilter+= '&ementies[]=coffee';
-//      if(filter.parkForBicycleNeeded ?? false)
-//        stringFilter+= '&ementies[]=bike_storage';
+      if(filter.conferenceRoomNeeded ?? false)
+        stringFilter+= Uri.encodeQueryComponent('&ementies[]=conference_room');
+      if(filter.kitchenNeeded ?? false)
+              stringFilter+= Uri.encodeQueryComponent('&ementies[]=kitchen');
+      if(filter.printerNeeded ?? false)
+              stringFilter+= Uri.encodeQueryComponent('&ementies[]=printing');
+      if(filter.teaOrCoffeeNeeded ?? false)
+        stringFilter+= Uri.encodeQueryComponent('&ementies[]=coffee');
+      if(filter.parkForBicycleNeeded ?? false)
+        stringFilter+= Uri.encodeQueryComponent('&ementies[]=bike_storage');
 
     }
 //      limit=10&offset=10&creator_id=1&full_name=aaa&description=bbb
