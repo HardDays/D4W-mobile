@@ -110,7 +110,9 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                )
             ),
             child: Container(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0),
+              padding: EdgeInsets.only(
+                  top: _screenHeight * 0.02,
+                  bottom: _screenHeight * 0.02, left: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[

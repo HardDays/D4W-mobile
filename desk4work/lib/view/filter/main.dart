@@ -355,6 +355,10 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                 filter?.startHour,
                 filter?.endHour, isForStartTime))).then((result){
       if(result !=null){
+        int start = int.parse(result[0]?.substring(0,2) ?? '0')  ;
+        int end = int.parse(result[1]?.substring(0,2) ?? '0');
+
+        print('starrrrrrrrt $start end $end');
         _container.updateFilterInfo(
             startHour: result[0],
             endHour: result[1]);

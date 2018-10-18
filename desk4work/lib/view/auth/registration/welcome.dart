@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:desk4work/utils/string_resources.dart';
+import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 
-class WelcomeScreen extends StatelessWidget{
-  final   String _name;
 
+class WelcomeScreen extends StatelessWidget{
+
+  final String _name;
   const WelcomeScreen(this._name);
 
   @override

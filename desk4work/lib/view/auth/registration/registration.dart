@@ -8,6 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget{
 
+  Function(String fistname) _firstNameCallback;
+
+
+  RegistrationScreen(this._firstNameCallback);
+
   @override
   State<StatefulWidget> createState() => RegistrationScreenState();
 
@@ -21,6 +26,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
+  int _attempts = 1;
+
 
   AuthApi _authApi = AuthApi();
 
@@ -191,8 +198,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
                 sp.setString(ConstantsManager.FIRST_NAME, firstName);
                 sp.setString(ConstantsManager.PASSWORD_KEY, password);
               }).then((_){
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (ctx)=>WelcomeScreen(firstName)));
+                _authApi.login(email, password).then((serverResult){
+                  _handleLoginResponse(serverResult, firstName);
+                });
               });
             }else _showMessage("ERROR"); //TODO
       });
@@ -200,6 +208,42 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 //      TODO
     }
   }
+
+  _handleLoginResponse(Map<String, String> serverResult, String firstName) {
+    if (serverResult != null) {
+      if (serverResult['token'] != null) {
+        SharedPreferences.getInstance().then((sp) {
+          sp.setString(ConstantsManager.FIRST_NAME,
+              serverResult[ConstantsManager.FIRST_NAME]);
+          sp.setString(ConstantsManager.TOKEN_KEY,
+              serverResult[ConstantsManager.TOKEN_KEY])
+              .then((hasAdded) {
+            if (hasAdded){
+              setState(() {
+                widget._firstNameCallback(firstName);
+              });
+            }
+            else {
+              if (_attempts == 1) {
+                _attempts--;
+                _handleLoginResponse(serverResult,firstName);
+              } else
+                _showMessage("ERROR"); //TODO
+            }
+          });
+        });
+      } else if (serverResult['error'] != null) {
+        int error = int.parse(serverResult['error']);
+        if (error == 401)
+          _showMessage("Unauthorized");
+        else
+          _showMessage('ERROR');
+      }
+    } else
+      _showMessage('ERROR');
+  }
+
+
 
   bool _passwordsMatching(){
     String password = _passwordController.text;

@@ -104,6 +104,7 @@ class TimeFilterState extends State<TimeFilterScreen>{
                 padding: EdgeInsets.symmetric(vertical: (_screenHeight * .029)),
                 child: CupertinoTimerPicker(
                   mode: CupertinoTimerPickerMode.hm,
+                  initialTimerDuration: Duration(hours: 9),
                   onTimerDurationChanged: (duration){
                     String hh = (duration.inMinutes / 60).truncate().toString();
                     if(int.parse(hh) < 10)
@@ -113,12 +114,14 @@ class TimeFilterState extends State<TimeFilterScreen>{
                       mm = '0'+mm;
                     if(widget._isStart){
                       setState(() {
-                        _tempStart = "$hh:$mm";
+                        int hour = _getStart(int.parse(hh));
+                        _tempStart = "$hour:$mm";
                       });
                     }
                     else {
                       setState(() {
-                        _tempEnd = "$hh:$mm";
+                        int hour = _getEndTime(int.parse(hh));
+                        _tempEnd = "$hour:$mm";
                       });
                     }
                   },
@@ -135,6 +138,33 @@ class TimeFilterState extends State<TimeFilterScreen>{
     );
   }
 
+
+  int _getEndTime(int selected){
+    int start = 0;
+    try{
+      if(widget._startTime !=null){
+        start = (widget._startTime.length >1)
+            ? int.parse(widget._startTime.substring(0,2))
+            : int.parse(widget._startTime.substring(0));
+
+        if(start >= selected)
+          selected = start+1;
+      }
+    }catch (e){
+      print('parsing time start error $e');
+
+    }
+    if(selected <10) selected =10;
+    return selected;
+  }
+
+  int _getStart(int selected){
+    if(selected > 17)
+      selected --;
+    if(selected <9)
+      selected = 9;
+    return selected;
+  }
 
   Widget _getSaveButton(){
     return Center(

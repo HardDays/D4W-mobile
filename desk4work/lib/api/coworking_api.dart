@@ -23,8 +23,19 @@ class CoWorkingApi {
       List<String> workingDays= [];
       String beginDate = filter.date[0];
       String endDate = filter.date[1];
-      stringFilter = "?begin_work=$beginWork?end_work=$endWork"
-          "?begin_date=$beginDate?end_date=$endDate";
+      stringFilter = "?begin_work=$beginWork&end_work=$endWork"
+          "&begin_date=$beginDate&end_date=$endDate";
+//      if(filter.conferenceRoomNeeded ?? false)
+//        stringFilter+= '&ementies[]=conference_room';
+//      if(filter.kitchenNeeded ?? false)
+//              stringFilter+= '&ementies[]=kitchen';
+//      if(filter.printerNeeded ?? false)
+//              stringFilter+= '&ementies[]=printing';
+//      if(filter.teaOrCoffeeNeeded ?? false)
+//        stringFilter+= '&ementies[]=coffee';
+//      if(filter.parkForBicycleNeeded ?? false)
+//        stringFilter+= '&ementies[]=bike_storage';
+
     }
 //      limit=10&offset=10&creator_id=1&full_name=aaa&description=bbb
 //      &address=ccc&additional_info=ddd&begin_work=10:20&end_work=15:30
@@ -33,7 +44,7 @@ class CoWorkingApi {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
 //    url +="?limit=10";
-    url=(stringFilter==null) ? url+"?limit=10" : url+stringFilter+"?limit=10";
+    url=(stringFilter==null) ? url+"?limit=10" : url+stringFilter+"&limit=10";
     return _networkUtil.get(url, headers: _headers).then((responseBody){
       print("urllllll $url");
       List<CoWorking> coWorkings = [];
