@@ -89,15 +89,15 @@ class LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.all(Radius.circular(28.0))),
-                    child: Center(
-                      child: InkWell(
+                    child: InkWell(
+                      onTap: () {
+                        if (_formKey.currentState.validate()) _sendForm();
+                      },
+                      child: Center(
                         child: Text(
                           StringResources.of(context).bEnter,
                           style: TextStyle(color: Colors.orange),
                         ),
-                        onTap: () {
-                          if (_formKey.currentState.validate()) _sendForm();
-                        },
                       ),
                     )),
                   Container(
@@ -156,19 +156,19 @@ class LoginScreenState extends State<LoginScreen> {
           ),
           PositionedDirectional(
             bottom: 0.0,
-            child: Container(
-                width: _screenSize.width,
-                height: (_screenSize.height * .1214).toDouble(),
-                decoration: BoxDecoration(color: Colors.white),
-                child: Center(
-                  child: InkWell(
+            child: InkWell(
+              onTap: () => _openRegistrationScreen(),
+              child: Container(
+                  width: _screenSize.width,
+                  height: (_screenSize.height * .1214).toDouble(),
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: Center(
                     child: Text(
                       StringResources.of(context).bRegister,
                       style: TextStyle(color: Colors.orange),
                     ),
-                    onTap: () => _openRegistrationScreen(),
-                  ),
-                )
+                  )
+              ),
             ),
           )
         ],
@@ -197,6 +197,7 @@ class LoginScreenState extends State<LoginScreen> {
               hintStyle: TextStyle(color: Colors.white),
               hintText: StringResources.of(context).hLogin,
             ),
+            style: TextStyle(color: Colors.white),
             validator: (login) {
               if (login.isEmpty) return StringResources.of(context).eEmptyLogin;
             },
@@ -215,9 +216,10 @@ class LoginScreenState extends State<LoginScreen> {
                 hintStyle: TextStyle(color: Colors.white),
                 hintText: StringResources.of(context).hPassword),
             validator: (password) {
-              if (password.isEmpty)
+              if (password.isEmpty )
                 return StringResources.of(context).eEmptyPassword;
             },
+            style: TextStyle(color: Colors.white),
           )
         ],
       ),)
@@ -227,6 +229,7 @@ class LoginScreenState extends State<LoginScreen> {
   _sendForm() {
     String email = _emailController.text;
     String password = _passwordController.text;
+    print('sending form: $email $password');
     _authApi
         .login(email, password)
         .then((response) => _handleServerResponse(response));
@@ -239,18 +242,9 @@ class LoginScreenState extends State<LoginScreen> {
           sp.setString(ConstantsManager.FIRST_NAME,
               serverResult[ConstantsManager.FIRST_NAME]);
           sp.setString(ConstantsManager.TOKEN_KEY,
-              serverResult[ConstantsManager.TOKEN_KEY])
-              .then((hasAdded) {
-            if (hasAdded)
-              _openMainScreen();
-            else {
-              if (_attempts == 1) {
-                _attempts--;
-                _handleServerResponse(serverResult);
-              } else
-                _showToast("ERROR"); //TODO
-            }
-          });
+              serverResult[ConstantsManager.TOKEN_KEY]);
+          _openMainScreen();
+
         });
       } else if (serverResult['error'] != null) {
         int error = int.parse(serverResult['error']);

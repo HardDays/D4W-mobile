@@ -6,7 +6,7 @@ import 'package:desk4work/utils/network_util.dart';
 class AuthApi{
   NetworkUtil _networkUtil = NetworkUtil();
   Map<String, String> _headers = {'Accept': 'application/json'};
-  static const String _loginUrl = ConstantsManager.BASE_URL+"/auth/login";
+  static const String _loginUrl = ConstantsManager.BASE_URL+"auth/login";
   static const String _usersUrl = ConstantsManager.BASE_URL+ "users/";
 
   static AuthApi _instance = AuthApi.internal();
@@ -15,6 +15,9 @@ class AuthApi{
 
   Future<Map<String,String>> login(String email, String password){
     Map<String,String> body = {"email": email, "password" : password};
+    print('url $_loginUrl');
+    print('headers $_headers');
+
     return _networkUtil.post(_loginUrl,headers: _headers, body: body).then((tokenMaybe){
       if(tokenMaybe!=null && tokenMaybe['token'] !=null)
         return <String,String>{ConstantsManager.TOKEN_KEY : tokenMaybe[ConstantsManager.TOKEN_KEY].toString()};

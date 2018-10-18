@@ -157,26 +157,26 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   }
 
   Widget _getSendFormButton(){
-    return Container(
-        margin: EdgeInsets.only(top: (_screenSize.height * .0405).toDouble()),
-        width: (_screenSize.width * .84).toDouble(),
-        height: (_screenSize.height * .0825).toDouble(),
-        decoration:  BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,
-            gradient: BoxDecorationUtil.getOrangeGradient().gradient,
-            borderRadius: BorderRadius.all(Radius.circular(28.0))),
-        child: Center(
-          child: InkWell(
+    return InkWell(
+      onTap: () {
+        if (_formKey.currentState.validate()) _sendForm();
+      },
+      child: Container(
+          margin: EdgeInsets.only(top: (_screenSize.height * .0405).toDouble()),
+          width: (_screenSize.width * .84).toDouble(),
+          height: (_screenSize.height * .0825).toDouble(),
+          decoration:  BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              gradient: BoxDecorationUtil.getOrangeGradient().gradient,
+              borderRadius: BorderRadius.all(Radius.circular(28.0))),
+          child: Center(
             child: Text(
               StringResources.of(context).bRegister,
               style: TextStyle(color: Colors.white),
             ),
-            onTap: () {
-              if (_formKey.currentState.validate()) _sendForm();
-            },
-          ),
-        ));
+          )),
+    );
   }
 
   _sendForm(){
