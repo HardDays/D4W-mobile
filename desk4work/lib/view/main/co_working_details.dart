@@ -84,6 +84,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           ],
         ),
         body: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             Container(
                 height: (_screenHeight * .3238),
