@@ -174,7 +174,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 children: <Widget>[
                   Expanded(
                     child: Hero(
-                        tag: 'coWorkingImage-id ${coWorking.imageId}',
+                        tag: 'coWorkingImage-id ${coWorking.imageId ?? DateTime.now().millisecondsSinceEpoch}',
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           placeholder: Image.asset(

@@ -108,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
         }
       }
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>FilterRoot()));
+    }).catchError((e){
+      print("account check error: $e");
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
     });
   }
 
