@@ -132,10 +132,15 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   }
 
   _showOnMap() {
+    LatLng defautPosition = (_filter != null &&
+            _filter.place != null &&
+            _filter.place != stringResources.tWherever)
+        ? _cities[_filter.place]
+        : _userLocation;
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CoWorkingPlaceMapScreen(_coWorkings)));
+            builder: (context) => CoWorkingPlaceMapScreen(_coWorkings, defaultPosition: defautPosition,)));
   }
 
   _openFilter() {
@@ -157,7 +162,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
           .searchCoWorkingPlaces(_token,
-              location: _cities[_filter?.place] ?? _userLocation, filter: _filter)
+              location: _cities[_filter?.place] ?? _userLocation,
+              filter: _filter)
           .then((coWorkings) {
         return coWorkings;
       });
