@@ -54,14 +54,16 @@ class AuthApi{
     String url = _usersUrl + "forgot_password";
     return _networkUtil.post(url,body:{ConstantsManager.EMAIL_KEY: phoneOrEmail},
         headers: _headers).then((respBody){
-          if(respBody[ConstantsManager.SERVER_ERROR] ==null){
+          print('recover password response ${respBody}');
+          if(respBody !=null && (respBody.runtimeType == String ||
+              respBody[ConstantsManager.SERVER_ERROR] ==null)){
             return true;
           }
           return false;
     });
   }
 
-  Future<bool> checkLogin(String token){
+  Future checkLogin(String token){
     assert(token !=null);
     String url = _usersUrl +"get_me";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
@@ -70,6 +72,8 @@ class AuthApi{
         if(respBody[ConstantsManager.SERVER_ERROR] == null)
           return true;
         return false;
+      }).catchError((e){
+        return e;
       });
     }catch(e){
       print('error fetching result : $e');

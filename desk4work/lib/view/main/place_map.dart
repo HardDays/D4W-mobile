@@ -15,8 +15,9 @@ import 'package:geolocator/geolocator.dart';
 
 class CoWorkingPlaceMapScreen extends StatefulWidget {
   List<CoWorking> _coworkings;
+  LatLng defaultPosition;
 
-  CoWorkingPlaceMapScreen(List<CoWorking> coworkings){
+  CoWorkingPlaceMapScreen(List<CoWorking> coworkings,{this.defaultPosition}){
     _coworkings = (coworkings ?? []).where((cw)=> cw.lat != null && cw.lng != null).toList();
   }
 
@@ -44,18 +45,24 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
   @override
   void initState(){
     super.initState();
-
+    _lastPos = widget.defaultPosition;
     _geolocator = Geolocator();
     _mapController.onReady.then(
       (ready){
-        _geolocator.getCurrentPosition().then((pos){
-          if (pos != null){
-            setState(() {                                     
-              _lastPos = LatLng(pos.latitude, pos.longitude);
-              _mapController.move(_lastPos, 13.0);
-            });
-          }
-        }).timeout(Duration(seconds: 5));
+        if(_lastPos == null){
+          _geolocator.getCurrentPosition().then((pos){
+            if (pos != null){
+              setState(() {
+                _lastPos = LatLng(pos.latitude, pos.longitude);
+                _mapController.move(_lastPos, 13.0);
+              });
+            }
+          }).timeout(Duration(seconds: 5));
+        }else{
+          setState(() {
+            _mapController.move(_lastPos, 13.0);
+          });
+        }
       }
     );
   }

@@ -14,7 +14,7 @@ class CoWorkingApi {
   CoWorkingApi.internal();
   factory CoWorkingApi() => _instance;
 
-  Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  userLocation, Filter filter}) {
+  Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  location, Filter filter}) {
 
     print('filter settings : $filter');
     String stringFilter="?";
@@ -53,9 +53,9 @@ class CoWorkingApi {
 
 
     }
-    if(userLocation !=null){
-      double lat = userLocation.latitude;
-      double lon = userLocation.longitude;
+    if(location !=null){
+      double lat = location.latitude;
+      double lon = location.longitude;
       latLong = "&lat=$lat&lng=$lon";
     }
     String lastParam = "limit=25${latLong ?? ""}";

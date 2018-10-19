@@ -52,17 +52,17 @@ class RecoverEmailSentScreen extends StatelessWidget{
                     color: Colors.white,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.all(Radius.circular(28.0))),
-                child: Center(
-                  child: InkWell(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushReplacement(
+                        MaterialPageRoute(builder: (ctx)=> LoginScreen()));
+                  },
+                  child: Center(
                     child: Text(
-                      StringResources.of(context).bRecover,
+                      StringResources.of(context).bEnter,
                       style: TextStyle(color: Colors.orange),
                     ),
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushReplacement(
-                          MaterialPageRoute(builder: (ctx)=> LoginScreen()));
-                    },
                   ),
                 ))
           ],

@@ -74,20 +74,25 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.place,
-                color: Colors.white,
-              ),
-              onPressed:(){
-                _showOnMap();
-              }
-            )
+                icon: Icon(
+                  Icons.place,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _showOnMap();
+                })
           ],
         ),
         body: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             Container(
-                height: (_screenHeight * .3238), child: _buildImagesSlide()),
+                height: (_screenHeight * .3238),
+                child: (widget._coWorking.images != null)
+                    ? _buildImagesSlide()
+                    : Container(
+                        child: Image.asset('assets/placeholder.png'),
+                      )),
             Container(
               margin: EdgeInsets.symmetric(
                 vertical: _screenHeight * .03,
@@ -104,7 +109,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                       padding: EdgeInsets.symmetric(
                           vertical: _screenHeight * .0105)),
                   Text(
-                    widget._coWorking.description,
+                    widget._coWorking.description ?? '',
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],
@@ -145,10 +150,12 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 ],
               ),
             ),
-            Container(
-              height: (_screenHeight * .276),
-              child: _buildMap(),
-            ),
+            (widget._coWorking.lat != null && widget._coWorking.lng != null)
+                ? Container(
+                    height: (_screenHeight * .276),
+                    child: _buildMap(),
+                  )
+                : Container(),
             Container(
               height: (_screenHeight * .0618),
               padding: EdgeInsets.symmetric(
@@ -158,7 +165,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   border: BorderDirectional(
                       bottom: BorderSide(color: Colors.black26, width: .5))),
               child: InkWell(
-                onTap: ()=>_showOnMap(),
+                onTap: () => _showOnMap(),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -213,44 +220,57 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     String _mapBoxId = "mapbox.streets";
     double lat = widget._coWorking.lat;
     double lng = widget._coWorking.lng;
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width,
-          child: FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                center: LatLng(lat, lng),
-                zoom: 15.0,
-              ),
-              layers: [
-                TileLayerOptions(
-                  urlTemplate: _mapBoxUrl,
-                  additionalOptions: {
-                    'accessToken': _mapBoxToken,
-                    'id': _mapBoxId,
-                  },
-                ),
-                MarkerLayerOptions(markers: <Marker>[
-                  Marker(
-                      point: LatLng(lat, lng),
-                      builder: (ctx) {
-                        return Container(
-                          width: 70.0,
-                          height: 70.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: AssetImage('assets/pin_orange.png'),
-                            ),
-                          ),
-                        );
-                      })
-                ])
-              ]),
-        )
-      ],
-    );
+    LatLng mapCenter;
+    if (lat != null && lng != null)
+      mapCenter = LatLng(lat, lng);
+    else
+      return Container();
+    try {
+      return Stack(
+        children: <Widget>[
+          mapCenter != null
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        center: LatLng(lat, lng),
+                        zoom: 15.0,
+                      ),
+                      layers: [
+                        TileLayerOptions(
+                          urlTemplate: _mapBoxUrl,
+                          additionalOptions: {
+                            'accessToken': _mapBoxToken,
+                            'id': _mapBoxId,
+                          },
+                        ),
+                        MarkerLayerOptions(markers: <Marker>[
+                          Marker(
+                              point: LatLng(lat, lng),
+                              builder: (ctx) {
+                                return Container(
+                                  width: 70.0,
+                                  height: 70.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fitHeight,
+                                      image:
+                                          AssetImage('assets/pin_orange.png'),
+                                    ),
+                                  ),
+                                );
+                              })
+                        ])
+                      ]),
+                )
+              : Container()
+        ],
+      );
+    } catch (e) {
+      print('building map in working details $e');
+      return Container();
+    }
   }
 
   Widget _getWorkingHours() {
@@ -282,8 +302,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 childAspectRatio: 4.0833,
                 crossAxisCount: 2,
                 shrinkWrap: true,
-                children: List.generate(widget._coWorking.workingDays.length,
-                    (index) {
+                children: List.generate(
+                    widget._coWorking.workingDays.length ?? 0, (index) {
                   return Container(
                       child: _getWorkgingHours(
                           widget._coWorking.workingDays[index]));
@@ -690,7 +710,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           itemBuilder: (context, index) {
             return _getImageForHeader(widget._coWorking.images, index);
           },
-          itemCount: widget._coWorking.images.length,
+          itemCount: widget._coWorking.images?.length ?? 0,
           controller: _controller,
           physics: AlwaysScrollableScrollPhysics(),
         ),
@@ -704,7 +724,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             child: new Center(
               child: new DotsIndicator(
                 controller: _controller,
-                itemCount: widget._coWorking.images.length,
+                itemCount: widget._coWorking.images?.length ?? 0,
                 onPageSelected: (int page) {
                   _controller.animateToPage(
                     page,
@@ -722,7 +742,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   Widget _getImageForHeader(List<int> images, int index) {
     return Hero(
-        tag: "cowinkingdetails " + images[index].toString(),
+        tag: "cowinkingdetails" + images[index].toString(),
         child: CachedNetworkImage(
           fit: BoxFit.fill,
           placeholder: CircularProgressIndicator(),
