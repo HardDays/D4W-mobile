@@ -54,7 +54,9 @@ class AuthApi{
     String url = _usersUrl + "forgot_password";
     return _networkUtil.post(url,body:{ConstantsManager.EMAIL_KEY: phoneOrEmail},
         headers: _headers).then((respBody){
-          if(respBody[ConstantsManager.SERVER_ERROR] ==null){
+          print('recover password response ${respBody}');
+          if(respBody !=null && (respBody.runtimeType == String ||
+              respBody[ConstantsManager.SERVER_ERROR] ==null)){
             return true;
           }
           return false;

@@ -6,19 +6,16 @@ import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RegistrationScreen extends StatefulWidget{
-
+class RegistrationScreen extends StatefulWidget {
   Function(String fistname) _firstNameCallback;
-
 
   RegistrationScreen(this._firstNameCallback);
 
   @override
   State<StatefulWidget> createState() => RegistrationScreenState();
-
 }
 
-class RegistrationScreenState extends State<RegistrationScreen>{
+class RegistrationScreenState extends State<RegistrationScreen> {
   var _formKey = GlobalKey<FormState>();
   Size _screenSize;
   TextEditingController _loginController = TextEditingController();
@@ -27,7 +24,6 @@ class RegistrationScreenState extends State<RegistrationScreen>{
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   int _attempts = 1;
-
 
   AuthApi _authApi = AuthApi();
 
@@ -45,25 +41,32 @@ class RegistrationScreenState extends State<RegistrationScreen>{
 //          mainAxisAlignment: MainAxisAlignment.start,
 //          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/logo_horizontal_color_shaded.png',
+            Image.asset(
+              'assets/logo_horizontal_color_shaded.png',
               fit: BoxFit.contain,
-              width:(_screenSize.width * .4311).toDouble() ,
+              width: (_screenSize.width * .4311).toDouble(),
               height: (_screenSize.height * .0836).toDouble(),
             ),
             Container(
-              margin: EdgeInsets.only(top: (_screenSize.height * .0633).toDouble()),
-              child: Form(child: _getForm(), key: _formKey,),
-
+              margin:
+                  EdgeInsets.only(top: (_screenSize.height * .0633).toDouble()),
+              child: Form(
+                child: _getForm(),
+                key: _formKey,
+              ),
             ),
             _getSendFormButton(),
-            Padding( padding: EdgeInsets.only(bottom: (_screenSize.height * .0735).toDouble()),)
-
+            Padding(
+              padding: EdgeInsets.only(
+                  bottom: (_screenSize.height * .0735).toDouble()),
+            )
           ].reversed.toList(),
         ),
       ),
     );
   }
-  Widget _getForm(){
+
+  Widget _getForm() {
     double formFieldPaddingVert = (_screenSize.height * .0195).toDouble();
     double formFieldPaddingHor = (_screenSize.width * .0667).toDouble();
     return Column(
@@ -73,17 +76,19 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           controller: _loginController,
           decoration: InputDecoration(
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(28.0))
-            ),
-            contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+                borderRadius: BorderRadius.all(Radius.circular(28.0))),
+            contentPadding: EdgeInsets.symmetric(
+                vertical: formFieldPaddingVert,
+                horizontal: formFieldPaddingHor),
             hintText: StringResources.of(context).hLogin,
           ),
           validator: (login) {
-            if (login.isEmpty ) return StringResources.of(context).eEmptyLogin;
+            if (login.isEmpty) return StringResources.of(context).eEmptyLogin;
           },
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
+          padding: EdgeInsets.symmetric(
+              vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
           keyboardType: TextInputType.emailAddress,
@@ -92,15 +97,17 @@ class RegistrationScreenState extends State<RegistrationScreen>{
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28.0)),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: formFieldPaddingVert,
+                  horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hEmail),
           validator: (email) {
-            if (email.isEmpty)
-              return StringResources.of(context).eEmptyEmail;
+            if (email.isEmpty) return StringResources.of(context).eEmptyEmail;
           },
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
+          padding: EdgeInsets.symmetric(
+              vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
           keyboardType: TextInputType.phone,
@@ -109,15 +116,17 @@ class RegistrationScreenState extends State<RegistrationScreen>{
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28.0)),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: formFieldPaddingVert,
+                  horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPhone),
           validator: (phone) {
-            if (phone.isEmpty)
-              return StringResources.of(context).eEmptyPhone;
+            if (phone.isEmpty) return StringResources.of(context).eEmptyPhone;
           },
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
+          padding: EdgeInsets.symmetric(
+              vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
           obscureText: true,
@@ -126,7 +135,9 @@ class RegistrationScreenState extends State<RegistrationScreen>{
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28.0)),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: formFieldPaddingVert,
+                  horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPassword),
           validator: (password) {
             if (password.isEmpty)
@@ -134,7 +145,8 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           },
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: (_screenSize.height * .014).toDouble()),
+          padding: EdgeInsets.symmetric(
+              vertical: (_screenSize.height * .014).toDouble()),
         ),
         TextFormField(
           obscureText: true,
@@ -143,12 +155,14 @@ class RegistrationScreenState extends State<RegistrationScreen>{
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(28.0)),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: formFieldPaddingVert, horizontal: formFieldPaddingHor),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: formFieldPaddingVert,
+                  horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPasswordConfirm),
           validator: (passwordConfirm) {
             if (passwordConfirm.isEmpty)
               return StringResources.of(context).eEmptyPasswordConfirm;
-            else if(! _passwordsMatching())
+            else if (!_passwordsMatching())
               return StringResources.of(context).eNotMatchingPasswords;
           },
         )
@@ -156,7 +170,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
     );
   }
 
-  Widget _getSendFormButton(){
+  Widget _getSendFormButton() {
     return InkWell(
       onTap: () {
         if (_formKey.currentState.validate()) _sendForm();
@@ -165,7 +179,7 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           margin: EdgeInsets.only(top: (_screenSize.height * .0405).toDouble()),
           width: (_screenSize.width * .84).toDouble(),
           height: (_screenSize.height * .0825).toDouble(),
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.rectangle,
               gradient: BoxDecorationUtil.getOrangeGradient().gradient,
@@ -179,32 +193,34 @@ class RegistrationScreenState extends State<RegistrationScreen>{
     );
   }
 
-  _sendForm(){
+  _sendForm() {
     String login = _loginController.text;
     String email = _emailController.text;
     String phone = _phoneController.text;
     String password = _passwordController.text;
     String passwordConfirm = _passwordConfirmController.text;
 
-    try{
-      _authApi.register(login, email, phone, password, passwordConfirm)
-          .then((response){
-            if(response !=null && response[ConstantsManager.EMAIL_KEY] !=null){
-              String email = response[ConstantsManager.EMAIL_KEY];
-              String firstName= response[ConstantsManager.FIRST_NAME];
-              String password = response[ConstantsManager.PASSWORD_KEY];
-              SharedPreferences.getInstance().then((sp){
-                sp.setString(ConstantsManager.EMAIL_KEY, email);
-                sp.setString(ConstantsManager.FIRST_NAME, firstName);
-                sp.setString(ConstantsManager.PASSWORD_KEY, password);
-              }).then((_){
-                _authApi.login(email, password).then((serverResult){
-                  _handleLoginResponse(serverResult, firstName);
-                });
-              });
-            }else _showMessage("ERROR"); //TODO
+    try {
+      _authApi
+          .register(login, email, phone, password, passwordConfirm)
+          .then((response) {
+        if (response != null && response[ConstantsManager.EMAIL_KEY] != null) {
+          String email = response[ConstantsManager.EMAIL_KEY];
+          String firstName = response[ConstantsManager.FIRST_NAME];
+          String password = response[ConstantsManager.PASSWORD_KEY];
+          SharedPreferences.getInstance().then((sp) {
+            sp.setString(ConstantsManager.EMAIL_KEY, email);
+            sp.setString(ConstantsManager.FIRST_NAME, firstName);
+            sp.setString(ConstantsManager.PASSWORD_KEY, password);
+          }).then((_) {
+            _authApi.login(email, password).then((serverResult) {
+              _handleLoginResponse(serverResult, firstName);
+            });
+          });
+        } else
+          _showMessage("ERROR"); //TODO
       });
-    }catch (e){
+    } catch (e) {
 //      TODO
     }
   }
@@ -216,20 +232,11 @@ class RegistrationScreenState extends State<RegistrationScreen>{
           sp.setString(ConstantsManager.FIRST_NAME,
               serverResult[ConstantsManager.FIRST_NAME]);
           sp.setString(ConstantsManager.TOKEN_KEY,
-              serverResult[ConstantsManager.TOKEN_KEY])
-              .then((hasAdded) {
-            if (hasAdded){
-              setState(() {
-                widget._firstNameCallback(firstName);
-              });
-            }
-            else {
-              if (_attempts == 1) {
-                _attempts--;
-                _handleLoginResponse(serverResult,firstName);
-              } else
-                _showMessage("ERROR"); //TODO
-            }
+                  serverResult[ConstantsManager.TOKEN_KEY])
+              .then((_) {
+            setState(() {
+              widget._firstNameCallback(firstName);
+            });
           });
         });
       } else if (serverResult['error'] != null) {
@@ -243,19 +250,14 @@ class RegistrationScreenState extends State<RegistrationScreen>{
       _showMessage('ERROR');
   }
 
-
-
-  bool _passwordsMatching(){
+  bool _passwordsMatching() {
     String password = _passwordController.text;
     String passwordConfirm = _passwordConfirmController.text;
-    if(password.length > 0 && passwordConfirm.length > 0){
+    if (password.length > 0 && passwordConfirm.length > 0) {
       return (passwordConfirm.trim() == password.trim());
     }
     return false;
   }
 
-  _showMessage(String message){
-
-  }
-
+  _showMessage(String message) {}
 }

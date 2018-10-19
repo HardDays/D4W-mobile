@@ -6,12 +6,14 @@ import 'package:http/http.dart' as http;
 class NetworkUtil {
   // next three lines makes this class a Singleton
   static NetworkUtil _instance = new NetworkUtil.internal();
+
   NetworkUtil.internal();
+
   factory NetworkUtil() => _instance;
 
   final JsonDecoder _decoder = new JsonDecoder();
 
-  Future<dynamic> get(String url,{Map headers}) {
+  Future<dynamic> get(String url, {Map headers}) {
     return http.get(url, headers: headers).then((http.Response response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
@@ -19,10 +21,10 @@ class NetworkUtil {
       if (statusCode < 200 || statusCode > 400) {
         print("raw response ${response.reasonPhrase}");
         print("headers : ${response.toString()}");
-        return {ConstantsManager.SERVER_ERROR : statusCode};
+        return {ConstantsManager.SERVER_ERROR: statusCode};
 //        throw new Exception("Error while fetching data");
       }
-      if(json == null) return null;
+      if (json == null) return null;
       return _decoder.convert(res);
     });
   }
@@ -31,18 +33,23 @@ class NetworkUtil {
     return http
         .post(url, body: body, headers: headers, encoding: encoding)
         .then((http.Response response) {
-          print('post response url ${url}');
-          print('post response headers ${response.headers}');
-          print('post response status ${response.statusCode}');
-          print('post response body ${response.body}');
-          final String res = response.body;
-          final int statusCode = response.statusCode;
-          if (statusCode < 200 || statusCode > 400) {
-    //        throw new Exception(res);
-            return {ConstantsManager.SERVER_ERROR : statusCode};
-          }
-          if (json == null) return null;
-          return _decoder.convert(res);
+      print('post response url ${url}');
+      print('post response headers ${response.headers}');
+      print('post response status ${response.statusCode}');
+      print('post response body ${response.body}');
+      final String res = response.body;
+      final int statusCode = response.statusCode;
+      if (statusCode < 200 || statusCode > 400) {
+        //        throw new Exception(res);
+        return {ConstantsManager.SERVER_ERROR: statusCode};
+      }
+      if (json == null) return null;
+      try {
+        return _decoder.convert(res);
+      } catch (e) {
+        print('response body parse error: e');
+        return res;
+      }
     });
   }
 
@@ -50,18 +57,18 @@ class NetworkUtil {
     return http
         .put(url, body: json.encode(body), headers: headers, encoding: encoding)
         .then((http.Response response) {
-          print('post response url ${url}');
-          print('post response headers ${response.headers}');
-          print('post response status ${response.statusCode}');
-          print('post response body ${response.body}');
-          final String res = response.body;
-          final int statusCode = response.statusCode;
-          if (statusCode < 200 || statusCode > 400) {
-    //        throw new Exception(res);
-            return {ConstantsManager.SERVER_ERROR : statusCode};
-          }
-          if (json == null) return null;
-          return _decoder.convert(res);
+      print('post response url ${url}');
+      print('post response headers ${response.headers}');
+      print('post response status ${response.statusCode}');
+      print('post response body ${response.body}');
+      final String res = response.body;
+      final int statusCode = response.statusCode;
+      if (statusCode < 200 || statusCode > 400) {
+        //        throw new Exception(res);
+        return {ConstantsManager.SERVER_ERROR: statusCode};
+      }
+      if (json == null) return null;
+      return _decoder.convert(res);
     });
   }
 }

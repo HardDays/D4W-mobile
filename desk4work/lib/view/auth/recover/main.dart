@@ -36,7 +36,7 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
             Row(children: <Widget>[
               BackButton(color: Colors.white,)
             ],),
-            Padding(padding: EdgeInsets.only(top: (screenHeight * .0989).toDouble()),),
+            Padding(padding: EdgeInsets.only(top: (screenHeight * .0489).toDouble()),),
             Image.asset('assets/logo_horizontal.png',width: (screenWidth * .5573),
               height: (screenHeight * .1079),
               fit: BoxFit.fill,),
@@ -55,6 +55,7 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
               child: Form(
                 key: _formKey,
                 child: TextFormField(
+                  style: TextStyle(color: Colors.white),
                   controller: _emailOrPhoneController,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -77,15 +78,15 @@ class RecoverMainScreenState extends State<RecoverMainScreen>{
                     color: Colors.white,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.all(Radius.circular(28.0))),
-                child: Center(
-                  child: InkWell(
+                child: InkWell(
+                  onTap: (){
+                    if (_formKey.currentState.validate()) _sendForm();
+                  },
+                  child: Center(
                     child: Text(
                       StringResources.of(context).bRecover,
                       style: TextStyle(color: Colors.orange),
                     ),
-                    onTap: () {
-                      if (_formKey.currentState.validate()) _sendForm();
-                    },
                   ),
                 ))
                 ],
