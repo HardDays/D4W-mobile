@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 
 class PlaceFilterScreen extends StatefulWidget {
   final String _place;
+  static const String KAZAN = 'Казань';
+  static const String MOSCOW = 'Москва';
+  static const String YEKATERINBURG  = 'Екатеринбург';
+  static const String SAINT_PETERSBURG = 'Санкт-Петербург';
+
 
   PlaceFilterScreen(this._place);
 
@@ -162,10 +167,10 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                             children: <Widget>[
                               InkWell(
                                 child: Text(
-                                  'Казань',
+                                  PlaceFilterScreen.KAZAN,
                                 ),
                                 onTap: () {
-                                  _choosePlace('Казань');
+                                  _choosePlace(PlaceFilterScreen.KAZAN);
                                 },
                               ),
                             ],
@@ -183,10 +188,10 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                             children: <Widget>[
                               InkWell(
                                 child: Text(
-                                  'Москва',
+                                  PlaceFilterScreen.MOSCOW,
                                 ),
                                 onTap: () {
-                                  _choosePlace('Москва');
+                                  _choosePlace(PlaceFilterScreen.MOSCOW);
                                 },
                               ),
                             ],
@@ -204,10 +209,10 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                             children: <Widget>[
                               InkWell(
                                 child: Text(
-                                  'Екатеринбург',
+                                  PlaceFilterScreen.YEKATERINBURG,
                                 ),
                                 onTap: () {
-                                  _choosePlace('Екатеринбург');
+                                  _choosePlace(PlaceFilterScreen.YEKATERINBURG);
                                 },
                               ),
                             ],
@@ -225,10 +230,10 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                             children: <Widget>[
                               InkWell(
                                 child: Text(
-                                  'Санкт-Петербург',
+                                  PlaceFilterScreen.SAINT_PETERSBURG,
                                 ),
                                 onTap: () {
-                                  _choosePlace('Санкт-Петербург');
+                                  _choosePlace(PlaceFilterScreen.SAINT_PETERSBURG);
                                 },
                               ),
                             ],

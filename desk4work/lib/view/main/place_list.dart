@@ -7,6 +7,7 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/filter/filter_root.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
+import 'package:desk4work/view/filter/place_filter.dart';
 import 'package:desk4work/view/main/co_working_details.dart';
 import 'package:desk4work/view/main/place_map.dart';
 import 'package:flutter/material.dart';
@@ -28,18 +29,25 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   Size _screenSize;
   Geolocator _geolocator;
   LatLng _userLocation;
-
+  Map<String, LatLng> _cities;
   double _screenHeight, _screenWidth;
   ImageApi _imageApi;
   String _token;
+  Filter _filter;
 
   @override
   void initState() {
+    _cities = {
+      PlaceFilterScreen.SAINT_PETERSBURG: LatLng(59.93863, 30.31413),
+      PlaceFilterScreen.MOSCOW: LatLng(55.75222, 37.61556),
+      PlaceFilterScreen.KAZAN: LatLng(55.78874, 49.12214),
+      PlaceFilterScreen.YEKATERINBURG: LatLng(56.8519, 60.6122)
+    };
     _imageApi = ImageApi();
     _geolocator = Geolocator();
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      _geolocator.getCurrentPosition().then((pos){
-        if (pos != null){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _geolocator.getCurrentPosition().then((pos) {
+        if (pos != null) {
           setState(() {
             _userLocation = LatLng(pos.latitude, pos.longitude);
           });
@@ -52,6 +60,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   @override
   Widget build(BuildContext context) {
     stringResources = StringResources.of(context);
+    _cities[stringResources.tWherever] = null;
+    _cities[stringResources.tNearby] = _userLocation;
     _screenSize = MediaQuery.of(context).size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
@@ -79,9 +89,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
-          child: _buildCoWorkingList()
-      ),
+          padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
+          child: _buildCoWorkingList()),
     );
   }
 
@@ -134,11 +143,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         .then((shouldSearch) {
       if (shouldSearch != null && shouldSearch[0]) {
         Filter filter = shouldSearch[1];
-
-        _getCoWorkings(filter: filter).then((coWorkings) {
-          setState(() {
-            _coWorkings = coWorkings;
-          });
+        setState(() {
+          this._filter = filter;
         });
         print('shouldSearch ${shouldSearch[1]}');
       } else
@@ -146,11 +152,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     });
   }
 
-  Future<List<CoWorking>> _getCoWorkings({Filter filter}) {
+  Future<List<CoWorking>> _getCoWorkings() {
     return SharedPreferences.getInstance().then((sp) {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
-          .searchCoWorkingPlaces(_token, userLocation: _userLocation, filter: filter)
+          .searchCoWorkingPlaces(_token,
+              location: _cities[_filter?.place] ?? _userLocation, filter: _filter)
           .then((coWorkings) {
         return coWorkings;
       });
@@ -174,7 +181,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 children: <Widget>[
                   Expanded(
                     child: Hero(
-                        tag: 'coWorkingImage-id ${coWorking.imageId ?? DateTime.now().millisecondsSinceEpoch}',
+                        tag:
+                            'coWorkingImage-id ${coWorking.imageId ?? DateTime.now().millisecondsSinceEpoch}',
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           placeholder: Image.asset(
