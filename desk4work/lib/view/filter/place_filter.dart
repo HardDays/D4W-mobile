@@ -19,6 +19,14 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
   Size _screenSize;
   double _screenHeight, _screenWidth;
   String _tempSelection;
+  String _place;
+
+
+  @override
+  void initState() {
+    _place = widget._place;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +83,7 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 8.0),
                         ),
-                        Text((widget._place ??
+                        Text((_place ??
                             _tempSelection ??
                             _stringResources.hPlace))
                       ],
@@ -243,6 +251,7 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
 
   void _choosePlace(String place) {
     setState(() {
+      _place = place;
       _tempSelection = place;
     });
   }

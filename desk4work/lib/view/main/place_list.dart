@@ -10,6 +10,8 @@ import 'package:desk4work/view/filter/filter_state_container.dart';
 import 'package:desk4work/view/main/co_working_details.dart';
 import 'package:desk4work/view/main/place_map.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -24,6 +26,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
   StringResources stringResources;
   Size _screenSize;
+  Geolocator _geolocator;
+  LatLng _userLocation;
 
   double _screenHeight, _screenWidth;
   ImageApi _imageApi;
@@ -32,6 +36,16 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   @override
   void initState() {
     _imageApi = ImageApi();
+    _geolocator = Geolocator();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _geolocator.getCurrentPosition().then((pos){
+        if (pos != null){
+          setState(() {
+            _userLocation = LatLng(pos.latitude, pos.longitude);
+          });
+        }
+      }).timeout(Duration(seconds: 5));
+    });
     super.initState();
   }
 
@@ -120,6 +134,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         .then((shouldSearch) {
       if (shouldSearch != null && shouldSearch[0]) {
         Filter filter = shouldSearch[1];
+
         _getCoWorkings(filter: filter).then((coWorkings) {
           setState(() {
             _coWorkings = coWorkings;
@@ -135,7 +150,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     return SharedPreferences.getInstance().then((sp) {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
-          .searchCoWorkingPlaces(_token, filter: filter)
+          .searchCoWorkingPlaces(_token, userLocation: _userLocation, filter: filter)
           .then((coWorkings) {
         return coWorkings;
       });

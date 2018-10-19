@@ -15,6 +15,8 @@ class AuthApi{
 
   Future<Map<String,String>> login(String email, String password){
     Map<String,String> body = {"email": email, "password" : password};
+    _headers= {};
+    _headers = {'Accept': 'application/json'};
     print('url $_loginUrl');
     print('headers $_headers');
 
@@ -71,7 +73,7 @@ class AuthApi{
       });
     }catch(e){
       print('error fetching result : $e');
-      return Future.value(false);
+      return e;
     }
   }
 

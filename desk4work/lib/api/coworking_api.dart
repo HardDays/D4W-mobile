@@ -4,6 +4,7 @@ import 'package:desk4work/model/co_working.dart';
 import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/network_util.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
+import 'package:latlong/latlong.dart';
 
 class CoWorkingApi {
   NetworkUtil _networkUtil = NetworkUtil();
@@ -13,18 +14,32 @@ class CoWorkingApi {
   CoWorkingApi.internal();
   factory CoWorkingApi() => _instance;
 
-  Future<List<CoWorking>> searchCoWorkingPlaces  (String token, {Filter filter}) {
+  Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  userLocation, Filter filter}) {
 
     print('filter settings : $filter');
-    String stringFilter;
+    String stringFilter="?";
+    String latLong;
+    Map<String,String> filters = {};
     if(filter != null) {
-      String beginWork = filter.startHour;
-      String endWork = filter.endHour;
+      if(filter.place == "Nearby" || filter.place == "Рядом")
+        filters['radius'] = '1';
+      if(filter.startHour != null) {
+        String beginWork = filter.startHour;
+        filters['begin_work'] = beginWork;
+      }
+      if(filter.endHour !=null) {
+        String endWork = filter.endHour;
+        filters['end_work'] = endWork;
+      }
+      filters.forEach((k,v){
+        stringFilter+= '$k=$v&';
+      });
       List<String> workingDays= [];
-      String beginDate = filter.date[0];
-      String endDate = filter.date[1];
-      stringFilter = "?begin_work=$beginWork&end_work=$endWork"
-          "&begin_date=$beginDate&end_date=$endDate";
+      if (filter.date !=null && filter.date.length >0) {
+        String beginDate = filter.date[0];
+        String endDate = filter.date[1];
+        stringFilter += "begin_date=$beginDate&end_date=$endDate";
+      }
       if(filter.conferenceRoomNeeded ?? false)
         stringFilter+= Uri.encodeQueryComponent('&ementies[]=conference_room');
       if(filter.kitchenNeeded ?? false)
@@ -36,7 +51,15 @@ class CoWorkingApi {
       if(filter.parkForBicycleNeeded ?? false)
         stringFilter+= Uri.encodeQueryComponent('&ementies[]=bike_storage');
 
+
     }
+    if(userLocation !=null){
+      double lat = userLocation.latitude;
+      double lon = userLocation.longitude;
+      latLong = "&lat=$lat&lng=$lon";
+    }
+    String lastParam = "limit=25${latLong ?? ""}";
+
 //      limit=10&offset=10&creator_id=1&full_name=aaa&description=bbb
 //      &address=ccc&additional_info=ddd&begin_work=10:20&end_work=15:30
 //    &working_days[]=Monday&working_days[]=Sunday&free=true
@@ -44,9 +67,10 @@ class CoWorkingApi {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
 //    url +="?limit=10";
-    url=(stringFilter==null) ? url+"?limit=10" : url+stringFilter+"&limit=10";
+    url=(stringFilter==null && stringFilter.length > 1)
+        ? url+"?$lastParam" : url+stringFilter+"&$lastParam";
     return _networkUtil.get(url, headers: _headers).then((responseBody){
-      print("urllllll $url");
+      print("filter urllllll $url");
       List<CoWorking> coWorkings = [];
 
       responseBody['coworkings'].forEach((coWorking){

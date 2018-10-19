@@ -6,15 +6,12 @@ import 'package:desk4work/view/filter/place_filter.dart';
 import 'package:desk4work/view/filter/time_filter.dart';
 import 'package:flutter/material.dart';
 
-class FilterMainScreen extends StatefulWidget{
-
-
+class FilterMainScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => FilterMainScreenState();
-
 }
 
-class FilterMainScreenState extends State<FilterMainScreen>{
+class FilterMainScreenState extends State<FilterMainScreen> {
   Size _screenSize;
   double _screenHeight;
   double _screenWidth;
@@ -24,6 +21,13 @@ class FilterMainScreenState extends State<FilterMainScreen>{
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _container.getFilter();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +45,8 @@ class FilterMainScreenState extends State<FilterMainScreen>{
     filter = container.filter;
     _container = container;
 
-    String date= (filter !=null && filter.date !=null)
-        ? filter.date[0].substring(0,5) +"-"+ filter.date[1].substring(0,5)
+    String date = (filter != null && filter.date != null)
+        ? filter.date[0].substring(0, 5) + "-" + filter.date[1].substring(0, 5)
         : _stringResources.hDate;
 
     return Scaffold(
@@ -52,31 +56,33 @@ class FilterMainScreenState extends State<FilterMainScreen>{
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: (_screenHeight * .0308).toDouble(),
+              margin: EdgeInsets.only(
+                  top: (_screenHeight * .0308).toDouble(),
                   left: (_screenWidth * .04)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   InkWell(
                     child: Text(_stringResources.tClear),
-                    onTap: (){
+                    onTap: () {
                       _clearFilter();
                     },
                   ),
                   Text(_stringResources.tFilter),
-                  IconButton(icon: Icon(Icons.close),
-                      onPressed: (){
+                  IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
                         _closeFilter();
                       }),
-
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(
-                  top: (_screenHeight * .029)),),
+              padding: EdgeInsets.only(top: (_screenHeight * .029)),
+            ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: (_screenWidth * .048).toDouble()),
+              padding: EdgeInsets.symmetric(
+                  horizontal: (_screenWidth * .048).toDouble()),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -93,12 +99,14 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.place),
-                              Padding(padding: EdgeInsets.only(left: 8.0),),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                              ),
                               Text((filter?.place ?? _stringResources.hPlace))
                             ],
                           ),
                         ),
-                        onTap: (){
+                        onTap: () {
                           _openPlaceSearch(context);
                         },
                       ),
@@ -112,21 +120,22 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.calendar_today),
-                              Padding(padding: EdgeInsets.only(left: 8.0),),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                              ),
                               Text(date)
                             ],
                           ),
                         ),
-                        onTap: (){
+                        onTap: () {
                           _openDatePicker();
                         },
                       )
                     ],
-
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: (_screenHeight * .021)),),
+                    padding: EdgeInsets.only(top: (_screenHeight * .021)),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -140,12 +149,15 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.access_time),
-                              Padding(padding: EdgeInsets.only(left: 8.0),),
-                              Text((filter?.startHour ?? _stringResources.hStart))
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                              ),
+                              Text((filter?.startHour ??
+                                  _stringResources.hStart))
                             ],
                           ),
                         ),
-                        onTap: (){
+                        onTap: () {
                           _openTimePicker(true);
                         },
                       ),
@@ -159,28 +171,30 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.access_time),
-                              Padding(padding: EdgeInsets.only(left: 8.0),),
+                              Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                              ),
                               Text((filter?.endHour ?? _stringResources.hEnd))
                             ],
                           ),
                         ),
-                        onTap: (){
+                        onTap: () {
                           _openTimePicker(false);
                         },
                       )
                     ],
-
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: (_screenHeight * .036)),),
+                    padding: EdgeInsets.only(top: (_screenHeight * .036)),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      IconButton(icon: Icon(Icons.remove
-                      ), onPressed: (){
-                        _reducePlaces();
-                      }),
+                      IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            _reducePlaces();
+                          }),
                       InkWell(
                         child: Container(
                             height: textFilterParameterHeight,
@@ -188,84 +202,89 @@ class FilterMainScreenState extends State<FilterMainScreen>{
                             decoration: BoxDecorationUtil
                                 .getGreyRoundedCornerBoxDecoration(),
                             child: Center(
-                              child: Text("${filter?.numberOfPlaces ?? 1} "
-                                  "${ _stringResources.hPlace}"),
-                            )
-                        ),
+                              child: Text("${filter?.numberOfSeatsNeeded ?? 1} "
+                                  "${_stringResources.hPlace}"),
+                            )),
                       ),
-                      IconButton(icon: Icon(Icons.add
-                      ), onPressed: (){
-                        _addPlaces();
-                      })
+                      IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            _addPlaces();
+                          })
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                        top: (_screenHeight * .036)),),
+                    padding: EdgeInsets.only(top: (_screenHeight * .036)),
+                  ),
                   Center(
                     child: Text(_stringResources.tComfort),
                   ),
                   GridView.count(
                     shrinkWrap: true,
-                    crossAxisCount: 3, 
+                    crossAxisCount: 3,
                     children: <Widget>[
-                      _getRoundedIconButton(Icons.print,
+                      _getRoundedIconButton(
+                          Icons.print,
                           _stringResources.tPrint,
-                          ( filter?.printerNeeded ?? false),
-                              (){
+                          (filter?.printerNeeded ?? false), () {
                         _container.updateFilterInfo(
-                            printerNeeded: (filter !=null )
-                                ? !filter.printerNeeded : true);
-                        }),
-                      _getRoundedIconButton(Icons.local_cafe,
+                            printerNeeded: (filter != null)
+                                ? !filter.printerNeeded
+                                : true);
+                      }),
+                      _getRoundedIconButton(
+                          Icons.local_cafe,
                           _stringResources.tTeaOrCoffee,
-                          ( filter?.teaOrCoffeeNeeded ?? false),
-                              (){
+                          (filter?.teaOrCoffeeNeeded ?? false), () {
                         _container.updateFilterInfo(
                             teaOrCoffeeNeeded: (filter != null)
-                                ? !filter.teaOrCoffeeNeeded :true);
-                          }),
-                      _getRoundedIconButton(Icons.people,
-                          _stringResources.tConferenceRoom,
-                        (filter?.conferenceRoomNeeded ?? false),
-                              (){
-                        container.updateFilterInfo(
-                            conferenceRoomNeeded: (filter !=null)
-                                ? !filter.conferenceRoomNeeded : true);
+                                ? !filter.teaOrCoffeeNeeded
+                                : true);
                       }),
-                      _getRoundedIconButton(Icons.local_dining,
+                      _getRoundedIconButton(
+                          Icons.people,
+                          _stringResources.tConferenceRoom,
+                          (filter?.conferenceRoomNeeded ?? false), () {
+                        container.updateFilterInfo(
+                            conferenceRoomNeeded: (filter != null)
+                                ? !filter.conferenceRoomNeeded
+                                : true);
+                      }),
+                      _getRoundedIconButton(
+                          Icons.local_dining,
                           _stringResources.tKitchen,
-                          (filter?.kitchenNeeded ?? false),
-                              (){
-                            container.updateFilterInfo(
-                                kitchenNeeded: (filter !=null)
-                                    ? !filter.kitchenNeeded : true);
-                          }),
-                      _getRoundedIconButton(Icons.directions_bike,
+                          (filter?.kitchenNeeded ?? false), () {
+                        container.updateFilterInfo(
+                            kitchenNeeded: (filter != null)
+                                ? !filter.kitchenNeeded
+                                : true);
+                      }),
+                      _getRoundedIconButton(
+                          Icons.directions_bike,
                           _stringResources.tParkForBicycle,
-                          (filter?.parkForBicycleNeeded ?? false),
-                              (){
-                            container.updateFilterInfo(
-                                parkForBicycleNeeded: (filter !=null)
-                                    ? !filter.parkForBicycleNeeded : true);
-                          }),                      
-
-                  ],
+                          (filter?.parkForBicycleNeeded ?? false), () {
+                        container.updateFilterInfo(
+                            parkForBicycleNeeded: (filter != null)
+                                ? !filter.parkForBicycleNeeded
+                                : true);
+                      }),
+                    ],
                   ),
                   Container(
                     width: confirmButtonWidth,
                     height: confirmButtonHeight,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(28.0))
-                    ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(28.0))),
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         _search();
                       },
                       child: Center(
-                        child: Text(_stringResources.bConfirm,
-                          style: TextStyle(color: Colors.orange),),
+                        child: Text(
+                          _stringResources.bConfirm,
+                          style: TextStyle(color: Colors.orange),
+                        ),
                       ),
                     ),
                   )
@@ -278,68 +297,67 @@ class FilterMainScreenState extends State<FilterMainScreen>{
     );
   }
 
-
-  void _clearFilter(){
-    _container.updateFilterInfo();
+  void _clearFilter() {
+    _container.clearFilter();
   }
 
-  void _closeFilter(){
+  void _closeFilter() {
     Navigator.of(context).pop([false]);
   }
 
-  void _search(){
+  void _search() {
     String prefix = _stringResources.tFilterSettingsPrefix;
     String suffix = _stringResources.tFilterSettingsSuffix;
-    if (filter != null){
-      if(filter.place ==null)
-        _showMessage(prefix + _stringResources.hPlace + suffix);
-      else if(filter.date == null || filter.date.length <1)
-        _showMessage(prefix + _stringResources.hDate + suffix);
-      else if (filter.startHour == null)
-        _showMessage(prefix + _stringResources.hStart + suffix);
-      else if(filter.endHour == null)
-        _showMessage(prefix + _stringResources.hEnd + suffix);
-      else{
-        Navigator.of(context).pop([true,filter]);
-      }
-    }
-    }
 
-  _showMessage(String message){
+    Navigator.of(context).pop([true, filter]);
+//    if (filter != null){
+//      if(filter.place ==null)
+//        _showMessage(prefix + _stringResources.hPlace + suffix);
+//      else if(filter.date == null || filter.date.length <1)
+//        _showMessage(prefix + _stringResources.hDate + suffix);
+//      else if (filter.startHour == null)
+//        _showMessage(prefix + _stringResources.hStart + suffix);
+//      else if(filter.endHour == null)
+//        _showMessage(prefix + _stringResources.hEnd + suffix);
+//      else{
+//      }
+//    }
+  }
+
+  _showMessage(String message) {
     _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  _openPlaceSearch(BuildContext context) async{
+  _openPlaceSearch(BuildContext context) async {
     final result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PlaceFilterScreen(filter?.place))
-    );
-    if(result !=null) {
+        MaterialPageRoute(
+            builder: (context) => PlaceFilterScreen(filter?.place)));
+    if (result != null) {
       _container.updateFilterInfo(latLong: result);
     }
   }
 
-  void _openDatePicker(){
+  void _openDatePicker() {
     Navigator.push(
-        context,
-        MaterialPageRoute(builder: (ctx)=> DateFilterScreen())).then((dates){
-          if(dates !=null && dates.length >0){
-            List<String> filterDates = [];
-            print('those are dates: $dates');
+            context, MaterialPageRoute(builder: (ctx) => DateFilterScreen()))
+        .then((dates) {
+      if (dates != null && dates.length > 0) {
+        List<String> filterDates = [];
+        print('those are dates: $dates');
 
-            String dateTimeStart = _getFilterDate(dates[0]);
-            String dateTimeEnd = _getFilterDate(dates[dates.length -1 ]);
+        String dateTimeStart = _getFilterDate(dates[0]);
+        String dateTimeEnd = _getFilterDate(dates[dates.length - 1]);
 
-
-            print("Start $dateTimeStart and end $dateTimeEnd");
-            filterDates.add(dateTimeStart);
-            filterDates.add(dateTimeEnd);
-            _container.updateFilterInfo(date: filterDates);
-          }
+        print("Start $dateTimeStart and end $dateTimeEnd");
+        filterDates.add(dateTimeStart);
+        filterDates.add(dateTimeEnd);
+        _container.updateFilterInfo(date: filterDates);
+      }
     });
   }
 
-  String _getFilterDate(DateTime dateTime){
+  String _getFilterDate(DateTime dateTime) {
     int dayInt = dateTime.day;
     String day = (dayInt < 10) ? "0$dayInt" : dayInt.toString();
     int montInt = dateTime.month;
@@ -347,41 +365,38 @@ class FilterMainScreenState extends State<FilterMainScreen>{
     String year = dateTime.year.toString();
     return "$day.$month.$year";
   }
-  void _openTimePicker(bool isForStartTime){
+
+  void _openTimePicker(bool isForStartTime) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context)=> TimeFilterScreen(
-                filter?.startHour,
-                filter?.endHour, isForStartTime))).then((result){
-      if(result !=null){
-        int start = int.parse(result[0]?.substring(0,2) ?? '0')  ;
-        int end = int.parse(result[1]?.substring(0,2) ?? '0');
+            context,
+            MaterialPageRoute(
+                builder: (context) => TimeFilterScreen(
+                    filter?.startHour, filter?.endHour, isForStartTime)))
+        .then((result) {
+      if (result != null) {
+        int start = int.parse(result[0]?.substring(0, 2) ?? '0');
+        int end = int.parse(result[1]?.substring(0, 2) ?? '0');
 
         print('starrrrrrrrt $start end $end');
-        _container.updateFilterInfo(
-            startHour: result[0],
-            endHour: result[1]);
+        _container.updateFilterInfo(startHour: result[0], endHour: result[1]);
       }
     });
   }
 
-  void _addPlaces(){
-    int places = (filter !=null )? filter.numberOfPlaces : 1;
-    places ++;
-    _container.updateFilterInfo(
-        numberOfPlaces: places);
+  void _addPlaces() {
+    int places = (filter != null) ? filter.numberOfSeatsNeeded : 1;
+    places++;
+    _container.updateFilterInfo(numberOfSeatsNeeded: places);
   }
 
-  void _reducePlaces(){
-    int places = filter?.numberOfPlaces ?? 1;
-    places --;
-    _container.updateFilterInfo(
-        numberOfPlaces: places > 0 ? places : 1);
+  void _reducePlaces() {
+    int places = filter?.numberOfSeatsNeeded ?? 1;
+    places--;
+    _container.updateFilterInfo(numberOfSeatsNeeded: places > 0 ? places : 1);
   }
 
-  Widget _getRoundedIconButton(IconData icon, String caption, bool isSelected,
-      Function onPressed){
+  Widget _getRoundedIconButton(
+      IconData icon, String caption, bool isSelected, Function onPressed) {
     return Container(
       child: Column(
         children: <Widget>[
@@ -391,22 +406,22 @@ class FilterMainScreenState extends State<FilterMainScreen>{
             child: FloatingActionButton(
               heroTag: caption,
               onPressed: onPressed,
-              backgroundColor: isSelected
-                  ?Colors.white : Colors.transparent,
-              child: Icon(icon,color: isSelected
-                  ? Colors.orange : Colors.white),
+              backgroundColor: isSelected ? Colors.white : Colors.transparent,
+              child:
+                  Icon(icon, color: isSelected ? Colors.orange : Colors.white),
               shape: CircleBorder(side: BorderSide(color: Colors.white)),
               elevation: 0.0,
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(
-                top: (_screenHeight * .009)),),
-          Text(caption, textAlign: TextAlign.center,)
+            padding: EdgeInsets.only(top: (_screenHeight * .009)),
+          ),
+          Text(
+            caption,
+            textAlign: TextAlign.center,
+          )
         ],
       ),
     );
   }
-
-
 }

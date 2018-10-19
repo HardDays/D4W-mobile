@@ -60,6 +60,7 @@ class BookingApi{
       ConstantsManager.END_DATE : endDate
     };
 
+//   TODO: deal with errors 422 and show message
 
      return _networkUtil.post(url, headers: _headers, body: body)
         .then((serverResponse){
