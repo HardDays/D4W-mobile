@@ -41,7 +41,7 @@ class NetworkUtil {
       final int statusCode = response.statusCode;
       if (statusCode < 200 || statusCode > 400) {
         //        throw new Exception(res);
-        return {ConstantsManager.SERVER_ERROR: statusCode};
+        return {ConstantsManager.SERVER_ERROR: statusCode, 'body' : res};
       }
       if (json == null) return null;
       try {

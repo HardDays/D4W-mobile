@@ -12,6 +12,9 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
+  final int firstTab;
+  MainScreen({this.firstTab = 0});
+
   @override
   State<StatefulWidget> createState() => _MainScreenState();
 }
@@ -24,7 +27,7 @@ class _MainScreenState extends State<MainScreen>  {
   final Key _profileState = PageStorageKey(ConstantsManager.PROFILE_KEY);
   final PageStorageBucket storageBucket = PageStorageBucket();
   TabController _tabController;
-  int _currentTab = 0;
+  int _currentTab;
   List<Widget> _tabs;
   Widget _currentPage;
 
@@ -36,6 +39,7 @@ class _MainScreenState extends State<MainScreen>  {
 
   @override
   void initState() {
+    _currentTab = widget.firstTab;
 //    _tabController = TabController(length: 3, vsync: this);
     _tabs = [
       _getCoWorkingBuilder(),
@@ -48,7 +52,7 @@ class _MainScreenState extends State<MainScreen>  {
 
   @override
   void dispose() {
-    _tabController.dispose();
+//    _tabController.dispose();
     super.dispose();
   }
 
@@ -59,6 +63,7 @@ class _MainScreenState extends State<MainScreen>  {
       data: Theme.of(context).copyWith(canvasColor: Colors.white),
       child: DefaultTabController(
         length: 3,
+        initialIndex: _currentTab,
         child: Scaffold(
           key: scaffoldState,
           body: TabBarView(children: _tabs, physics: NeverScrollableScrollPhysics(),),

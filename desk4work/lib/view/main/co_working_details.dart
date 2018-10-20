@@ -320,7 +320,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   return Container(
                       child: _getWorkgingHours(
                           widget._coWorking.workingDays[index]));
-                }),
+                },
+                  growable: false
+                ),
               ),
             ),
           ),

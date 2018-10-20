@@ -7,6 +7,7 @@ import 'package:desk4work/view/common/theme_util.dart';
 import 'package:desk4work/view/filter/date_filter.dart';
 import 'package:desk4work/view/filter/time_filter.dart';
 import 'package:desk4work/view/main/booking_details.dart';
+import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,10 +33,15 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   int _neededNumberOfSeats, _availableSeats;
   num _price;
   BookingApi _bookingApi;
+  GlobalKey<ScaffoldState> _screenState = GlobalKey<ScaffoldState>();
+  int _startHour, _endHour;
 
 
   @override
   void initState() {
+    _starWork = "09:00";
+    _endWork = "10:00";
+
     _availableSeats = widget._coWorking.freeSeats;
     _neededNumberOfSeats = 1;
     _bookingApi = BookingApi();
@@ -62,6 +68,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
    return Theme(
      data:  ThemeUtil.getThemeForOrangeBackground(context),
      child: Scaffold(
+       key: _screenState,
        body: Container(
          decoration: BoxDecoration(
            gradient: orangeBoxDecorationGradient,
@@ -333,6 +340,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                 _endWork, isForStartTime))).then((result){
       if(result !=null){
         setState(() {
+
           _starWork =  result[0] ?? _starWork;
           _endWork = result[1] ?? _endWork;
         });
@@ -364,12 +372,32 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
         _bookingApi.book(token, widget._coWorking.id,
             _neededNumberOfSeats, _starWork, _endWork, _serverDate)
             .then((booking){
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx)=> BookingDetails(booking)));
+              print('booking in front: $booking');
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (ctx)=> MainScreen(firstTab: 1,))
+//                  builder: (ctx)=> BookingDetails(booking))
+              );
+        }).catchError((error){
+          print('error type: ${error.runtimeType}');
+          if(error.runtimeType == ArgumentError){
+            ArgumentError invalidError = error;
+            List errorMessage = invalidError.message;
+            if(errorMessage[0]['begin_date']!=null){
+              _showMessage(_stringResources.eWrongStartDate);
+            }else if(errorMessage[0]['end_date']!=null){
+              _showMessage(_stringResources.eWrongEndDate);
+            }
+          }
+
+
         });
 
       });
     }
 
+  }
+
+  _showMessage(String message){
+    _screenState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 }
