@@ -34,9 +34,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   ImageApi _imageApi;
   String _token;
   Filter _filter;
-
+  bool _showAsList;
   @override
   void initState() {
+    _showAsList = true;
     _cities = {
       PlaceFilterScreen.SAINT_PETERSBURG: LatLng(59.93863, 30.31413),
       PlaceFilterScreen.MOSCOW: LatLng(55.75222, 37.61556),
@@ -71,10 +72,14 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         centerTitle: true,
         leading: IconButton(
             icon: Icon(
-              Icons.place,
+              _showAsList ? Icons.place : Icons.list,
               color: Colors.white,
             ),
-            onPressed: () => _showOnMap()),
+            onPressed: (){
+              setState(() {
+                _showAsList = !_showAsList;
+              });
+            }),
         title: Text(
           stringResources.tPlace,
           style: TextStyle(color: Colors.white),
@@ -90,7 +95,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       ),
       body: Container(
           padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
-          child: _buildCoWorkingList()),
+          child: _buildCoWorkingList()
+      ),
     );
   }
 
@@ -115,12 +121,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 return Container();
               else {
                 _coWorkings = snapshot.data;
-                return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _coWorkings.length,
-                    itemBuilder: (ctx, index) {
-                      return _getCoWorkingCard(_coWorkings[index]);
-                    });
+                return _showAsList ? _showList() : _showMap();
               }
             }
             break;
@@ -131,6 +132,23 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     );
   }
 
+  ListView _showList(){
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: _coWorkings.length,
+        itemBuilder: (ctx, index) {
+          return _getCoWorkingCard(_coWorkings[index]);
+        });
+  }
+
+  CoWorkingPlaceMapScreen _showMap(){
+    LatLng defautPosition = (_filter != null &&
+        _filter.place != null &&
+        _filter.place != stringResources.tWherever)
+        ? _cities[_filter.place]
+        : _userLocation;
+    return CoWorkingPlaceMapScreen(_coWorkings, defaultPosition: defautPosition,);
+  }
   _showOnMap() {
     LatLng defautPosition = (_filter != null &&
             _filter.place != null &&

@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen>  {
         length: 3,
         child: Scaffold(
           key: scaffoldState,
-          body: TabBarView(children: _tabs),
+          body: TabBarView(children: _tabs, physics: NeverScrollableScrollPhysics(),),
 //            body: PageStorage(bucket: storageBucket, child: _currentPage),
           bottomNavigationBar: _getBottomNavigationBar(),
         ),
@@ -128,12 +128,12 @@ class _MainScreenState extends State<MainScreen>  {
         Tab(icon: Icon(Icons.assignment)),
         Tab(icon: Icon(Icons.perm_identity)),
       ],
-//      controller: _tabController,
       labelColor: Colors.orange,
       unselectedLabelColor: Colors.grey,
       indicatorSize: TabBarIndicatorSize.label,
       indicatorColor: Colors.white,
       indicatorPadding: EdgeInsets.all(5.0),
+
     );
 //    return BottomNavigationBar(
 //      type: BottomNavigationBarType.fixed,
