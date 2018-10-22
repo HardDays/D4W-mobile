@@ -35,6 +35,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   String _token;
   Filter _filter;
   bool _showAsList;
+
   @override
   void initState() {
     _showAsList = true;
@@ -75,7 +76,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               _showAsList ? Icons.place : Icons.list,
               color: Colors.white,
             ),
-            onPressed: (){
+            onPressed: () {
               setState(() {
                 _showAsList = !_showAsList;
               });
@@ -95,8 +96,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       ),
       body: Container(
           padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
-          child: _buildCoWorkingList()
-      ),
+          child: _buildCoWorkingList()),
     );
   }
 
@@ -132,7 +132,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     );
   }
 
-  ListView _showList(){
+  ListView _showList() {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: _coWorkings.length,
@@ -141,14 +141,18 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         });
   }
 
-  CoWorkingPlaceMapScreen _showMap(){
+  CoWorkingPlaceMapScreen _showMap() {
     LatLng defautPosition = (_filter != null &&
-        _filter.place != null &&
-        _filter.place != stringResources.tWherever)
+            _filter.place != null &&
+            _filter.place != stringResources.tWherever)
         ? _cities[_filter.place]
         : _userLocation;
-    return CoWorkingPlaceMapScreen(_coWorkings, defaultPosition: defautPosition,);
+    return CoWorkingPlaceMapScreen(
+      _coWorkings,
+      defaultPosition: defautPosition,
+    );
   }
+
   _showOnMap() {
     LatLng defautPosition = (_filter != null &&
             _filter.place != null &&
@@ -158,7 +162,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CoWorkingPlaceMapScreen(_coWorkings, defaultPosition: defautPosition,)));
+            builder: (context) => CoWorkingPlaceMapScreen(
+                  _coWorkings,
+                  defaultPosition: defautPosition,
+                )));
   }
 
   _openFilter() {
@@ -285,7 +292,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<String> _getWorkingDay(CoWorking coWorking) {
     List<WorkingDays> workingDaysList = coWorking.workingDays;
     if (workingDaysList != null && workingDaysList.length > 0) {
-      int today = DateTime.now().day;
+      int today = DateTime.now().weekday;
       Map<String, List<String>> workingDaysMap = {};
       coWorking.workingDays.forEach((workingDay) {
         workingDaysMap[workingDay.day] = [
@@ -319,7 +326,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     Color color = Colors.red;
     String text = isClosedText;
     if (endAndStartTIme != null && endAndStartTIme.length > 0) {
-      String startTime = endAndStartTIme[0], endTime = endAndStartTIme[1];
+      String startTime = endAndStartTIme[0];
+      String endTime = endAndStartTIme[1];
       DateTime now = DateTime.now();
       int startHours = int.parse(startTime.substring(0, 2));
       int startMinute = int.parse(startTime.substring(3));
@@ -333,7 +341,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
       bool isClosed = (startDate.isAfter(now) || endDate.isBefore(now));
       color = isClosed ? Colors.red : Colors.green;
-      text = "$startHours:$startMinute" + '-' + "$endHours:$endMinute";
+
+      text = "${(startHours < 10) ? "0" + startHours.toString() : startHours}:"
+          "${(startMinute < 10) ? "0" + startMinute.toString() : startMinute}" +
+          '-' +
+          "${(endHours < 10) ? '0' + endHours.toString() : endHours}:"
+          "${(endMinute < 10) ? '0' + endMinute.toString() : endMinute}";
       text = (isClosed) ? text + "(" + isClosedText + ")" : text;
     }
     return Text(text,
