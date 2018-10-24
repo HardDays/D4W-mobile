@@ -4,24 +4,24 @@ import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/auth/registration/registration.dart';
 import 'package:desk4work/view/auth/registration/welcome.dart';
 import 'package:desk4work/view/common/curved_clipper.dart';
+import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 
-class RegistrationMainScreen extends StatefulWidget{
+class RegistrationMainScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => RegistrationMainScreenState();
-
-
 }
 
-class RegistrationMainScreenState extends State<RegistrationMainScreen>{
+class RegistrationMainScreenState extends State<RegistrationMainScreen> {
   var _screenKey = GlobalKey<ScaffoldState>();
   Size _screenSize;
   String _username;
-
+  bool _isRegistered;
 
   @override
   void initState() {
     _username = null;
+    _isRegistered = false;
     super.initState();
   }
 
@@ -32,7 +32,6 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
     return Theme(
       data: Theme.of(context).copyWith(
         hintColor: Colors.grey,
-
       ),
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -46,13 +45,16 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
                   child: Container(
                     color: Colors.orange,
                     height: clipperHeight,
-                    padding: EdgeInsets.only(top: (_screenSize.height * .0405).toDouble()),
+                    padding: EdgeInsets.only(
+                        top: (_screenSize.height * .0405).toDouble()),
                     child: Center(
-                      child: Text(StringResources.of(context).bEnter,
-                        style: TextStyle(color: Colors.white) ,),
+                      child: Text(
+                        StringResources.of(context).bEnter,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                  onTap: ()=>_openLogin(),
+                  onTap: () => _openLoginOrMain(),
                 ),
                 clipper: CurvedClipper(clipperHeight),
               ),
@@ -61,26 +63,27 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
               width: (_screenSize.width * .84).toDouble(),
               height: _screenSize.height - clipperHeight,
               child: (_username == null)
-                  ? RegistrationScreen((firstname){
-                    _showWelcome(firstname);
-              })
+                  ? RegistrationScreen((firstname) {
+
+                      _showWelcome(firstname);
+                    })
                   : WelcomeScreen(_username),
             )
           ],
         ),
       ),
     );
-
   }
 
-  _showWelcome(firstName){
+  _showWelcome(firstName) {
     print('firstname : $firstName');
     int count = 2;
-    Timer.periodic(Duration(seconds: 2), (Timer t){
-      if(count >0)
+    Timer.periodic(Duration(seconds: 2), (Timer t) {
+      if (count > 0)
         count--;
-      else{
+      else {
         setState(() {
+          _isRegistered = true;
           _username = firstName;
         });
         t.cancel();
@@ -88,8 +91,10 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen>{
     });
   }
 
-  _openLogin(){
-    Navigator.of(context).pop();
+  _openLoginOrMain() {
+    _isRegistered
+        ? Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (ctx) => MainScreen()))
+        : Navigator.of(context).pop();
   }
-
 }

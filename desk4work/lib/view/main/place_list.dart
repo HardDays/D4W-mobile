@@ -111,7 +111,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             return Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 50.0),
-                child: new CircularProgressIndicator());
+                child:  CircularProgressIndicator());
           case ConnectionState.done:
             if (snapshot.hasError) {
               print("error  loading coWorkings ${snapshot.error}");

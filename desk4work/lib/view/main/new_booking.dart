@@ -35,13 +35,14 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   BookingApi _bookingApi;
   GlobalKey<ScaffoldState> _screenState = GlobalKey<ScaffoldState>();
   int _startHour, _endHour;
+  bool _isLoading;
 
 
   @override
   void initState() {
     _starWork = "09:00";
     _endWork = "10:00";
-
+    _isLoading = false;
     _availableSeats = widget._coWorking.freeSeats;
     _neededNumberOfSeats = 1;
     _bookingApi = BookingApi();
@@ -76,7 +77,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                color: Colors.grey,
                width: .5))
          ),
-         child: Column(
+         child:(_isLoading)?CircularProgressIndicator() :Column(
 
            children: <Widget>[
              Container(
@@ -331,6 +332,8 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
     String year = dateTime.year.toString();
     return "$day.$month.$year";
   }
+
+
   void _openTimePicker(bool isForStartTime){
     Navigator.push(
         context,
@@ -367,17 +370,22 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   void _book(){
     if(_serverDate != null && _starWork != null && _endWork != null
         && _neededNumberOfSeats != null){
+      setState(() {
+        _isLoading = true;
+      });
       SharedPreferences.getInstance().then((sp){
         String token = sp.getString(ConstantsManager.TOKEN_KEY);
         _bookingApi.book(token, widget._coWorking.id,
             _neededNumberOfSeats, _starWork, _endWork, _serverDate)
             .then((booking){
-              print('booking in front: $booking');
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (ctx)=> MainScreen(firstTab: 1,))
 //                  builder: (ctx)=> BookingDetails(booking))
               );
         }).catchError((error){
+          setState(() {
+            _isLoading = false;
+          });
           print('error type: ${error.runtimeType}');
           if(error.runtimeType == ArgumentError){
             ArgumentError invalidError = error;
@@ -393,6 +401,8 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
         });
 
       });
+    }else if(_serverDate == null){
+      _showMessage(_stringResources.eWrongStartDate);
     }
 
   }

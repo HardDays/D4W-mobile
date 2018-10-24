@@ -10,6 +10,7 @@ class StringResources {
   static final String _buttonConfirm = 'buttonConfirm';
   static final String _buttonSave = 'buttonSave';
   static final String _buttonBook = 'buttonBook';
+  static final String _buttonBack = 'buttonBack';
 
   static final String _hintLogin = 'hintLogin';
   static final String _hintPassword = 'hintPassword';
@@ -124,6 +125,9 @@ class StringResources {
   static final String _errorWrongEmail = 'errorWrongEmail';
   static final String _errorWrongStartDate = 'errorWrongStartDate';
   static final String _errorWrongEndDate = 'errorWrongEndDate';
+  static final String _errorBadCredentials = 'errorBadCredentials';
+  static final String _errorServer = 'errorServer';
+  static final String _errorTakenEmail = 'errorTakenEmail';
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
@@ -191,6 +195,7 @@ class StringResources {
       _textWorkingHours: 'Working hours',
       _textContacts: 'Contacts',
       _buttonBook: 'Book',
+      _buttonBack: 'Back',
       _textYes: 'yes',
       _textNo: 'No',
       _textMap: 'Map',
@@ -246,8 +251,11 @@ class StringResources {
       _errorEmptyEmail: 'This field can\'t be empty',
       _errorEmptyEmailOrPhone: 'This field can\'t be empty',
       _errorWrongEmail: 'Wrong email',
+      _errorBadCredentials: 'Credentials you entered do not match any account',
+      _errorServer: 'Server error, please try again later',
       _errorWrongStartDate: 'Please change the start date',
       _errorWrongEndDate: 'Please change end date',
+      _errorTakenEmail: 'Email already taken',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Server Error',
       _tipPrinter: "Printer and scanner",
@@ -319,6 +327,7 @@ class StringResources {
       _textHelp: 'Помощь',
       _textNoBookings: 'История пуста',
       _buttonBook: 'Забронировать',
+      _buttonBack: 'Назад',
       _textYes: 'да',
       _textNo: 'нет',
       _textFreeEquipment: 'Бесплатно можно пользоваться ',
@@ -371,6 +380,9 @@ class StringResources {
       _errorWrongEmail: 'Неверный email',
       _errorWrongStartDate: 'Пожалуйста меняете начальную дату',
       _errorWrongEndDate: 'Пожалуйста меняете конечную дату',
+      _errorBadCredentials: 'Неверный логин или пароль',
+      _errorServer: 'Ошибка сервера, повторите попытку позже',
+      _errorTakenEmail: 'Email уже занят',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Ощибка сервера',
       _tipPrinter: "принтером и сканером",
@@ -406,6 +418,8 @@ class StringResources {
   }
 
   String get bBook => _localizedValues[locale.languageCode][_buttonBook];
+
+  String get bBackk => _localizedValues[locale.languageCode][_buttonBack];
 
   String get tForgotPassword {
     return _localizedValues[locale.languageCode][_textForgotPassword];
@@ -594,6 +608,17 @@ class StringResources {
 
   String get eWrongEndDate =>
       _localizedValues[locale.languageCode][_errorWrongEndDate];
+
+  String get eBadCredentials =>
+      _localizedValues[locale.languageCode][_errorBadCredentials];
+
+  String get eServer =>
+      _localizedValues[locale.languageCode][_errorServer];
+
+  String get eTakenEmail =>
+        _localizedValues[locale.languageCode][_errorTakenEmail];
+
+
 
   String get hLogin {
     return _localizedValues[locale.languageCode][_hintLogin];
