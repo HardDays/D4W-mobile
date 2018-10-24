@@ -34,9 +34,11 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   ImageApi _imageApi;
   String _token;
   Filter _filter;
+  bool _showAsList;
 
   @override
   void initState() {
+    _showAsList = true;
     _cities = {
       PlaceFilterScreen.SAINT_PETERSBURG: LatLng(59.93863, 30.31413),
       PlaceFilterScreen.MOSCOW: LatLng(55.75222, 37.61556),
@@ -71,10 +73,14 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         centerTitle: true,
         leading: IconButton(
             icon: Icon(
-              Icons.place,
+              _showAsList ? Icons.place : Icons.list,
               color: Colors.white,
             ),
-            onPressed: () => _showOnMap()),
+            onPressed: () {
+              setState(() {
+                _showAsList = !_showAsList;
+              });
+            }),
         title: Text(
           stringResources.tPlace,
           style: TextStyle(color: Colors.white),
@@ -115,12 +121,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 return Container();
               else {
                 _coWorkings = snapshot.data;
-                return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _coWorkings.length,
-                    itemBuilder: (ctx, index) {
-                      return _getCoWorkingCard(_coWorkings[index]);
-                    });
+                return _showAsList ? _showList() : _showMap();
               }
             }
             break;
@@ -128,6 +129,27 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             break;
         }
       },
+    );
+  }
+
+  ListView _showList() {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: _coWorkings.length,
+        itemBuilder: (ctx, index) {
+          return _getCoWorkingCard(_coWorkings[index]);
+        });
+  }
+
+  CoWorkingPlaceMapScreen _showMap() {
+    LatLng defautPosition = (_filter != null &&
+            _filter.place != null &&
+            _filter.place != stringResources.tWherever)
+        ? _cities[_filter.place]
+        : _userLocation;
+    return CoWorkingPlaceMapScreen(
+      _coWorkings,
+      defaultPosition: defautPosition,
     );
   }
 
@@ -140,7 +162,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CoWorkingPlaceMapScreen(_coWorkings, defaultPosition: defautPosition,)));
+            builder: (context) => CoWorkingPlaceMapScreen(
+                  _coWorkings,
+                  defaultPosition: defautPosition,
+                )));
   }
 
   _openFilter() {
@@ -267,7 +292,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<String> _getWorkingDay(CoWorking coWorking) {
     List<WorkingDays> workingDaysList = coWorking.workingDays;
     if (workingDaysList != null && workingDaysList.length > 0) {
-      int today = DateTime.now().day;
+      int today = DateTime.now().weekday;
       Map<String, List<String>> workingDaysMap = {};
       coWorking.workingDays.forEach((workingDay) {
         workingDaysMap[workingDay.day] = [
@@ -301,7 +326,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     Color color = Colors.red;
     String text = isClosedText;
     if (endAndStartTIme != null && endAndStartTIme.length > 0) {
-      String startTime = endAndStartTIme[0], endTime = endAndStartTIme[1];
+      String startTime = endAndStartTIme[0];
+      String endTime = endAndStartTIme[1];
       DateTime now = DateTime.now();
       int startHours = int.parse(startTime.substring(0, 2));
       int startMinute = int.parse(startTime.substring(3));
@@ -315,7 +341,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
       bool isClosed = (startDate.isAfter(now) || endDate.isBefore(now));
       color = isClosed ? Colors.red : Colors.green;
-      text = "$startHours:$startMinute" + '-' + "$endHours:$endMinute";
+
+      text = "${(startHours < 10) ? "0" + startHours.toString() : startHours}:"
+          "${(startMinute < 10) ? "0" + startMinute.toString() : startMinute}" +
+          '-' +
+          "${(endHours < 10) ? '0' + endHours.toString() : endHours}:"
+          "${(endMinute < 10) ? '0' + endMinute.toString() : endMinute}";
       text = (isClosed) ? text + "(" + isClosedText + ")" : text;
     }
     return Text(text,

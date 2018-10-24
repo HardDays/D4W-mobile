@@ -159,10 +159,10 @@ class TimeFilterState extends State<TimeFilterScreen>{
   }
 
   int _getStart(int selected){
-    if(selected > 17)
-      selected --;
-    if(selected <9)
-      selected = 9;
+//    if(selected > 17)
+//      selected --;
+//    if(selected <9)
+//      selected = 9;
     return selected;
   }
 

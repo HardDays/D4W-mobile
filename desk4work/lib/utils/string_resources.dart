@@ -122,6 +122,8 @@ class StringResources {
   static final String _errorEmptyEmail = 'errorEmptyEmail';
   static final String _errorEmptyEmailOrPhone = 'errorEmptyEmailOrPhone';
   static final String _errorWrongEmail = 'errorWrongEmail';
+  static final String _errorWrongStartDate = 'errorWrongStartDate';
+  static final String _errorWrongEndDate = 'errorWrongEndDate';
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
@@ -244,6 +246,8 @@ class StringResources {
       _errorEmptyEmail: 'This field can\'t be empty',
       _errorEmptyEmailOrPhone: 'This field can\'t be empty',
       _errorWrongEmail: 'Wrong email',
+      _errorWrongStartDate: 'Please change the start date',
+      _errorWrongEndDate: 'Please change end date',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Server Error',
       _tipPrinter: "Printer and scanner",
@@ -365,6 +369,8 @@ class StringResources {
       _errorEmptyEmail: 'Email не может быть пустым',
       _errorEmptyEmailOrPhone: ' Не может быть пустым',
       _errorWrongEmail: 'Неверный email',
+      _errorWrongStartDate: 'Пожалуйста меняете начальную дату',
+      _errorWrongEndDate: 'Пожалуйста меняете конечную дату',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Ощибка сервера',
       _tipPrinter: "принтером и сканером",
@@ -582,6 +588,12 @@ class StringResources {
 
   String get eEmptyEmailOrPhone =>
       _localizedValues[locale.languageCode][_errorEmptyEmailOrPhone];
+
+  String get eWrongStartDate =>
+      _localizedValues[locale.languageCode][_errorWrongStartDate];
+
+  String get eWrongEndDate =>
+      _localizedValues[locale.languageCode][_errorWrongEndDate];
 
   String get hLogin {
     return _localizedValues[locale.languageCode][_hintLogin];

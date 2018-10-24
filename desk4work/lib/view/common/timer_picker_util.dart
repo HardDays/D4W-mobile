@@ -163,7 +163,7 @@ class _CupertinoTimerPickerState extends State<CupertinoTimerPicker> {
                   seconds: selectedSecond ?? 0));
         });
       },
-      children: new List<Widget>.generate(19, (int index) {
+      children: new List<Widget>.generate(25, (int index) {
         final double hourLabelWidth =
         widget.mode == CupertinoTimerPickerMode.hm ? _kPickerWidth / 4 : _kPickerWidth / 6;
 

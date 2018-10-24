@@ -75,17 +75,17 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
     _screenWidth = _screenSize.width;
     return Scaffold(
       key: _scaffoldState,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white
-        ),
-        centerTitle: true,
-        title: Text(
-          stringResources.tMap,
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: <Widget>[]
-      ),
+//      appBar: AppBar(
+//        iconTheme: IconThemeData(
+//          color: Colors.white
+//        ),
+//        centerTitle: true,
+//        title: Text(
+//          stringResources.tMap,
+//          style: TextStyle(color: Colors.white),
+//        ),
+//        actions: <Widget>[]
+//      ),
       body: _buildCoWorkingMap(),
     );
   }

@@ -22,7 +22,7 @@ class CoWorkingApi {
     Map<String,String> filters = {};
     if(filter != null) {
       if(filter.place == "Nearby" || filter.place == "Рядом")
-        filters['radius'] = '1';
+        filters['radius'] = '5';
       if(filter.startHour != null) {
         String beginWork = filter.startHour;
         filters['begin_work'] = beginWork;
