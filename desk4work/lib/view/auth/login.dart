@@ -29,10 +29,13 @@ class LoginScreenState extends State<LoginScreen> {
   StreamSubscription<String> _onUrlChanged;
   final FlutterWebviewPlugin flutterWebViewPlugin = new FlutterWebviewPlugin();
   String _authToken;
+  bool _isLoading;
+  StringResources _stringResources;
 
 
   @override
   void initState() {
+    _isLoading = false;
     super.initState();
     try{
       flutterWebViewPlugin.close();
@@ -46,7 +49,9 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
+    _stringResources = StringResources.of(context);
     return Scaffold(
+      key: _screenKey,
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Stack(
@@ -56,7 +61,7 @@ class LoginScreenState extends State<LoginScreen> {
               width: _screenSize.width,
               padding: EdgeInsets.only(top: (_screenSize.height * .1169).toDouble()),
               decoration: BoxDecorationUtil.getOrangeGradient(),
-              child: Column(
+              child:(_isLoading)? CircularProgressIndicator(backgroundColor: Colors.white,): Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -195,7 +200,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 28.0),
               hintStyle: TextStyle(color: Colors.white),
-              hintText: StringResources.of(context).hLogin,
+              hintText: StringResources.of(context).hEmail,
             ),
             style: TextStyle(color: Colors.white),
             validator: (login) {
@@ -229,10 +234,20 @@ class LoginScreenState extends State<LoginScreen> {
   _sendForm() {
     String email = _emailController.text;
     String password = _passwordController.text;
-    print('sending form: $email $password');
-    _authApi
-        .login(email, password)
-        .then((response) => _handleServerResponse(response));
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      _authApi
+          .login(email, password)
+          .then((response) => _handleServerResponse(response));
+    } catch (e) {
+      print("login error: e");
+      setState(() {
+        _isLoading = false;
+      });
+      _showToast(_stringResources.eServer);
+    }
   }
 
   _handleServerResponse(Map<String, String> serverResult) {
@@ -246,15 +261,15 @@ class LoginScreenState extends State<LoginScreen> {
           _openMainScreen();
 
         });
-      } else if (serverResult['error'] != null) {
-        int error = int.parse(serverResult['error']);
+      } else if (serverResult[ConstantsManager.SERVER_ERROR] != null) {
+        int error = int.parse(serverResult[ConstantsManager.SERVER_ERROR]);
         if (error == 401)
-          _showToast("Unauthorized");
+          _showToast(_stringResources.eBadCredentials);
         else
-          _showToast('ERROR');
+          _showToast(_stringResources.eServer);
       }
     } else
-      _showToast('ERROR');
+      _showToast(_stringResources.eServer);
   }
 
   _handleGoogleSignIn() {}
@@ -324,7 +339,9 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   _showToast(String message) {
-//    TODO
-  print('error '+ message);
+    setState(() {
+      _isLoading = false;
+    });
+    _screenKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 }

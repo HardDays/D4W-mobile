@@ -105,7 +105,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                     +"images/get_full/${imageIds[index]}",
               );
             },
-            itemCount:imageIds.length,
+            itemCount:imageIds?.length ?? 0,
             controller: _controller,
             physics: AlwaysScrollableScrollPhysics(),
           ),
@@ -119,7 +119,7 @@ class _BookingDetailsState extends State<BookingDetails> {
               child: new Center(
                 child: new DotsIndicator(
                   controller: _controller,
-                  itemCount: imageIds.length,
+                  itemCount: imageIds?.length ?? 0,
                   onPageSelected: (int page) {
                     _controller.animateToPage(
                       page,

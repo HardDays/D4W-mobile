@@ -17,6 +17,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class RegistrationScreenState extends State<RegistrationScreen> {
   var _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Size _screenSize;
   TextEditingController _loginController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -24,45 +25,63 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
   int _attempts = 1;
-
+  bool _isLoading, _isRegistered;
+  StringResources _stringResources;
   AuthApi _authApi = AuthApi();
+
+
+  @override
+  void initState() {
+    _isLoading = false;
+    _isRegistered = false;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
+    _stringResources = StringResources.of(context);
     return Scaffold(
+      key: _scaffoldKey,
 //      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.transparent,
-      body: Container(
-        margin: EdgeInsets.only(top: (_screenSize.height * .078).toDouble()),
-        width: (_screenSize.width * .84).toDouble(),
-        child: ListView(
-          reverse: true,
+      body: _isLoading
+          ? Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Container(
+              margin:
+                  EdgeInsets.only(top: (_screenSize.height * .078).toDouble()),
+              width: (_screenSize.width * .84).toDouble(),
+              child: ListView(
+                reverse: true,
 //          mainAxisAlignment: MainAxisAlignment.start,
 //          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              'assets/logo_horizontal_color_shaded.png',
-              fit: BoxFit.contain,
-              width: (_screenSize.width * .4311).toDouble(),
-              height: (_screenSize.height * .0836).toDouble(),
-            ),
-            Container(
-              margin:
-                  EdgeInsets.only(top: (_screenSize.height * .0633).toDouble()),
-              child: Form(
-                child: _getForm(),
-                key: _formKey,
+                children: <Widget>[
+                  Image.asset(
+                    'assets/logo_horizontal_color_shaded.png',
+                    fit: BoxFit.contain,
+                    width: (_screenSize.width * .4311).toDouble(),
+                    height: (_screenSize.height * .0836).toDouble(),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: (_screenSize.height * .0633).toDouble()),
+                    child: Form(
+                      child: _getForm(),
+                      key: _formKey,
+                    ),
+                  ),
+                  _getSendFormButton(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        bottom: (_screenSize.height * .0735).toDouble()),
+                  )
+                ].reversed.toList(),
               ),
             ),
-            _getSendFormButton(),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: (_screenSize.height * .0735).toDouble()),
-            )
-          ].reversed.toList(),
-        ),
-      ),
     );
   }
 
@@ -171,26 +190,34 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Widget _getSendFormButton() {
-    return InkWell(
-      onTap: () {
-        if (_formKey.currentState.validate()) _sendForm();
-      },
-      child: Container(
-          margin: EdgeInsets.only(top: (_screenSize.height * .0405).toDouble()),
-          width: (_screenSize.width * .84).toDouble(),
-          height: (_screenSize.height * .0825).toDouble(),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.rectangle,
-              gradient: BoxDecorationUtil.getOrangeGradient().gradient,
-              borderRadius: BorderRadius.all(Radius.circular(28.0))),
-          child: Center(
-            child: Text(
-              StringResources.of(context).bRegister,
-              style: TextStyle(color: Colors.white),
+    return _isRegistered
+        ? Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
-          )),
-    );
+          )
+        : InkWell(
+            onTap: () {
+              if (_formKey.currentState.validate()) _sendForm();
+            },
+            child: Container(
+                margin: EdgeInsets.only(
+                    top: (_screenSize.height * .0405).toDouble()),
+                width: (_screenSize.width * .84).toDouble(),
+                height: (_screenSize.height * .0825).toDouble(),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    gradient: BoxDecorationUtil.getOrangeGradient().gradient,
+                    borderRadius: BorderRadius.all(Radius.circular(28.0))),
+                child: Center(
+                  child: Text(
+                    StringResources.of(context).bRegister,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
+          );
   }
 
   _sendForm() {
@@ -201,6 +228,9 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     String passwordConfirm = _passwordConfirmController.text;
 
     try {
+      setState(() {
+        _isLoading = true;
+      });
       _authApi
           .register(login, email, phone, password, passwordConfirm)
           .then((response) {
@@ -217,11 +247,21 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               _handleLoginResponse(serverResult, firstName);
             });
           });
-        } else
-          _showMessage("ERROR"); //TODO
+        } else if (response != null &&
+            response[ConstantsManager.SERVER_ERROR] != null) {
+          if (response[ConstantsManager.SERVER_ERROR] == 'ALREADY_TAKEN')
+            _showToast(_stringResources.eTakenEmail);
+        } else {
+          _showToast(_stringResources.eServer);
+          print('registration error: $response');
+        }
+      }).catchError((_) {
+        _showToast(_stringResources.eServer);
+        print('registration error: $_');
       });
     } catch (e) {
-//      TODO
+      print('registration error: $e');
+      _showToast(_stringResources.eServer);
     }
   }
 
@@ -231,10 +271,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
         SharedPreferences.getInstance().then((sp) {
           sp.setString(ConstantsManager.FIRST_NAME,
               serverResult[ConstantsManager.FIRST_NAME]);
-          sp.setString(ConstantsManager.TOKEN_KEY,
+          sp
+              .setString(ConstantsManager.TOKEN_KEY,
                   serverResult[ConstantsManager.TOKEN_KEY])
               .then((_) {
             setState(() {
+              _isLoading = false;
+              _isRegistered = true;
               widget._firstNameCallback(firstName);
             });
           });
@@ -242,12 +285,12 @@ class RegistrationScreenState extends State<RegistrationScreen> {
       } else if (serverResult['error'] != null) {
         int error = int.parse(serverResult['error']);
         if (error == 401)
-          _showMessage("Unauthorized");
+          _showToast(_stringResources.eBadCredentials);
         else
-          _showMessage('ERROR');
+          _showToast(_stringResources.eServer);
       }
     } else
-      _showMessage('ERROR');
+      _showToast(_stringResources.eServer);
   }
 
   bool _passwordsMatching() {
@@ -259,5 +302,10 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     return false;
   }
 
-  _showMessage(String message) {}
+  _showToast(String message) {
+    setState(() {
+      _isLoading = false;
+    });
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
+  }
 }
