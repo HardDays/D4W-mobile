@@ -276,7 +276,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   serverResult[ConstantsManager.TOKEN_KEY])
               .then((_) {
             setState(() {
-              _isLoading = false;
+//              _isLoading = false;
               _isRegistered = true;
               widget._firstNameCallback(firstName);
             });

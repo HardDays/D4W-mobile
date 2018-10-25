@@ -419,7 +419,7 @@ class StringResources {
 
   String get bBook => _localizedValues[locale.languageCode][_buttonBook];
 
-  String get bBackk => _localizedValues[locale.languageCode][_buttonBack];
+  String get bBack => _localizedValues[locale.languageCode][_buttonBack];
 
   String get tForgotPassword {
     return _localizedValues[locale.languageCode][_textForgotPassword];

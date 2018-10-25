@@ -49,7 +49,9 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen> {
                         top: (_screenSize.height * .0405).toDouble()),
                     child: Center(
                       child: Text(
-                        StringResources.of(context).bEnter,
+                        !_isRegistered
+                            ? StringResources.of(context).bBack
+                            : StringResources.of(context).bEnter,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -64,7 +66,6 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen> {
               height: _screenSize.height - clipperHeight,
               child: (_username == null)
                   ? RegistrationScreen((firstname) {
-
                       _showWelcome(firstname);
                     })
                   : WelcomeScreen(_username),
@@ -77,13 +78,15 @@ class RegistrationMainScreenState extends State<RegistrationMainScreen> {
 
   _showWelcome(firstName) {
     print('firstname : $firstName');
+    setState(() {
+      _isRegistered = true;
+    });
     int count = 2;
     Timer.periodic(Duration(seconds: 2), (Timer t) {
       if (count > 0)
         count--;
       else {
         setState(() {
-          _isRegistered = true;
           _username = firstName;
         });
         t.cancel();

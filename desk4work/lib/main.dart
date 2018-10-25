@@ -100,6 +100,9 @@ class _MyHomePageState extends State<MyHomePage> with AfterLayoutMixin<MyHomePag
                   MaterialPageRoute(builder: (ctx)=>MainScreen()));
             else
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
+          }).catchError((e){
+            print("account check error: $e");
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>LoginScreen()));
           });
         }catch(e){
           print("account check error: $e");
