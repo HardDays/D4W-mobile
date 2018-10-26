@@ -28,12 +28,13 @@ class LoginScreenState extends State<LoginScreen> {
   StreamSubscription<String> _onUrlChanged;
   final FlutterWebviewPlugin flutterWebViewPlugin = new FlutterWebviewPlugin();
   String _authToken;
-  bool _isLoading;
+  bool _isLoading, _autoValidate;
   StringResources _stringResources;
 
   @override
   void initState() {
     _isLoading = false;
+    _autoValidate = false;
     super.initState();
     try {
       flutterWebViewPlugin.close();
@@ -104,6 +105,11 @@ class LoginScreenState extends State<LoginScreen> {
                               onTap: () {
                                 if (_formKey.currentState.validate())
                                   _sendForm();
+                                else{
+                                  setState(() {
+                                    _autoValidate = true;
+                                  });
+                                }
                               },
                               child: Center(
                                 child: Text(
@@ -199,6 +205,7 @@ class LoginScreenState extends State<LoginScreen> {
         width: (_screenSize.width * .84).toDouble(),
         child: Form(
           key: _formKey,
+          autovalidate: _autoValidate,
           child: Column(
             children: <Widget>[
               TextFormField(
@@ -216,6 +223,13 @@ class LoginScreenState extends State<LoginScreen> {
                 validator: (login) {
                   if (login.isEmpty)
                     return StringResources.of(context).eEmptyLogin;
+                  Pattern pattern =
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))'
+                      r'@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|'
+                      r'(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                  RegExp regex = RegExp(pattern);
+                  if (!regex.hasMatch(login))
+                    return StringResources.of(context).eWrongEmailFormat;
                 },
               ),
               Padding(
@@ -234,8 +248,8 @@ class LoginScreenState extends State<LoginScreen> {
                     hintStyle: TextStyle(color: Colors.white),
                     hintText: StringResources.of(context).hPassword),
                 validator: (password) {
-                  if (password.isEmpty)
-                    return StringResources.of(context).eEmptyPassword;
+                  if (password.isEmpty || password.length <6)
+                    return StringResources.of(context).eShortPassword;
                 },
                 style: TextStyle(color: Colors.white),
               )
