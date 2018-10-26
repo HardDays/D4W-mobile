@@ -8,6 +8,7 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,16 +23,17 @@ class BookingDetails extends StatefulWidget {
 
 class _BookingDetailsState extends State<BookingDetails> {
   double _screenHeight, _screenWidth, _progress;
-  bool _isTimeUp, _hasFreeMinutes;
+  bool _isTimeUp, _hasFreeMinutes, _isLoading;
   String _remainingTime;
   StringResources _stringResources;
   BookingApi _bookingApi;
+  Booking _booking;
   final _controller = new PageController();
 
   static const _kDuration = const Duration(milliseconds: 300);
 
   static const _kCurve = Curves.ease;
-
+  GlobalKey<ScaffoldState> _screenState = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +43,8 @@ class _BookingDetailsState extends State<BookingDetails> {
 
     _stringResources = StringResources.of(context);
 
-
     return Scaffold(
+      key: _screenState,
       appBar: AppBar(
         leading: BackButton(
           color: Colors.white,
@@ -51,37 +53,49 @@ class _BookingDetailsState extends State<BookingDetails> {
         title: Title(
             color: Colors.white,
             child: Text(
-              widget._booking.coWorking.shortName,
+              _booking.coWorking.shortName,
               style: TextStyle(color: Colors.white),
             )),
       ),
-      body: Column(
-        children: <Widget>[
-          _buildHeader(widget._booking.coWorking.images),
-          _buildProgressBar(),
-          _buildStartEndWidget(),
-          Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
-            height: _screenHeight * .1454,
-            child: _buildChronoWidget(),
-          ),
-          Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
-          _buildTerminatedExtendButton()
-        ],
-      ),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              children: <Widget>[
+                _buildHeader(_booking.coWorking.images),
+                _buildProgressBar(),
+                _buildStartEndWidget(),
+                Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
+                Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
+                  height: _screenHeight * .1454,
+                  child: _buildChronoWidget(),
+                ),
+                Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
+                _buildTerminatedExtendButton()
+              ],
+            ),
     );
   }
 
   @override
   void initState() {
+    _booking = widget._booking;
     _isTimeUp = false;
+    _isLoading = false;
     _progress = _getProgress();
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
     _bookingApi = BookingApi();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startCountDown();
+      print('booking: $_booking');
+      if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
+        _startCountDown();
+      if (!_booking.isVisitConfirmed) {
+        _showConfirmVisitDialog();
+      }
     });
     super.initState();
   }
@@ -101,11 +115,11 @@ class _BookingDetailsState extends State<BookingDetails> {
                   Icons.error,
                   size: (_screenHeight * .3238),
                 ),
-                imageUrl:  ConstantsManager.BASE_URL
-                    +"images/get_full/${imageIds[index]}",
+                imageUrl: ConstantsManager.BASE_URL +
+                    "images/get_full/${imageIds[index]}",
               );
             },
-            itemCount:imageIds?.length ?? 0,
+            itemCount: imageIds?.length ?? 0,
             controller: _controller,
             physics: AlwaysScrollableScrollPhysics(),
           ),
@@ -151,8 +165,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     String end;
 
     try {
-      DateTime startTime = DateTime.parse(widget._booking.beginDate);
-      DateTime endTime = DateTime.parse(widget._booking.endDate);
+      DateTime startTime = DateTime.parse(_booking.beginDate);
+      DateTime endTime = DateTime.parse(_booking.endDate);
       int startHours = startTime.hour;
       int startMinutes = startTime.minute;
 
@@ -289,32 +303,100 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
           ),
         ),
-        onTap: (_isTimeUp) ?()=> _extendBooking() :()=> _terminateBooking(),
+        onTap: (_isTimeUp) ? () => _extendBooking() : () => _terminateBooking(),
       ),
     );
   }
 
+  _showConfirmVisitDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) {
+          return CupertinoAlertDialog(
+              title: Text(_stringResources.tPromptConfirmVisit),
+              actions: [_buildNoActionButton(), _buildYesActionButton()]);
+        });
+  }
+
+  Widget _buildNoActionButton() {
+    return RaisedButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      child: Text(_stringResources.tNo),
+      highlightColor: Colors.orange,
+      color: Colors.white,
+      textColor: Colors.grey,
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(21.0)),
+    );
+  }
+
+  Widget _buildYesActionButton() {
+    return RaisedButton(
+      onPressed: _confirmVisit,
+      highlightColor: Colors.orange,
+      color: Colors.white,
+      textColor: Colors.grey,
+      child: Text(_stringResources.tYes),
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(21.0)),
+    );
+  }
+
   _terminateBooking() {
-    SharedPreferences.getInstance().then((sp){
+    SharedPreferences.getInstance().then((sp) {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      _bookingApi.cancelBooking(token, widget._booking.id).then((isCanceled){
-        if(isCanceled)
-          Navigator.of(context).pop(widget._booking);
-        else{
+      _bookingApi.cancelBooking(token, _booking.id).then((isCanceled) {
+        if (isCanceled)
+          Navigator.of(context).pop(_booking);
+        else {
           print('can\'t cancel the booking');
         }
       });
     });
-
   }
 
-  _extendBooking() {
+  _extendBooking() {}
 
+  _confirmVisit() {
+    setState(() {
+      _isLoading = true;
+    });
+
+    SharedPreferences.getInstance().then((sp) {
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
+        if (resp != null) {
+          if (resp[ConstantsManager.SERVER_ERROR] == null) {
+            Booking booking = resp["booking"];
+            if (booking != null) {
+              setState(() {
+                _booking = booking;
+              });
+            }
+          }
+        } else {
+          _showToast(_stringResources.eServer);
+        }
+      }).catchError((error) {
+        print('server error: $error');
+        _showToast(_stringResources.eServer);
+      });
+    });
+
+    Navigator.pop(context);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   double _getProgress() {
-    String start = widget._booking.beginDate;
-    String end = widget._booking.endDate;
+    String start = _booking.beginDate;
+    String end = _booking.endDate;
     DateTime now = DateTime.now();
     if (start != null && end != null) {
       try {
@@ -325,10 +407,10 @@ class _BookingDetailsState extends State<BookingDetails> {
           int consumedTime = now.difference(startTime).inSeconds;
           double progress = ((consumedTime * 100) / totalTime).toDouble();
           return progress;
-        } else if(now.isBefore(startTime)) {
+        } else if (now.isBefore(startTime)) {
           return .0;
-        }else return 1.0;
-
+        } else
+          return 1.0;
       } catch (e) {
         print('date parsing error: $e');
       }
@@ -338,8 +420,8 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   String _getRemainingTime() {
     Duration remaining;
-    String start = widget._booking.beginDate;
-    String end = widget._booking.endDate;
+    String start = _booking.beginDate;
+    String end = _booking.endDate;
     try {
       DateTime startTime = DateTime.parse(start);
       DateTime endTime = DateTime.parse(end);
@@ -393,5 +475,12 @@ class _BookingDetailsState extends State<BookingDetails> {
     } catch (e) {
       print('contDown error $e');
     }
+  }
+
+  _showToast(String message) {
+    setState(() {
+      _isLoading = false;
+    });
+    _screenState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 }

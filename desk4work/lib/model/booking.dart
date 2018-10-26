@@ -6,7 +6,7 @@ class Booking {
   int coworkingImageId;
   int userId;
   int price;
-  bool confirmed;
+//  bool confirmed;
   String beginWork;
   String endWork;
   String date;
@@ -16,16 +16,37 @@ class Booking {
   String updatedAt;
   CoWorking coWorking;
 
+  bool isVisitConfirmed;
+  bool isUserCanceling;
+  bool isUserLeaving;
+  bool isExtendPending;
+  int visitorsCount;
+
+  String visitTime;
+  String leaveTime;
+  int seatNumber;
+
+
   Booking(
       {this.id,
         this.coworkingId,
         this.coworkingImageId,
         this.userId,
-        this.confirmed,
+//        this.confirmed,
         this.beginWork,
         this.endWork,
         this.date,
         this.createdAt,
+        this.isVisitConfirmed,
+        this.isUserCanceling,
+        this.isUserLeaving,
+        this.isExtendPending,
+        this.visitorsCount,
+        this.beginDate,
+        this.endDate,
+        this.visitTime,
+        this.leaveTime,
+        this.seatNumber,
         this.updatedAt});
 
   Booking.fromJson(Map<String, dynamic> json) {
@@ -33,7 +54,7 @@ class Booking {
     coworkingId = json['coworking_id'];
     coworkingImageId = json['coworking_image_id'];
     userId = json['user_id'];
-    confirmed = json['confirmed'];
+//    confirmed = json['confirmed'];
     beginDate = json['begin_date'];
     endDate = json['end_date'];
     date = json['date'];
@@ -41,6 +62,20 @@ class Booking {
     updatedAt = json['updated_at'];
     coWorking = CoWorking.fromJson(json['coworking']);
     price = json['price'];
+
+
+    userId = json['user_id'];
+    isVisitConfirmed = json['is_visit_confirmed'] ?? false;
+    isUserCanceling = json['is_user_canceling'] ?? false;
+    isUserLeaving = json['is_user_leaving'] ?? false;
+    isExtendPending = json['is_extend_pending'] ?? false;
+    visitorsCount = json['visitors_count'];
+    beginDate = json['begin_date'];
+    endDate = json['end_date'];
+    visitTime = json['visit_time'];
+    leaveTime = json['leave_time'];
+    seatNumber = json['seat_number'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -49,7 +84,7 @@ class Booking {
     data['coworking_id'] = this.coworkingId;
     data['coworking_image_id'] = this.coworkingImageId;
     data['user_id'] = this.userId;
-    data['confirmed'] = this.confirmed;
+//    data['confirmed'] = this.confirmed;
     data['begin_work'] = this.beginWork;
     data['end_work'] = this.endWork;
     data['date'] = this.date;
@@ -62,7 +97,7 @@ class Booking {
   String toString() {
     return 'Booking{id: $id, coworkingId: $coworkingId,'
         ' coworkingImageId: $coworkingImageId, userId: $userId, price: $price, '
-        'confirmed: $confirmed, beginWork: $beginWork, endWork: $endWork, '
+        'confirmed: $isVisitConfirmed, beginWork: $beginWork, endWork: $endWork, '
         'date: $date, beginDate: $beginDate, endDate: $endDate, '
         'createdAt: $createdAt}';
   }

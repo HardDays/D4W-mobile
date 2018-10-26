@@ -21,7 +21,6 @@ class BookingApi {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response) {
       List<Booking> bookings = [];
-      print("booking response $response");
       response.forEach((r) {
         Booking b = Booking.fromJson(r);
         bookings.add(b);
@@ -29,6 +28,7 @@ class BookingApi {
       return bookings;
     });
   }
+
 
   Future<List<Booking>> getPastBookings(String token, {DateTime date}) {
     String url = ConstantsManager.BASE_URL + "users/get_past_bookings";
@@ -79,6 +79,71 @@ class BookingApi {
     });
   }
 
+  Future<Map<String, dynamic>> confirmVisit(String token, int bookingId) {
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    String url = _bookingUrl + 'confirm_visit';
+    Map<String, String> body = {
+      ConstantsManager.BOOKING_ID: bookingId.toString()
+    };
+    return _networkUtil.post(url, headers: _headers, body: body).then((res) {
+      if(res!=null && res[ConstantsManager.SERVER_ERROR] == null){
+        return {"booking" : Booking.fromJson(res)};
+      }else if(res !=null && res[ConstantsManager.SERVER_ERROR] !=null){
+        return res;
+      }
+      else{
+        return null;
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> confirmFinish(String token, int bookingId) {
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    String url = _bookingUrl + 'confirm_finish';
+    Map<String, String> body = {
+      ConstantsManager.BOOKING_ID: bookingId.toString()
+    };
+    return _networkUtil.post(url, headers: _headers, body: body).then((res) {
+      if (res[ConstantsManager.SERVER_ERROR] == null) {
+        return {};
+      } else {
+        return res;
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> leaveCoworking(String token, int bookingId) {
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    String url = _bookingUrl + 'leave_coworking';
+    Map<String, String> body = {
+      ConstantsManager.BOOKING_ID: bookingId.toString()
+    };
+    return _networkUtil.post(url, headers: _headers, body: body).then((res) {
+      if (res[ConstantsManager.SERVER_ERROR] == null) {
+        return {};
+      } else {
+        return res;
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> extendFor30Minutes(String token, int bookingId) {
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    String url = _bookingUrl + 'extend_booking';
+    Map<String, String> body = {
+      ConstantsManager.BOOKING_ID: bookingId.toString(),
+      "extend_time": "00:30"
+    };
+    return _networkUtil.post(url, headers: _headers, body: body).then((res) {
+      if (res[ConstantsManager.SERVER_ERROR] == null) {
+        return {};
+      } else {
+        return res;
+      }
+    });
+  }
+
+
   Future<bool> cancelBooking(String token, int id) {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _bookingUrl + 'cancel_booking';
@@ -92,6 +157,21 @@ class BookingApi {
         return true;
       else
         return false;
+    });
+  }
+
+  Future<Map<String,dynamic>> getBooking (String token, int bookingId) {
+    String url = ConstantsManager.BASE_URL + "users/$bookingId";
+    _headers[ConstantsManager.TOKEN_HEADER] = token;
+    return _networkUtil.get(url, headers: _headers).then((response){
+      if(response!=null && response[ConstantsManager.SERVER_ERROR] == null){
+        return {"booking" : Booking.fromJson(response)};
+      }else if(response !=null && response[ConstantsManager.SERVER_ERROR] !=null){
+        return response;
+      }
+      else{
+        return null;
+      }
     });
   }
 }

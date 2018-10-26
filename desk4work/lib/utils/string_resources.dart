@@ -110,6 +110,7 @@ class StringResources {
       'textfilterSettingAlertSuffix';
   static final String _textNothingToShow = 'textNothingToShow';
   static final String _textNoSeat = 'textNoSeat';
+  static final String _textPromptConfirmVisit = 'textPromptConfirmVisit';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -202,6 +203,7 @@ class StringResources {
       _textGuests: 'Guests',
       _textWorkingHours: 'Working hours',
       _textContacts: 'Contacts',
+      _textPromptConfirmVisit: 'Are you already in ',
       _buttonBook: 'Book',
       _buttonBack: 'Back',
       _textYes: 'yes',
@@ -250,6 +252,7 @@ class StringResources {
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
       _textNothingToShow: 'No co-working nearby, you can set another filter',
+      _textPromptConfirmVisit: 'Вы уже находитесь в коворкинге ',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
@@ -480,6 +483,9 @@ class StringResources {
   String get tComfort => _localizedValues[locale.languageCode][_textComfort];
 
   String get tMap => _localizedValues[locale.languageCode][_textMap];
+
+  String get tPromptConfirmVisit =>
+      _localizedValues[locale.languageCode][_textPromptConfirmVisit];
 
   String get tPrivateKabinet =>
       _localizedValues[locale.languageCode][_textPrivateKabinet];
