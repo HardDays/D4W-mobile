@@ -296,6 +296,9 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
                         Container(
                           width: _screenWidth * 0.45,
                           child: Text(_coworking.address ?? "",
+                            maxLines: 1,
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w300,
