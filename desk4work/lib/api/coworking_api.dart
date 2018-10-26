@@ -14,7 +14,7 @@ class CoWorkingApi {
   CoWorkingApi.internal();
   factory CoWorkingApi() => _instance;
 
-  Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  location, Filter filter}) {
+  Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  location, Filter filter, int offset=0}) {
 
     String stringFilter="?";
     String latLong;
@@ -57,7 +57,7 @@ class CoWorkingApi {
       double lon = location.longitude;
       latLong = "&lat=$lat&lng=$lon";
     }
-    String lastParam = "limit=25${latLong ?? ""}";
+    String lastParam = "limit=10&offset=$offset${latLong ?? ""}";
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
