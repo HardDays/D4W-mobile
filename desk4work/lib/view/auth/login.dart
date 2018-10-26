@@ -133,31 +133,31 @@ class LoginScreenState extends State<LoginScreen> {
                           width: (_screenSize.width * .3893).toDouble(),
                           height: (_screenSize.height * .0510).toDouble(),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              InkWell(
-                                child: Image.asset(
-                                  'assets/google_plus.png',
-                                  width: (_screenSize.width * .08).toDouble(),
-                                  height:
-                                      (_screenSize.height * .0299).toDouble(),
-                                  fit: BoxFit.scaleDown,
-                                ),
-                                onTap: () {
-                                  _handleGoogleSignIn();
-                                },
-                              ),
-                              InkWell(
-                                child: Image.asset(
-                                  'assets/facebook.png',
-                                  width: (_screenSize.width * .0453).toDouble(),
-                                  height: (_screenSize.height * .04).toDouble(),
-                                ),
-                                onTap: () {
-                                  _handleFacebookSignIn();
-                                },
-                              ),
+//                              InkWell(
+//                                child: Image.asset(
+//                                  'assets/google_plus.png',
+//                                  width: (_screenSize.width * .08).toDouble(),
+//                                  height:
+//                                      (_screenSize.height * .0299).toDouble(),
+//                                  fit: BoxFit.scaleDown,
+//                                ),
+//                                onTap: () {
+//                                  _handleGoogleSignIn();
+//                                },
+//                              ),
+//                              InkWell(
+//                                child: Image.asset(
+//                                  'assets/facebook.png',
+//                                  width: (_screenSize.width * .0453).toDouble(),
+//                                  height: (_screenSize.height * .04).toDouble(),
+//                                ),
+//                                onTap: () {
+//                                  _handleFacebookSignIn();
+//                                },
+//                              ),
                               InkWell(
                                 child: Image.asset(
                                   'assets/vk_social_network.png',
@@ -322,6 +322,9 @@ class LoginScreenState extends State<LoginScreen> {
       String url = auth.authUri.toString();
 
       if (_authToken != null && _authToken.isNotEmpty) {
+        setState(() {
+          _isLoading = true;
+        });
         _authApi.vkOrFacebookLogin(_authToken, false).then((token) {
           SharedPreferences.getInstance().then((sp) {
             sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
@@ -346,7 +349,10 @@ class LoginScreenState extends State<LoginScreen> {
               _authToken = new RegExp(r'access_token=([\w\d]+)')
                   .firstMatch(url)
                   .group(1);
-              flutterWebViewPlugin.close();
+            });
+
+            flutterWebViewPlugin.close().then((_){
+              _handleVkSignIn();
             });
           }
         }

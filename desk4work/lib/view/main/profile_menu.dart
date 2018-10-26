@@ -179,7 +179,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                                   fontSize: 18.0
                                 ),
                               ),
-                              Text(user.email,
+                              Text(user.email?? "",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
