@@ -290,6 +290,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                                   primaryColor: Colors.grey.withAlpha(90),
                                   hintColor: Colors.grey.withAlpha(0)),
                               child: TextField(
+                                  keyboardType: TextInputType.phone,
                                   focusNode: _emailFocus,
                                   style: TextStyle(
                                       fontSize: 16.0,

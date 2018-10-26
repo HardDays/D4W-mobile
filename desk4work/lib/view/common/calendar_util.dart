@@ -103,7 +103,7 @@ class CalendarCarousel extends StatefulWidget {
     @deprecated this.markedDateColor,
     this.markedDateWidget,
     this.headerMargin = const EdgeInsets.symmetric(vertical: 16.0),
-    this.childAspectRatio = 1.0,
+    this.childAspectRatio = 1.75,
     this.weekDayMargin = const EdgeInsets.only(bottom: 4.0),
     this.isIntervalSelectable
   });

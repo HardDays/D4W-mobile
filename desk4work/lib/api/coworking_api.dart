@@ -16,7 +16,6 @@ class CoWorkingApi {
 
   Future<List<CoWorking>> searchCoWorkingPlaces  (String token,{LatLng  location, Filter filter}) {
 
-    print('filter settings : $filter');
     String stringFilter="?";
     String latLong;
     Map<String,String> filters = {};
@@ -60,17 +59,12 @@ class CoWorkingApi {
     }
     String lastParam = "limit=25${latLong ?? ""}";
 
-//      limit=10&offset=10&creator_id=1&full_name=aaa&description=bbb
-//      &address=ccc&additional_info=ddd&begin_work=10:20&end_work=15:30
-//    &working_days[]=Monday&working_days[]=Sunday&free=true
-//    &begin_date=25.01.1994&end_date=25.01.1994&lat=10.2&lng=20.3&radius=1
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl+ "get_all_paged";
 //    url +="?limit=10";
     url=(stringFilter==null && stringFilter.length > 1)
         ? url+"?$lastParam" : url+stringFilter+"&$lastParam";
     return _networkUtil.get(url, headers: _headers).then((responseBody){
-      print("filter urllllll $url");
       List<CoWorking> coWorkings = [];
 
       responseBody['coworkings'].forEach((coWorking){

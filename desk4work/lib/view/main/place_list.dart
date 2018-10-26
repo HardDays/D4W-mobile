@@ -95,7 +95,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         ],
       ),
       body: Container(
-          padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
+          padding: EdgeInsets.symmetric(
+              vertical: _showAsList ? (_screenHeight * .0304) : .0),
           child: _buildCoWorkingList()),
     );
   }
@@ -111,14 +112,18 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             return Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 50.0),
-                child:  CircularProgressIndicator());
+                child: CircularProgressIndicator());
           case ConnectionState.done:
             if (snapshot.hasError) {
               print("error  loading coWorkings ${snapshot.error}");
               return _showMessage(stringResources.mServerError);
             } else {
-              if (snapshot.data == null)
-                return Container();
+              if (snapshot.data == null || snapshot.data.length < 1)
+                return Container(
+                  child: Center(
+                    child: Text(stringResources.tNothingToShow),
+                  ),
+                );
               else {
                 _coWorkings = snapshot.data;
                 return _showAsList ? _showList() : _showMap();
@@ -187,7 +192,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
           .searchCoWorkingPlaces(_token,
-              location: _cities[_filter?.place] ?? _userLocation,
+              location: _cities[_filter?.place], // ?? _userLocation,
               filter: _filter)
           .then((coWorkings) {
         return coWorkings;

@@ -97,11 +97,14 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
   }
 
   bool _checkInput(){
-    if (_oldPassword == null || _newPasssword == null || _newPassswordConfirm == null || _newPasssword.length < 7 || _newPassswordConfirm.length < 7){
+    if (_oldPassword == null || _newPasssword == null || _newPassswordConfirm == null || _newPasssword.length < 6 || _newPassswordConfirm.length < 6){
       Dialogs.showMessage(context, _stringResources.tError, _stringResources.eEmptyPassword, _stringResources.tOk);
       return false;
     } else if (_newPasssword != _newPassswordConfirm){
       Dialogs.showMessage(context, _stringResources.tError, _stringResources.eNotMatchingPasswords, _stringResources.tOk);
+      return false;
+    } else if(_newPasssword.trim()  == _oldPassword.trim() ){
+      Dialogs.showMessage(context, _stringResources.tError, _stringResources.eNewOldPassword, _stringResources.tOk);
       return false;
     }
     return true;
