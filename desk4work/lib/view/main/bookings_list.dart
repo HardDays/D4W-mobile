@@ -30,7 +30,6 @@ class _BookingsListState extends State<BookingsListScreen> {
   String _token;
   BookingApi _bookingApi;
 
-
   @override
   void initState() {
     _bookingApi = BookingApi();
@@ -69,7 +68,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                     vertical: _screenHeight * .015,
                     horizontal: _screenWidth * .0293
                 ),
-                child: _getBookingBuilder(_bookings[index])
+                child: _getBookingBuilder(index)
             );
           },
         ),
@@ -121,7 +120,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                     ),
                     Positioned(
                         top: _screenHeight * .050,
-                        child: _buildDate(DateTime.parse(booking.createdAt))
+                        child: _buildDate(DateTime.parse(booking.beginDate))
                     ),
                     Positioned(
                       child: _buildRemainingTime(
@@ -170,7 +169,8 @@ class _BookingsListState extends State<BookingsListScreen> {
 
   }
 
-  FutureBuilder<CoWorking> _getBookingBuilder(Booking booking){
+  FutureBuilder<CoWorking> _getBookingBuilder(index){
+    Booking booking = _bookings[index];
     return FutureBuilder<CoWorking>(
       future: _getCoWorking(booking.coworkingId),
       builder: (ctx, snapshot){
@@ -181,14 +181,79 @@ class _BookingsListState extends State<BookingsListScreen> {
             return Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 8.0),
-                child: new CircularProgressIndicator()
+                width: _screenWidth * .2773,
+                height: _screenHeight * .1409,
+                child: Card(
+                  margin: EdgeInsets.all(.0),
+                  elevation: 2.0,
+                  child: Container(
+                    height: _screenHeight * .1409,
+//        width: _screenWidth * .9413,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Hero(
+                            tag:  -booking.id,
+                            child: CachedNetworkImage(
+                              imageUrl: ConstantsManager.IMAGE_BASE_URL+
+                                  "${booking.coWorking.imageId}",
+                              fit: BoxFit.fill,
+                              width: _screenWidth * .2773,
+                              height: _screenHeight * .1409,
+                              errorWidget: Image.asset(
+                                'assets/placeholder.png',
+                                width: _screenWidth * .2773,
+                                height: _screenHeight * .1409,
+                                fit: BoxFit.fill,
+                              ),
+                            )
+                        ),
+//
+                        Container(
+                          height: _screenHeight * .1409,
+                          width: _screenWidth * .6613,
+                          padding: EdgeInsets.only(
+                              left: _screenWidth * .0386,
+                              top: _screenHeight * .0179),
+                          child: Stack(
+                            children: <Widget>[
+                              Text(
+                                booking.coWorking?.shortName ?? " ",
+                                style: Theme.of(context).textTheme.body2,
+                              ),
+                              Positioned(
+                                  top: _screenHeight * .050,
+                                  child: _buildDate(DateTime.parse(booking.beginDate))
+                              ),
+                              Positioned(
+                                child: _buildRemainingTime(
+                                    booking.beginDate,
+                                    booking.endDate),
+                                top: _screenHeight * .0809,
+                              ),
+                              Positioned(
+                                  top: _screenHeight * .0915,
+                                  left: _screenWidth * .4373,
+                                  child: _buildTerminateOrExtendTextButton(booking)
+                              )
+
+//                    _getLowerCardPart(booking.endWork) ?? " ",
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
             );
           case ConnectionState.done:
             if(snapshot.hasError){
-              print("error  loading booking ${snapshot.error}");
               return showMessage(_stringResources.mServerError);
             }else{
-              if(snapshot.data == null) return Container();
+              if(snapshot.data == null) return Container(
+                width: _screenWidth * .2773,
+                height: _screenHeight * .1409,
+              );
               else {
                 booking.coWorking = snapshot.data;
                 return Container(
