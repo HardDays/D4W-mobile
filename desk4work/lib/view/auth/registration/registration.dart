@@ -209,8 +209,10 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPasswordConfirm),
           validator: (passwordConfirm) {
-            if (passwordConfirm.isEmpty || passwordConfirm.length <6)
+            if (passwordConfirm.isEmpty)
               return StringResources.of(context).eEmptyPasswordConfirm;
+            else if(passwordConfirm.length < 6)
+              return StringResources.of(context).eShortPasswordConfirm;
             else if (!_passwordsMatching())
               return StringResources.of(context).eNotMatchingPasswords;
           },

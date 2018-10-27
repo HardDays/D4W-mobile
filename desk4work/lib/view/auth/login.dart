@@ -228,7 +228,7 @@ class LoginScreenState extends State<LoginScreen> {
                       r'@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|'
                       r'(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                   RegExp regex = RegExp(pattern);
-                  if (!regex.hasMatch(login))
+                  if (!regex.hasMatch(login?.trim()))
                     return StringResources.of(context).eWrongEmailFormat;
                 },
               ),
@@ -259,8 +259,8 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   _sendForm() {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
     setState(() {
       _isLoading = true;
     });

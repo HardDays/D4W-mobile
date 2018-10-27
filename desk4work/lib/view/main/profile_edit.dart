@@ -290,7 +290,6 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                                   primaryColor: Colors.grey.withAlpha(90),
                                   hintColor: Colors.grey.withAlpha(0)),
                               child: TextField(
-                                  keyboardType: TextInputType.phone,
                                   focusNode: _emailFocus,
                                   style: TextStyle(
                                       fontSize: 16.0,
@@ -337,6 +336,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                                   primaryColor: Colors.grey.withAlpha(90),
                                   hintColor: Colors.grey.withAlpha(0)),
                               child: TextField(
+                                  keyboardType: TextInputType.phone,
                                   focusNode: _phoneFocus,
                                   style: TextStyle(
                                       fontSize: 16.0,
@@ -437,7 +437,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
           firstName: _firstName,
           lastName: _lastName,
           email: _email,
-          phone: _phone);
+          phone: _phone );
       if (_image != null) {
         user.image = base64Encode(_image.readAsBytesSync());
       }
