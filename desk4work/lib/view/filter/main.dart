@@ -20,10 +20,9 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   FilterStateContainerState _container;
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _container.getFilter();
     });
     super.initState();
@@ -102,7 +101,14 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0),
                               ),
-                              Text((filter?.place ?? _stringResources.hPlace))
+                              Container(
+                                width: textFilterParameterWidth - 40,
+                                child: Text(
+                                  (filter?.place ?? _stringResources.hPlace),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -168,6 +174,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                           width: textFilterParameterWidth,
                           decoration: BoxDecorationUtil
                               .getGreyRoundedCornerBoxDecoration(),
+
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.access_time),
@@ -375,13 +382,13 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         .then((result) {
       if (result != null) {
         print('start timeeee: ${result[0]}');
-        String toParseStart=result[0];
-        if(toParseStart!=null && toParseStart.length <5)
-          toParseStart = '0'+toParseStart;
+        String toParseStart = result[0];
+        if (toParseStart != null && toParseStart.length < 5)
+          toParseStart = '0' + toParseStart;
 
-        String toParseEnd=result[1];
-        if(toParseEnd !=null && toParseEnd.length < 5)
-          toParseEnd ='0'+toParseEnd;
+        String toParseEnd = result[1];
+        if (toParseEnd != null && toParseEnd.length < 5)
+          toParseEnd = '0' + toParseEnd;
         int start = int.parse(toParseStart?.substring(0, 2) ?? '0');
         int end = int.parse(toParseEnd?.substring(0, 2) ?? '0');
 
