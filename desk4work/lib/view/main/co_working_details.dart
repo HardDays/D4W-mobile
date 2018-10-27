@@ -373,9 +373,12 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                     padding: EdgeInsets.only(
                   bottom: _screenHeight * .015,
                 )),
-                Text(
-                  _explanations ?? "",
-                  style: Theme.of(context).textTheme.caption,
+                Container(
+                  height: _screenHeight * .054,
+                  child: Text(
+                    _explanations ?? " ",
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 ),
                 Padding(
                     padding: EdgeInsets.only(
@@ -607,21 +610,21 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       amenities.keys.forEach((amenity) {
         switch (amenity) {
           case PRINTER:
-            String message = _getMessageStart(amenities[amenity]) +
+            String message =_isPrinterSelected ? " " : _getMessageStart(amenities[amenity]) +
                 " ${_stringResources.tipPrinter}";
             Widget printerIconButton = _getEquipmentButton(Icons.print,
                 _stringResources.tPrint, _isPrinterSelected, message, 1);
             amenitiesWidgets.add(printerIconButton);
             break;
           case COFFEE_OR_TEA:
-            String message = _getMessageStart(amenities[amenity]) +
+            String message =_isCoffeeSelected ? " " : _getMessageStart(amenities[amenity]) +
                 " ${_stringResources.tipTeaCoffee}";
             Widget coffeeIconButton = _getEquipmentButton(Icons.local_cafe,
                 _stringResources.tTeaOrCoffee, _isCoffeeSelected, message, 2);
             amenitiesWidgets.add(coffeeIconButton);
             break;
           case PRINTER:
-            String message = _getMessageStart(amenities[amenity]) +
+            String message = _isPrinterSelected ? " " :_getMessageStart(amenities[amenity]) +
                 " ${_stringResources.tipConferenceRoom}";
             Widget peopleIconButton = _getEquipmentButton(
                 Icons.people,
@@ -632,9 +635,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             amenitiesWidgets.add(peopleIconButton);
             break;
           case PRINTER:
-            String message = _getMessageStart(amenities[amenity]) +
+            String message =_isPrinterSelected ? " " : _getMessageStart(amenities[amenity]) +
                 " ${_stringResources.tipBikeStorage}";
-            Widget bikeIconButton = _getEquipmentButton(
+            Widget bikeIconButton =  _getEquipmentButton(
                 Icons.print,
                 _stringResources.tParkForBicycle,
                 _isPrinterSelected,
@@ -643,12 +646,14 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             amenitiesWidgets.add(bikeIconButton);
             break;
           case PRINTER:
-            String message = _getMessageStart(amenities[amenity]) +
+            String message = _isKitchenSelected ? " " :_getMessageStart(amenities[amenity]) +
                 " ${_stringResources.tipKitchen}";
-            IconButton kitchenIconButton = IconButton(
-              onPressed: () => _setTipText(message),
-              icon: Icon(Icons.local_dining),
-            );
+            Widget kitchenIconButton = _getEquipmentButton(Icons.local_dining,
+                _stringResources.tKitchen, _isKitchenSelected, message, 5);
+//            IconButton(
+//              onPressed: () => _setTipText(message),
+//              icon: Icon(Icons.local_dining),
+//            );
             amenitiesWidgets.add(kitchenIconButton);
             break;
         }
@@ -683,8 +688,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 : null,
             child: IconButton(
                 onPressed: () {
-                  _switchButton(buttonToSwitch);
                   _setTipText(explain);
+                  _switchButton(buttonToSwitch);
                 },
                 icon: Icon(
                   icon,
@@ -703,26 +708,46 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     switch (i) {
       case 1:
         setState(() {
+          _isConferenceRoomSelected = false;
+          _isBikeStorageSelected = false;
+          _isKitchenSelected = false;
+          _isCoffeeSelected = false;
           _isPrinterSelected = !_isPrinterSelected;
         });
         break;
       case 2:
         setState(() {
+          _isConferenceRoomSelected = false;
+          _isBikeStorageSelected = false;
+          _isKitchenSelected = false;
+          _isPrinterSelected = false;
           _isCoffeeSelected = !_isCoffeeSelected;
         });
         break;
       case 3:
         setState(() {
+          _isBikeStorageSelected = false;
+          _isKitchenSelected = false;
+          _isCoffeeSelected = false;
+          _isPrinterSelected = false;
           _isConferenceRoomSelected = !_isConferenceRoomSelected;
         });
         break;
       case 4:
         setState(() {
+          _isConferenceRoomSelected = false;
+          _isKitchenSelected = false;
+          _isCoffeeSelected = false;
+          _isPrinterSelected = false;
           _isBikeStorageSelected = !_isBikeStorageSelected;
         });
         break;
       case 5:
         setState(() {
+          _isConferenceRoomSelected = false;
+          _isBikeStorageSelected = false;
+          _isCoffeeSelected = false;
+          _isPrinterSelected = false;
           _isKitchenSelected = !_isKitchenSelected;
         });
     }
@@ -819,10 +844,11 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               print("error  loading bookings ${snapshot.error}");
               return showMessage(_stringResources.mServerError);
             } else {
+              print(' freeseat1: ${snapshot.data}');
               if (snapshot.data == null)
                 return Container();
               else {
-                int seats = snapshot.data ?? 0;
+                int seats = snapshot.data;
 
                 widget._coWorking.freeSeats = seats;
 
