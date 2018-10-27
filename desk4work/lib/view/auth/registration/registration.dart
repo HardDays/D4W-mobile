@@ -56,32 +56,49 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               margin:
                   EdgeInsets.only(top: (_screenSize.height * .078).toDouble()),
               width: (_screenSize.width * .84).toDouble(),
-              child: ListView(
-                reverse: true,
-//          mainAxisAlignment: MainAxisAlignment.start,
-//          crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
                 children: <Widget>[
-                  Image.asset(
-                    'assets/logo_horizontal_color_shaded.png',
-                    fit: BoxFit.contain,
-                    width: (_screenSize.width * .4311).toDouble(),
-                    height: (_screenSize.height * .0836).toDouble(),
-                  ),
                   Container(
-                    margin: EdgeInsets.only(
-                        top: (_screenSize.height * .0633).toDouble()),
-                    child: Form(
-                      child: _getForm(),
-                      key: _formKey,
-                      autovalidate: _autoValidate,
+                    height: (_screenSize.height * .0836).toDouble(),
+                    child: Image.asset(
+                      'assets/logo_horizontal_color_shaded.png',
+                      fit: BoxFit.contain,
+                      width: (_screenSize.width * .4311).toDouble(),
+                      height: (_screenSize.height * .0836).toDouble(),
                     ),
                   ),
-                  _getSendFormButton(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        bottom: (_screenSize.height * .0735).toDouble()),
-                  )
-                ].reversed.toList(),
+                  Container(
+                    height: _screenSize.height * .65,
+                    child: ListView(
+//                      reverse: true,
+//          mainAxisAlignment: MainAxisAlignment.start,
+//          crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+//                      Image.asset(
+//                        'assets/logo_horizontal_color_shaded.png',
+//                        fit: BoxFit.contain,
+//                        width: (_screenSize.width * .4311).toDouble(),
+//                        height: (_screenSize.height * .0836).toDouble(),
+//                      ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: (_screenSize.height * .0633).toDouble()),
+                          child: Form(
+                            child: _getForm(),
+                            key: _formKey,
+                            autovalidate: _autoValidate,
+                          ),
+                        ),
+                        _getSendFormButton(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom: (_screenSize.height * .0735).toDouble()),
+                        )
+                      ]
+//                          .reversed.toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
     );
