@@ -77,7 +77,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
                color: Colors.grey,
                width: .5))
          ),
-         child:(_isLoading)?CircularProgressIndicator() :Column(
+         child:(_isLoading)?Center(child: CircularProgressIndicator()) :Column(
 
            children: <Widget>[
              Container(

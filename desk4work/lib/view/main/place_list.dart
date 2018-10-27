@@ -22,7 +22,7 @@ class CoWorkingPlaceListScreen extends StatefulWidget {
 }
 
 class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
-  List<CoWorking> _coWorkings;
+  List<CoWorking> _coWorkings = [];
   CoWorkingApi _coWorkingApi = CoWorkingApi();
   GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
   StringResources stringResources;
@@ -34,11 +34,15 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   ImageApi _imageApi;
   String _token;
   Filter _filter;
-  bool _showAsList;
+  bool _showAsList, _isLoading;
+
+  int _offset;
 
   @override
   void initState() {
     _showAsList = true;
+    _offset = 0;
+    _isLoading = true;
     _cities = {
       PlaceFilterScreen.SAINT_PETERSBURG: LatLng(59.93863, 30.31413),
       PlaceFilterScreen.MOSCOW: LatLng(55.75222, 37.61556),
@@ -54,7 +58,20 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             _userLocation = LatLng(pos.latitude, pos.longitude);
           });
         }
+      }).catchError((error) {
+        print('location error: $error');
       }).timeout(Duration(seconds: 5));
+      SharedPreferences.getInstance().then((sp) {
+        _token = sp.getString(ConstantsManager.TOKEN_KEY);
+        _coWorkingApi.searchCoWorkingPlaces(_token).then((coWorkings) {
+          if (coWorkings != null && coWorkings.length > 0) {
+            setState(() {
+              _isLoading = false;
+              this._coWorkings.addAll(coWorkings);
+            });
+          }
+        });
+      });
     });
     super.initState();
   }
@@ -95,8 +112,16 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         ],
       ),
       body: Container(
-          padding: EdgeInsets.symmetric(vertical: _screenHeight * .0304),
-          child: _buildCoWorkingList()),
+          padding: EdgeInsets.symmetric(
+              vertical: _showAsList ? (_screenHeight * .0304) : .0),
+          child: _isLoading
+              ? Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : _showAsList ? _showList() : _showMap()),
     );
   }
 
@@ -111,14 +136,18 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             return Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 50.0),
-                child:  CircularProgressIndicator());
+                child: CircularProgressIndicator());
           case ConnectionState.done:
             if (snapshot.hasError) {
               print("error  loading coWorkings ${snapshot.error}");
               return _showMessage(stringResources.mServerError);
             } else {
-              if (snapshot.data == null)
-                return Container();
+              if (snapshot.data == null || snapshot.data.length < 1)
+                return Container(
+                  child: Center(
+                    child: Text(stringResources.tNothingToShow),
+                  ),
+                );
               else {
                 _coWorkings = snapshot.data;
                 return _showAsList ? _showList() : _showMap();
@@ -134,9 +163,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   ListView _showList() {
     return ListView.builder(
-        shrinkWrap: true,
+//        shrinkWrap: true,
         itemCount: _coWorkings.length,
         itemBuilder: (ctx, index) {
+          if (index == _coWorkings.length - 2) _loadMoreBooking(10);
           return _getCoWorkingCard(_coWorkings[index]);
         });
   }
@@ -151,6 +181,31 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _coWorkings,
       defaultPosition: defautPosition,
     );
+  }
+
+  Future _loadMoreBooking(int offset) {
+    return SharedPreferences.getInstance().then((sp) {
+      _token = sp.getString(ConstantsManager.TOKEN_KEY);
+      return _coWorkingApi
+          .searchCoWorkingPlaces(_token,
+              location: _cities[_filter?.place], // ?? _userLocation,
+              filter: _filter,
+              offset: offset ==0 ? offset : _offset + offset)
+          .then((coWorkings) {
+            print(' loaded ooooo: $coWorkings');
+        if (coWorkings != null && coWorkings.length > 0) {
+          setState(() {
+            _offset += 20;
+            _isLoading= false;
+            this._coWorkings.addAll(coWorkings);
+          });
+        }else{
+          setState(() {
+            _isLoading= false;
+          });
+        }
+      });
+    });
   }
 
   _showOnMap() {
@@ -175,8 +230,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         Filter filter = shouldSearch[1];
         setState(() {
           this._filter = filter;
+          _coWorkings = [];
+          _isLoading = true;
         });
         print('shouldSearch ${shouldSearch[1]}');
+
+        _loadMoreBooking(0);
       } else
         print("do nothing");
     });
@@ -187,7 +246,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
           .searchCoWorkingPlaces(_token,
-              location: _cities[_filter?.place] ?? _userLocation,
+              location: _cities[_filter?.place], // ?? _userLocation,
               filter: _filter)
           .then((coWorkings) {
         return coWorkings;

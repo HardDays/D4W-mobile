@@ -34,6 +34,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   static const _kCurve = Curves.ease;
 
+  bool _hasFreeSeats, _hasLocation;
+
   _CoWorkingDetailsScreenState();
 
   bool _isPrinterSelected = false,
@@ -47,11 +49,15 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   CoWorkingApi _coWorkingApi;
 
   bool _showOnMap;
+
   @override
   void initState() {
     _showOnMap = false;
     _mapController = MapController();
     _coWorkingApi = CoWorkingApi();
+    _hasFreeSeats = true;
+    _hasLocation =
+        (widget._coWorking.lat != null && widget._coWorking.lng != null);
     super.initState();
   }
 
@@ -80,9 +86,11 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 color: Colors.white,
               ),
               onPressed: () {
-                setState(() {
-                  _showOnMap =!_showOnMap;
-                });
+                if (_hasLocation) {
+                  setState(() {
+                    _showOnMap = !_showOnMap;
+                  });
+                }
               })
         ],
       ),
@@ -90,7 +98,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
   }
 
-  Widget _showDetails(){
+  Widget _showDetails() {
     return Container(
       height: _screenHeight,
       child: ListView(
@@ -101,8 +109,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               child: (widget._coWorking.images != null)
                   ? _buildImagesSlide()
                   : Container(
-                child: Image.asset('assets/placeholder.png'),
-              )),
+                      child: Image.asset('assets/placeholder.png'),
+                    )),
           Container(
             margin: EdgeInsets.symmetric(
               vertical: _screenHeight * .03,
@@ -116,8 +124,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   style: Theme.of(context).textTheme.subhead,
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: _screenHeight * .0105)),
+                    padding:
+                        EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
                 Text(
                   widget._coWorking.description ?? '',
                   style: Theme.of(context).textTheme.caption,
@@ -142,8 +150,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   style: Theme.of(context).textTheme.subhead,
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: _screenHeight * .0105)),
+                    padding:
+                        EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -156,15 +164,15 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 ),
                 Padding(
                     padding:
-                    EdgeInsets.symmetric(vertical: _screenHeight * .009)),
+                        EdgeInsets.symmetric(vertical: _screenHeight * .009)),
               ],
             ),
           ),
-          (widget._coWorking.lat != null && widget._coWorking.lng != null)
+          (_hasLocation)
               ? Container(
-            height: (_screenHeight * .276),
-            child: _buildMap(),
-          )
+                  height: (_screenHeight * .276),
+                  child: _buildMap(),
+                )
               : Container(),
           Container(
             height: (_screenHeight * .0618),
@@ -180,18 +188,20 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   _showOnMap = true;
                 });
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.place,
-                    color: Colors.orange,
-                  ),
-                  Text(widget._coWorking.address ?? " ",
-                      style: Theme.of(context).textTheme.caption)
-                ],
-              ),
+              child: widget._coWorking.address == null
+                  ? Container()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.place,
+                          color: Colors.orange,
+                        ),
+                        Text(widget._coWorking.address ?? " ",
+                            style: Theme.of(context).textTheme.caption)
+                      ],
+                    ),
             ),
           ),
           _getWorkingHours(),
@@ -212,12 +222,14 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               onTap: _bookPlace,
               child: Center(
                   child: Text(
-                    _stringResources.bBook,
-                    style: Theme.of(context)
-                        .textTheme
-                        .button
-                        .copyWith(color: Colors.white),
-                  )),
+                _hasFreeSeats
+                    ? _stringResources.bBook
+                    : _stringResources.tNoSeat,
+                style: Theme.of(context)
+                    .textTheme
+                    .button
+                    .copyWith(color: Colors.white),
+              )),
             ),
           )
         ],
@@ -234,7 +246,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     double lat = widget._coWorking.lat;
     double lng = widget._coWorking.lng;
     LatLng mapCenter;
-    if (lat != null && lng != null)
+    if (_hasLocation)
       mapCenter = LatLng(lat, lng);
     else
       return Container();
@@ -320,9 +332,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                   return Container(
                       child: _getWorkgingHours(
                           widget._coWorking.workingDays[index]));
-                },
-                  growable: false
-                ),
+                }, growable: false),
               ),
             ),
           ),
@@ -337,40 +347,43 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   }
 
   Widget _getAmenitiesContainer() {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: _screenWidth * .0413,
-      ),
-      decoration: BoxDecoration(
-          border: BorderDirectional(
-              bottom: BorderSide(color: Colors.black26, width: .5))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Title(
-              color: Colors.black,
-              child: Text(
-                _stringResources.tComfort,
-                style: Theme.of(context).textTheme.subhead,
-              )),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _getAmenitiesWidget(_getAmenities())),
-          Padding(
-              padding: EdgeInsets.only(
-            bottom: _screenHeight * .015,
-          )),
-          Text(
-            _explanations ?? "",
-            style: Theme.of(context).textTheme.caption,
-          ),
-          Padding(
-              padding: EdgeInsets.only(
-            bottom: _screenHeight * .03,
-          ))
-        ],
-      ),
-    );
+    Map<String, bool> amenities = _getAmenities();
+    return amenities.length < 1
+        ? Container()
+        : Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: _screenWidth * .0413,
+            ),
+            decoration: BoxDecoration(
+                border: BorderDirectional(
+                    bottom: BorderSide(color: Colors.black26, width: .5))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Title(
+                    color: Colors.black,
+                    child: Text(
+                      _stringResources.tComfort,
+                      style: Theme.of(context).textTheme.subhead,
+                    )),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: _getAmenitiesWidget(amenities)),
+                Padding(
+                    padding: EdgeInsets.only(
+                  bottom: _screenHeight * .015,
+                )),
+                Text(
+                  _explanations ?? "",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                  bottom: _screenHeight * .03,
+                ))
+              ],
+            ),
+          );
   }
 
   Widget _getWorkgingHours(WorkingDays workingDay) {
@@ -457,80 +470,79 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   }
 
   Widget _getContactContainer() {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: _screenHeight * .03,
-        horizontal: _screenWidth * .0413,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            _stringResources.tContacts,
-            style: Theme.of(context).textTheme.subhead,
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(vertical: _screenHeight * .009)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              InkWell(
-                child: Image.asset(
-                  'assets/phone_green.png',
-                  height: _screenHeight * .072,
-                  width: _screenWidth * .128,
-                ),
-                onTap: _openPhone,
-              ),
-              InkWell(
-                child: Image.asset(
-                  'assets/vk_color.png',
-                  height: _screenHeight * .072,
-                  width: _screenWidth * .128,
-                ),
-                onTap: _openVk,
-              ),
-              InkWell(
-                child: Image.asset(
-                  'assets/fb_color.png',
-                  height: _screenHeight * .072,
-                  width: _screenWidth * .128,
-                ),
-                onTap: _openFacebook,
-              ),
-              InkWell(
-                child: Image.asset(
-                  'assets/insta_color.png',
-                  height: _screenHeight * .072,
-                  width: _screenWidth * .128,
-                ),
-                onTap: _openInsta,
-              ),
-              InkWell(
-                child: Image.asset(
-                  'assets/twitter_color.png',
-                  height: _screenHeight * .072,
-                  width: _screenWidth * .128,
-                ),
-                onTap: _openTwitter,
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+    return Container();
+//    return Container(
+//      margin: EdgeInsets.symmetric(
+//        vertical: _screenHeight * .03,
+//        horizontal: _screenWidth * .0413,
+//      ),
+//      child: Column(
+//        crossAxisAlignment: CrossAxisAlignment.start,
+//        children: <Widget>[
+//          Text(
+//            _stringResources.tContacts,
+//            style: Theme.of(context).textTheme.subhead,
+//          ),
+//          Padding(
+//              padding: EdgeInsets.symmetric(vertical: _screenHeight * .009)),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//            children: <Widget>[
+//              InkWell(
+//                child: Image.asset(
+//                  'assets/phone_green.png',
+//                  height: _screenHeight * .072,
+//                  width: _screenWidth * .128,
+//                ),
+//                onTap: _openPhone,
+//              ),
+//              InkWell(
+//                child: Image.asset(
+//                  'assets/vk_color.png',
+//                  height: _screenHeight * .072,
+//                  width: _screenWidth * .128,
+//                ),
+//                onTap: _openVk,
+//              ),
+//              InkWell(
+//                child: Image.asset(
+//                  'assets/fb_color.png',
+//                  height: _screenHeight * .072,
+//                  width: _screenWidth * .128,
+//                ),
+//                onTap: _openFacebook,
+//              ),
+//              InkWell(
+//                child: Image.asset(
+//                  'assets/insta_color.png',
+//                  height: _screenHeight * .072,
+//                  width: _screenWidth * .128,
+//                ),
+//                onTap: _openInsta,
+//              ),
+//              InkWell(
+//                child: Image.asset(
+//                  'assets/twitter_color.png',
+//                  height: _screenHeight * .072,
+//                  width: _screenWidth * .128,
+//                ),
+//                onTap: _openTwitter,
+//              ),
+//            ],
+//          )
+//        ],
+//      ),
+//    );
   }
 
-  CoWorkingPlaceMapScreen _showMap(){
+  CoWorkingPlaceMapScreen _showMap() {
     double lat = widget._coWorking.lat;
     double long = widget._coWorking.lng;
-    if(lat !=null && long !=null){
+    if (_hasLocation) {
       LatLng defaultLocation = LatLng(lat, long);
       return CoWorkingPlaceMapScreen([widget._coWorking],
           defaultPosition: defaultLocation);
     }
-
-
   }
 
   _openPhone() {}
@@ -717,8 +729,15 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   }
 
   _bookPlace() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => NewBookingScreen(widget._coWorking)));
+    if (widget._coWorking.freeSeats != null &&
+        widget._coWorking.freeSeats > 0) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => NewBookingScreen(widget._coWorking)));
+    } else {
+      setState(() {
+        _hasFreeSeats = false;
+      });
+    }
   }
 
 //  _showOnMap() {
@@ -803,8 +822,11 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               if (snapshot.data == null)
                 return Container();
               else {
-                widget._coWorking.freeSeats = snapshot.data;
-                return Text(snapshot.data.toString() ?? '0');
+                int seats = snapshot.data ?? 0;
+
+                widget._coWorking.freeSeats = seats;
+
+                return Text(seats.toString());
               }
             }
             break;

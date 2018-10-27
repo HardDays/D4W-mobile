@@ -179,7 +179,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                                   fontSize: 18.0
                                 ),
                               ),
-                              Text(user.email,
+                              Text(user.email?? "",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
@@ -264,81 +264,81 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                   ),
                 ),
                 Divider(height: 2.0),
-                Container(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: 20.0,
-                            height: 20.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/credit_card.png')
-                              )
-                            )
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 20.0),
-                            width: _screenWidth - 120,
-                            child: Text(_stringResources.tPaymentOption,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black,
-                                fontSize: 16.0
-                              ),
-                            ),  
-                          ),
-                        ]
-                      ),
-                      IconButton(
-                        iconSize: 16.0,
-                        icon: Icon(Icons.arrow_forward_ios)
-                      )
-                    ],
-                  )
-                ),
-                Divider(height: 2.0),
-                Container(
-                  padding: EdgeInsets.only(left: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget> [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget> [
-                          Container(
-                            width: 20.0,
-                            height: 20.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/question.png')
-                              )
-                            )
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 20.0),
-                            width: _screenWidth - 120,
-                            child: Text(_stringResources.tHelp,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black,
-                                fontSize: 16.0
-                              ),
-                            ),  
-                          ),
-                        ]
-                      ),
-                      IconButton(
-                        iconSize: 16.0,
-                        icon: Icon(Icons.arrow_forward_ios)
-                      )
-                    ],
-                  )
-                )
+//                Container(
+//                  padding: EdgeInsets.only(left: 20.0),
+//                  child: Row(
+//                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                    children: <Widget>[
+//                      Row(
+//                        mainAxisAlignment: MainAxisAlignment.start,
+//                        children: <Widget>[
+//                          Container(
+//                            width: 20.0,
+//                            height: 20.0,
+//                            decoration: BoxDecoration(
+//                              image: DecorationImage(
+//                                image: AssetImage('assets/credit_card.png')
+//                              )
+//                            )
+//                          ),
+//                          Container(
+//                            margin: EdgeInsets.only(left: 20.0),
+//                            width: _screenWidth - 120,
+//                            child: Text(_stringResources.tPaymentOption,
+//                              style: TextStyle(
+//                                fontWeight: FontWeight.w300,
+//                                color: Colors.black,
+//                                fontSize: 16.0
+//                              ),
+//                            ),
+//                          ),
+//                        ]
+//                      ),
+//                      IconButton(
+//                        iconSize: 16.0,
+//                        icon: Icon(Icons.arrow_forward_ios)
+//                      )
+//                    ],
+//                  )
+//                ),
+//                Divider(height: 2.0),
+//                Container(
+//                  padding: EdgeInsets.only(left: 20.0),
+//                  child: Row(
+//                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                    children: <Widget> [
+//                      Row(
+//                        mainAxisAlignment: MainAxisAlignment.start,
+//                        children: <Widget> [
+//                          Container(
+//                            width: 20.0,
+//                            height: 20.0,
+//                            decoration: BoxDecoration(
+//                              image: DecorationImage(
+//                                image: AssetImage('assets/question.png')
+//                              )
+//                            )
+//                          ),
+//                          Container(
+//                            margin: EdgeInsets.only(left: 20.0),
+//                            width: _screenWidth - 120,
+//                            child: Text(_stringResources.tHelp,
+//                              style: TextStyle(
+//                                fontWeight: FontWeight.w300,
+//                                color: Colors.black,
+//                                fontSize: 16.0
+//                              ),
+//                            ),
+//                          ),
+//                        ]
+//                      ),
+//                      IconButton(
+//                        iconSize: 16.0,
+//                        icon: Icon(Icons.arrow_forward_ios)
+//                      )
+//                    ],
+//                  )
+//                )
               ]
             )
           ),

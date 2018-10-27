@@ -108,6 +108,9 @@ class StringResources {
       'textfilterSettingAlertPrefix';
   static final String _textFilterSettingsAlertSuffix =
       'textfilterSettingAlertSuffix';
+  static final String _textNothingToShow = 'textNothingToShow';
+  static final String _textNoSeat = 'textNoSeat';
+  static final String _textPromptConfirmVisit = 'textPromptConfirmVisit';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -121,6 +124,11 @@ class StringResources {
   static final String _errorNotMatchingPasswords = 'errorMatchingPasswords';
   static final String _errorEmptyPhone = 'errorEmptyPhone';
   static final String _errorEmptyEmail = 'errorEmptyEmail';
+  static final String _errorToLongPhoneNumber = "errorToLongPhoneNumber";
+  static final String _errorToLongLogin = "errorLongLogin";
+  static final String _errorToShortPassword = "errorShortPassword";
+  static final String _errorSameAsOldPassword = "errorSamemOldPassword";
+
   static final String _errorEmptyEmailOrPhone = 'errorEmptyEmailOrPhone';
   static final String _errorWrongEmail = 'errorWrongEmail';
   static final String _errorWrongStartDate = 'errorWrongStartDate';
@@ -128,6 +136,7 @@ class StringResources {
   static final String _errorBadCredentials = 'errorBadCredentials';
   static final String _errorServer = 'errorServer';
   static final String _errorTakenEmail = 'errorTakenEmail';
+  static final String _errorInvalidEmail = 'errorInvalidEmail';
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
@@ -194,6 +203,7 @@ class StringResources {
       _textGuests: 'Guests',
       _textWorkingHours: 'Working hours',
       _textContacts: 'Contacts',
+      _textPromptConfirmVisit: 'Are you already in ',
       _buttonBook: 'Book',
       _buttonBack: 'Back',
       _textYes: 'yes',
@@ -238,13 +248,16 @@ class StringResources {
       _textNovember: 'November',
       _textDecember: 'December',
       _textBookings: 'Bookings',
+      _textNoSeat: 'No available seat',
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
+      _textNothingToShow: 'No co-working nearby, you can set another filter',
+      _textPromptConfirmVisit: 'Вы уже находитесь в коворкинге ',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
       _errorEmptyLogin: 'Login can\'t be empty',
-      _errorEmptyPassword: 'Password can\'t be empty',
+      _errorEmptyPassword: 'Password too short',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
       _errorNotMatchingPasswords: 'Passwords don\'t match, please try again',
       _errorEmptyPhone: 'This field can\'t be empty',
@@ -256,6 +269,11 @@ class StringResources {
       _errorWrongStartDate: 'Please change the start date',
       _errorWrongEndDate: 'Please change end date',
       _errorTakenEmail: 'Email already taken',
+      _errorToLongPhoneNumber: "Phone number too long",
+      _errorToLongLogin: "Login too long",
+      _errorToShortPassword: "Password too short(min 6)",
+      _errorSameAsOldPassword: "Password is the same as the old one",
+      _errorInvalidEmail: 'Not valid email',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Server Error',
       _tipPrinter: "Printer and scanner",
@@ -368,8 +386,10 @@ class StringResources {
       _textBookings: 'Бронирование',
       _textFilterSettingsAlertPrefix: 'Настрайвайте поле ',
       _textFilterSettingsAlertSuffix: ' пожалуйста',
+      _textNothingToShow: 'Вблизи вас нет коворкингов',
+      _textNoSeat: 'Нет свобоных мест',
       _errorEmptyLogin: 'Логин не может быть пустым',
-      _errorEmptyPassword: 'Пароль не может быть пустым',
+      _errorEmptyPassword: 'Пароль слишком коротый',
       _errorEmptyPasswordConfirm:
           '\'Подтврерждение пароль\' не может быть пустым',
       _errorNotMatchingPasswords:
@@ -383,6 +403,11 @@ class StringResources {
       _errorBadCredentials: 'Неверный логин или пароль',
       _errorServer: 'Ошибка сервера, повторите попытку позже',
       _errorTakenEmail: 'Email уже занят',
+      _errorToLongPhoneNumber: "Слишком длинный телефон",
+      _errorToLongLogin: "Слишком длинный логин",
+      _errorToShortPassword: "Слишком короткый пароль (мин 6)",
+      _errorSameAsOldPassword: "Новый и старый пароли совпадаются",
+      _errorInvalidEmail: 'Неправильный формат',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Ощибка сервера',
       _tipPrinter: "принтером и сканером",
@@ -419,7 +444,7 @@ class StringResources {
 
   String get bBook => _localizedValues[locale.languageCode][_buttonBook];
 
-  String get bBackk => _localizedValues[locale.languageCode][_buttonBack];
+  String get bBack => _localizedValues[locale.languageCode][_buttonBack];
 
   String get tForgotPassword {
     return _localizedValues[locale.languageCode][_textForgotPassword];
@@ -440,6 +465,9 @@ class StringResources {
   String get tRecoveryEmailSent =>
       _localizedValues[locale.languageCode][_textEmailSent];
 
+  String get tNothingToShow =>
+      _localizedValues[locale.languageCode][_textNothingToShow];
+
   String get tEmailOrPhonePrompt =>
       _localizedValues[locale.languageCode][_textEmailOrPhonePrompt];
 
@@ -455,6 +483,9 @@ class StringResources {
   String get tComfort => _localizedValues[locale.languageCode][_textComfort];
 
   String get tMap => _localizedValues[locale.languageCode][_textMap];
+
+  String get tPromptConfirmVisit =>
+      _localizedValues[locale.languageCode][_textPromptConfirmVisit];
 
   String get tPrivateKabinet =>
       _localizedValues[locale.languageCode][_textPrivateKabinet];
@@ -550,6 +581,8 @@ class StringResources {
 
   String get tOk => _localizedValues[locale.languageCode][_textOk];
 
+  String get tNoSeat => _localizedValues[locale.languageCode][_textNoSeat];
+
   String get tSuccess => _localizedValues[locale.languageCode][_textSuccess];
 
   String get tError => _localizedValues[locale.languageCode][_textError];
@@ -612,13 +645,25 @@ class StringResources {
   String get eBadCredentials =>
       _localizedValues[locale.languageCode][_errorBadCredentials];
 
-  String get eServer =>
-      _localizedValues[locale.languageCode][_errorServer];
+  String get eServer => _localizedValues[locale.languageCode][_errorServer];
+
+  String get eWrongEmailFormat =>
+      _localizedValues[locale.languageCode][_errorInvalidEmail];
 
   String get eTakenEmail =>
-        _localizedValues[locale.languageCode][_errorTakenEmail];
+      _localizedValues[locale.languageCode][_errorTakenEmail];
 
+  String get eLongPhoneNumber =>
+      _localizedValues[locale.languageCode][_errorToLongPhoneNumber];
 
+  String get eLongLogin =>
+      _localizedValues[locale.languageCode][_errorToLongLogin];
+
+  String get eShortPassword =>
+      _localizedValues[locale.languageCode][_errorToShortPassword];
+
+  String get eNewOldPassword =>
+      _localizedValues[locale.languageCode][_errorSameAsOldPassword];
 
   String get hLogin {
     return _localizedValues[locale.languageCode][_hintLogin];

@@ -28,12 +28,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
   bool _isLoading, _isRegistered;
   StringResources _stringResources;
   AuthApi _authApi = AuthApi();
-
+  bool _autoValidate;
 
   @override
   void initState() {
     _isLoading = false;
     _isRegistered = false;
+    _autoValidate = false;
     super.initState();
   }
 
@@ -72,6 +73,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                     child: Form(
                       child: _getForm(),
                       key: _formKey,
+                      autovalidate: _autoValidate,
                     ),
                   ),
                   _getSendFormButton(),
@@ -103,6 +105,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           ),
           validator: (login) {
             if (login.isEmpty) return StringResources.of(context).eEmptyLogin;
+            if (login.trim().length > 30)
+              return StringResources.of(context).eLongLogin;
           },
         ),
         Padding(
@@ -122,6 +126,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               hintText: StringResources.of(context).hEmail),
           validator: (email) {
             if (email.isEmpty) return StringResources.of(context).eEmptyEmail;
+            Pattern pattern =
+                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))'
+                r'@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|'
+                r'(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+            RegExp regex = RegExp(pattern);
+            if (!regex.hasMatch(email))
+              return StringResources.of(context).eWrongEmailFormat;
           },
         ),
         Padding(
@@ -141,6 +152,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
               hintText: StringResources.of(context).hPhone),
           validator: (phone) {
             if (phone.isEmpty) return StringResources.of(context).eEmptyPhone;
+            if (phone.trim().length > 30)
+              return StringResources.of(context).eLongPhoneNumber;
           },
         ),
         Padding(
@@ -159,7 +172,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPassword),
           validator: (password) {
-            if (password.isEmpty)
+            if (password.isEmpty || password.length <6)
               return StringResources.of(context).eEmptyPassword;
           },
         ),
@@ -179,7 +192,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   horizontal: formFieldPaddingHor),
               hintText: StringResources.of(context).hPasswordConfirm),
           validator: (passwordConfirm) {
-            if (passwordConfirm.isEmpty)
+            if (passwordConfirm.isEmpty || passwordConfirm.length <6)
               return StringResources.of(context).eEmptyPasswordConfirm;
             else if (!_passwordsMatching())
               return StringResources.of(context).eNotMatchingPasswords;
@@ -200,6 +213,11 @@ class RegistrationScreenState extends State<RegistrationScreen> {
         : InkWell(
             onTap: () {
               if (_formKey.currentState.validate()) _sendForm();
+              else {
+                setState(() {
+                  _autoValidate = true;
+                });
+              }
             },
             child: Container(
                 margin: EdgeInsets.only(
@@ -276,7 +294,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   serverResult[ConstantsManager.TOKEN_KEY])
               .then((_) {
             setState(() {
-              _isLoading = false;
+//              _isLoading = false;
               _isRegistered = true;
               widget._firstNameCallback(firstName);
             });
