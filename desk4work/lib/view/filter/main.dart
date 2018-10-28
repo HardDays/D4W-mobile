@@ -45,7 +45,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     _container = container;
 
     String date = (filter != null && filter.date != null)
-        ? filter.date[0].substring(0, 5) + "-" + filter.date[1].substring(0, 5)
+        ? filter.date[0].substring(0, 5) + ((filter.date.length <2) ?"" : "-" + filter.date[1].substring(0, 5))
         : _stringResources.hDate;
 
     return Scaffold(
@@ -346,8 +346,10 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   }
 
   void _openDatePicker() {
+    List<DateTime> dates= _getDatesFromFilter();
+//    if(dates.length <1) dates= [DateTime.now()];
     Navigator.push(
-            context, MaterialPageRoute(builder: (ctx) => DateFilterScreen()))
+            context, MaterialPageRoute(builder: (ctx) => DateFilterScreen(dates)))
         .then((dates) {
       if (dates != null && dates.length > 0) {
         List<String> filterDates = [];
@@ -357,8 +359,10 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         String dateTimeEnd = _getFilterDate(dates[dates.length - 1]);
 
         print("Start $dateTimeStart and end $dateTimeEnd");
+
         filterDates.add(dateTimeStart);
-        filterDates.add(dateTimeEnd);
+        if(dates[0] != dates[dates.length - 1])
+          filterDates.add(dateTimeEnd);
         _container.updateFilterInfo(date: filterDates);
       }
     });
@@ -371,6 +375,19 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     String month = (montInt < 10) ? "0$montInt" : montInt.toString();
     String year = dateTime.year.toString();
     return "$day.$month.$year";
+  }
+  
+  List<DateTime> _getDatesFromFilter(){
+    List<DateTime> dates = [];
+    if(filter !=null && filter.date != null){
+      filter.date.forEach((string){
+        String year = string.substring(6);
+        String month = string.substring(3,5);
+        String day = string.substring(0,2);
+        dates.add(DateTime.parse('$year$month$day'));
+      });
+    }
+    return dates;
   }
 
   void _openTimePicker(bool isForStartTime) {
