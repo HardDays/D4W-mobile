@@ -40,7 +40,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   @override
   void initState() {
-    _showAsList = true;
+    _showAsList = false;
     _offset = 0;
     _isLoading = true;
     _cities = {

@@ -309,6 +309,11 @@ class _BookingsListState extends State<BookingsListScreen> {
   Text _buildDate(DateTime dateTime){
     String day  = dateTime.day.toString();
     String year = dateTime.year.toString();
+    int hour = dateTime.hour;
+    int min = dateTime.minute;
+    String hourString = hour > 9 ? hour.toString() : '0$hour';
+    String minString = min > 9 ? min.toString() : '0$min';
+    String time = '$hourString'+ 'h$minString';
     String month;
     switch(dateTime.month){
       case 1: month = _stringResources.tJanuary;
@@ -338,7 +343,7 @@ class _BookingsListState extends State<BookingsListScreen> {
 
     }
 
-    return Text("$day $month $year", style: Theme.of(context).textTheme.caption,);
+    return Text("$day $month $year $time", style: Theme.of(context).textTheme.caption,);
   }
 
   Widget _buildRemainingTime(String start, String end){
