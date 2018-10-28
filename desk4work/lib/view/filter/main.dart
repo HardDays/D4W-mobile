@@ -347,18 +347,15 @@ class FilterMainScreenState extends State<FilterMainScreen> {
 
   void _openDatePicker() {
     List<DateTime> dates= _getDatesFromFilter();
-//    if(dates.length <1) dates= [DateTime.now()];
     Navigator.push(
             context, MaterialPageRoute(builder: (ctx) => DateFilterScreen(dates)))
         .then((dates) {
       if (dates != null && dates.length > 0) {
         List<String> filterDates = [];
-        print('those are dates: $dates');
 
         String dateTimeStart = _getFilterDate(dates[0]);
         String dateTimeEnd = _getFilterDate(dates[dates.length - 1]);
 
-        print("Start $dateTimeStart and end $dateTimeEnd");
 
         filterDates.add(dateTimeStart);
         if(dates[0] != dates[dates.length - 1])
@@ -398,7 +395,6 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                     filter?.startHour, filter?.endHour, isForStartTime)))
         .then((result) {
       if (result != null) {
-        print('start timeeee: ${result[0]}');
         String toParseStart = result[0];
         if (toParseStart != null && toParseStart.length < 5)
           toParseStart = '0' + toParseStart;
@@ -408,8 +404,6 @@ class FilterMainScreenState extends State<FilterMainScreen> {
           toParseEnd = '0' + toParseEnd;
         int start = int.parse(toParseStart?.substring(0, 2) ?? '0');
         int end = int.parse(toParseEnd?.substring(0, 2) ?? '0');
-
-        print('starrrrrrrrt $start end $end');
         _container.updateFilterInfo(startHour: result[0], endHour: result[1]);
       }
     });

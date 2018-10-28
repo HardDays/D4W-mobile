@@ -24,7 +24,7 @@ class CoWorkingPlaceListScreen extends StatefulWidget {
 class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<CoWorking> _coWorkings = [];
   CoWorkingApi _coWorkingApi = CoWorkingApi();
-  GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   StringResources stringResources;
   Size _screenSize;
   Geolocator _geolocator;
@@ -70,6 +70,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               this._coWorkings.addAll(coWorkings);
             });
           }
+        }).catchError((error) {
+          _showToast(stringResources.mServerError);
+          print('coworking search error: $error');
         });
       });
     });
@@ -250,6 +253,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               filter: _filter)
           .then((coWorkings) {
         return coWorkings;
+      }).catchError((error) {
+        _showToast(stringResources.mServerError);
+        print('coworking search error: $error');
       });
     });
   }
@@ -336,6 +342,13 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     return Center(
       child: Text(message),
     );
+  }
+
+  _showToast(String message){
+    setState(){
+      _isLoading =false;
+    }
+    _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
   _openDetails(CoWorking coWorking) {

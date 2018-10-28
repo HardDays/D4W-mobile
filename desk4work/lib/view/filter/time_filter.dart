@@ -240,7 +240,6 @@ class TimeFilterState extends State<TimeFilterScreen> {
   }
 
   int _getTimePickerStart() {
-      print('time picker start: ${_tempStart}');
     if (_tempStart == null) {
       return DateTime.now().hour + 1;
     } else {
@@ -258,7 +257,6 @@ class TimeFilterState extends State<TimeFilterScreen> {
           ? int.parse(_tempStart.substring(0, 2))
           : int.parse(_tempStart.substring(0));
     } else {
-      print('time picker end: ${_tempEnd}');
       return (_tempEnd.length > 1)
           ? int.parse(_tempEnd.substring(0, 2))
           : int.parse(_tempEnd.substring(0));
@@ -277,7 +275,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
       });
     }else{
       setState(() {
-        _tempEnd = (_getTimePickerEnd()).toString() +':'+ '00';
+        _tempEnd = (_getTimePickerEnd() + 2).toString() +':'+ '00';
       });
     }
   }
