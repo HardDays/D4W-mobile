@@ -29,6 +29,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   BookingApi _bookingApi;
   Booking _booking;
   final _controller = new PageController();
+  bool _hasBeenThere;
 
   static const _kDuration = const Duration(milliseconds: 300);
 
@@ -61,21 +62,30 @@ class _BookingDetailsState extends State<BookingDetails> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: <Widget>[
-                _buildHeader(_booking.coWorking.images),
-                _buildProgressBar(),
-                _buildStartEndWidget(),
-                Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
-                  height: _screenHeight * .1454,
-                  child: _buildChronoWidget(),
-                ),
-                Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
-                _buildTerminatedExtendButton()
-              ],
+          : RefreshIndicator(
+              onRefresh: _loadBooking,
+              child: Column(
+                children: <Widget>[
+                  _buildHeader(_booking.coWorking.images),
+                  _buildProgressBar(),
+                  _buildStartEndWidget(),
+                  Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
+                    height: _screenHeight * .1454,
+                    child: _buildChronoWidget(),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      _buildExtendButton(),
+                      _buildTerminateButton()
+                    ],
+                  )
+                ],
+              ),
             ),
     );
   }
@@ -85,17 +95,31 @@ class _BookingDetailsState extends State<BookingDetails> {
     _booking = widget._booking;
     _isTimeUp = false;
     _isLoading = false;
+    _hasBeenThere = false;
     _progress = _getProgress();
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
     _bookingApi = BookingApi();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('booking: $_booking');
-      if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
-        _startCountDown();
-      if (!_booking.isVisitConfirmed) {
-        _showConfirmVisitDialog();
-      }
+
+      SharedPreferences.getInstance().then((sp) {
+        int id = sp.getInt(_booking.id.toString());
+        if (id != null && id == _booking.id) {
+          setState(() {
+            _hasBeenThere = true;
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _isLoading = true;
+          });
+          _loadBooking().then((_) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        }
+      });
     });
     super.initState();
   }
@@ -278,17 +302,68 @@ class _BookingDetailsState extends State<BookingDetails> {
     );
   }
 
-  Widget _buildTerminatedExtendButton() {
-    String buttonText =
-        (_isTimeUp) ? _stringResources.tExtend : _stringResources.tTerminate;
+  Future<Null> _loadBooking() {
+    return SharedPreferences.getInstance().then((sp) {
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      return _bookingApi.getBooking(token, _booking.id).then((bookingMaybe) {
+        print('booking: $_booking');
+        if (bookingMaybe[ConstantsManager.SERVER_ERROR] == null) {
+          Booking booking = bookingMaybe["booking"];
+          if (booking != null) {
+            setState(() {
+              _booking = booking;
+              _isLoading =false;
+            });
+            if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
+              _showConfirmVisitDialog();
+          }
+        } else {
+          _showToast(_stringResources.eServer);
+        }
+      }).catchError((error) {
+        print('server error: $error');
+        _showToast(_stringResources.eServer);
+      });
+    });
+  }
+
+  Widget _buildTerminateButton() {
+    String buttonText = _stringResources.tTerminate;
+
 
     Gradient oragandeGradient =
         BoxDecorationUtil.getDarkOrangeGradient().gradient;
 
-    return Center(
-      child: InkWell(
+    return InkWell(
+      child: Container(
+        width: _screenWidth * .872 / 2,
+        height: _screenHeight * .0825,
+        decoration: BoxDecoration(
+            gradient: oragandeGradient,
+            borderRadius: BorderRadius.all(Radius.circular(48.0))),
+        child: Center(
+          child: Text(
+            buttonText,
+            style: Theme.of(context)
+                .textTheme
+                .button
+                .copyWith(color: Colors.white),
+          ),
+        ),
+      ),
+      onTap: _booking.isUserLeaving ? (){}:() => _terminateBooking(),
+    );
+  }
+
+  Widget _buildExtendButton() {
+    String buttonText = _stringResources.tExtend;
+
+    Gradient oragandeGradient =
+        BoxDecorationUtil.getDarkOrangeGradient().gradient;
+
+    return InkWell(
         child: Container(
-          width: _screenWidth * .872,
+          width: _screenWidth * .872 / 2,
           height: _screenHeight * .0825,
           decoration: BoxDecoration(
               gradient: oragandeGradient,
@@ -303,20 +378,29 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
           ),
         ),
-        onTap: (_isTimeUp) ? () => _extendBooking() : () => _terminateBooking(),
-      ),
-    );
+        onTap: () => _extendBooking());
   }
 
   _showConfirmVisitDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) {
-          return CupertinoAlertDialog(
-              title: Text(_stringResources.tPromptConfirmVisit),
-              actions: [_buildNoActionButton(), _buildYesActionButton()]);
+    SharedPreferences.getInstance().then((sp) {
+      int id = sp.getInt(_booking.id.toString());
+      if (id != null && id == _booking.id) {
+        setState(() {
+          _hasBeenThere = true;
+          _isLoading = false;
         });
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) {
+              return CupertinoAlertDialog(
+                  title: Text(_stringResources.tPromptConfirmVisit +
+                      '${_booking.coWorking?.shortName ?? " "}?'),
+                  actions: [_buildNoActionButton(), _buildYesActionButton()]);
+            });
+      }
+    });
   }
 
   Widget _buildNoActionButton() {
@@ -350,43 +434,76 @@ class _BookingDetailsState extends State<BookingDetails> {
   _terminateBooking() {
     SharedPreferences.getInstance().then((sp) {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      _bookingApi.cancelBooking(token, _booking.id).then((isCanceled) {
-        if (isCanceled)
-          Navigator.of(context).pop(_booking);
+      _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
+        if (isCanceled !=null && isCanceled.length == 0)
+          _showToast(_stringResources.mStopRequestSent);
         else {
-          print('can\'t cancel the booking');
+          print('can\'t cancel the booking $isCanceled');
+          _showToast(_stringResources.eServer);
         }
       });
     });
   }
 
-  _extendBooking() {}
+  _extendBooking() {
+    if (_booking.isExtendPending) {
+      _showToast(_stringResources.mExtendPending);
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
 
-  _confirmVisit() {
-    setState(() {
-      _isLoading = true;
-    });
-
-    SharedPreferences.getInstance().then((sp) {
-      String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
-        if (resp != null) {
-          if (resp[ConstantsManager.SERVER_ERROR] == null) {
-            Booking booking = resp["booking"];
-            if (booking != null) {
-              setState(() {
-                _booking = booking;
+      SharedPreferences.getInstance().then((sp) {
+        String token = sp.getString(ConstantsManager.TOKEN_KEY);
+        _bookingApi.extendFor30Minutes(token, _booking.id).then((resp) {
+          if (resp != null) {
+            if (resp.length == 0) {
+              _showToast(_stringResources.mExtendRequestSent);
+              _loadBooking().then((_) {
+                setState(() {
+                  _isLoading = false;
+                });
+                _getUpdate();
               });
             }
-          }
-        } else {
-          _showToast(_stringResources.eServer);
-        }
-      }).catchError((error) {
-        print('server error: $error');
-        _showToast(_stringResources.eServer);
+          } else
+            _showToast(_stringResources.eServer);
+        });
+      });
+    }
+  }
+
+  _getUpdate() {}
+
+  _confirmVisit() {
+    SharedPreferences.getInstance().then((sp) {
+      sp.setInt(_booking.id.toString(), _booking.id);
+      setState(() {
+        _hasBeenThere = true;
       });
     });
+    _startCountDown();
+
+//    SharedPreferences.getInstance().then((sp) {
+//      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+//      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
+//        if (resp != null) {
+//          if (resp[ConstantsManager.SERVER_ERROR] == null) {
+//            Booking booking = resp["booking"];
+//            if (booking != null) {
+//              setState(() {
+//                _booking = booking;
+//              });
+//            }
+//          }
+//        } else {
+//          _showToast(_stringResources.eServer);
+//        }
+//      }).catchError((error) {
+//        print('server error: $error');
+//        _showToast(_stringResources.eServer);
+//      });
+//    });
 
     Navigator.pop(context);
     setState(() {
