@@ -220,14 +220,20 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
                     icon: Icon(Icons.center_focus_strong),
                     color: Color.fromARGB(160, 0, 0, 0),
                     onPressed: () {
-                      _geolocator.getLastKnownPosition().then((pos){
-                        if (pos != null){
-                          setState(() {
-                            _lastPos = LatLng(pos.latitude, pos.longitude);
-                            _mapController.move(_lastPos, _mapController.zoom); 
-                          });
-                        } 
-                      }).timeout(Duration(seconds: 5));                                  
+                      try {
+                        _geolocator.getLastKnownPosition().then((pos){
+                          if (pos != null){
+                            setState(() {
+                              _lastPos = LatLng(pos.latitude, pos.longitude);
+                              _mapController.move(_lastPos, _mapController.zoom);
+                            });
+                          }
+                        }).catchError((_){
+                          print('error location $_');
+                        }).timeout(Duration(seconds: 5));
+                      }catch (e) {
+                        print('error location $e');
+                      }
                     },
                   )
                 ),

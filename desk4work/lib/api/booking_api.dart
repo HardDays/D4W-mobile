@@ -161,7 +161,7 @@ class BookingApi {
   }
 
   Future<Map<String,dynamic>> getBooking (String token, int bookingId) {
-    String url = ConstantsManager.BASE_URL + "users/$bookingId";
+    String url = _bookingUrl+ "get/$bookingId";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response){
       if(response!=null && response[ConstantsManager.SERVER_ERROR] == null){

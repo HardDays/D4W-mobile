@@ -140,8 +140,15 @@ class StringResources {
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
+  static final String _messageExtendPending = 'messageExtendPending';
+  static final String _messageStopRequestSent = 'messageStopRequestSent';
+  static final String _messageExtendRequestSent = 'messageStopRequestSent';
+  static final String _messageBookingRequestSentPrefix =
+      'messageBookingRequestSentPrefix';
+  static final String _messageBookingRequestSentSuffix =
+      'messageBookingRequestSentPrefix';
 
-  static final String  _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
+  static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
 
   StringResources(this.locale);
 
@@ -279,6 +286,12 @@ class StringResources {
       _errorInvalidEmail: 'Not valid email',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Server Error',
+      _messageExtendPending: 'A request to extend is already pending',
+      _messageStopRequestSent: 'Your request has been sent',
+      _messageExtendRequestSent: 'Your request has been sent',
+      _messageBookingRequestSentPrefix:
+          'Your booking request has been sent to ',
+      _messageBookingRequestSentSuffix: 'See you soon at the reception desk!',
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
@@ -414,6 +427,12 @@ class StringResources {
       _errorInvalidEmail: 'Неправильный формат',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Ощибка сервера',
+      _messageExtendPending: 'Уже ожидается запрос на продление',
+      _messageStopRequestSent: 'Запрос отправлен',
+      _messageExtendRequestSent: 'Запрос отправлен',
+      _messageBookingRequestSentPrefix: 'Отправляйтесь в ',
+      _messageBookingRequestSentSuffix:
+          'и отметьтесь, когда приедете. Скоро увидимся!',
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
@@ -766,4 +785,19 @@ class StringResources {
 
   String get tipBikeStorage =>
       _localizedValues[locale.languageCode][_tipBikeStorage];
+
+  String get mExtendPending =>
+      _localizedValues[locale.languageCode][_messageExtendPending];
+
+  String get mStopRequestSent =>
+      _localizedValues[locale.languageCode][_messageStopRequestSent];
+
+  String get mExtendRequestSent =>
+      _localizedValues[locale.languageCode][_messageExtendRequestSent];
+
+  String get mBookingRequestSentPrefix =>
+      _localizedValues[locale.languageCode][_messageBookingRequestSentPrefix];
+
+  String get mBookingRequestSentSuffix =>
+      _localizedValues[locale.languageCode][_messageBookingRequestSentSuffix];
 }

@@ -52,15 +52,19 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     _imageApi = ImageApi();
     _geolocator = Geolocator();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _geolocator.getCurrentPosition().then((pos) {
-        if (pos != null) {
-          setState(() {
-            _userLocation = LatLng(pos.latitude, pos.longitude);
-          });
-        }
-      }).catchError((error) {
-        print('location error: $error');
-      }).timeout(Duration(seconds: 5));
+      try {
+        _geolocator.getCurrentPosition().then((pos) {
+          if (pos != null) {
+            setState(() {
+              _userLocation = LatLng(pos.latitude, pos.longitude);
+            });
+          }
+        }).catchError((error) {
+          print('location error: $error');
+        }).timeout(Duration(seconds: 5));
+      } catch (e) {
+        print('location error: $e');
+      }
       SharedPreferences.getInstance().then((sp) {
         _token = sp.getString(ConstantsManager.TOKEN_KEY);
         _coWorkingApi.searchCoWorkingPlaces(_token).then((coWorkings) {
