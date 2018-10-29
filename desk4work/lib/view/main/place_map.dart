@@ -50,14 +50,21 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
     _mapController.onReady.then(
       (ready){
         if(_lastPos == null){
-          _geolocator.getCurrentPosition().then((pos){
-            if (pos != null){
-              setState(() {
-                _lastPos = LatLng(pos.latitude, pos.longitude);
-                _mapController.move(_lastPos, 13.0);
-              });
-            }
-          }).timeout(Duration(seconds: 5));
+          try {
+            _geolocator.getCurrentPosition().then((pos){
+              if (pos != null){
+                setState(() {
+                  _lastPos = LatLng(pos.latitude, pos.longitude);
+                  _mapController.move(_lastPos, 13.0);
+                });
+              }
+            }).timeout(Duration(seconds: 5)).catchError((e){
+              print("location error: $e");
+
+            });
+          }  catch (e) {
+            print("location error: $e");
+          }
         }else{
           setState(() {
             _mapController.move(_lastPos, 13.0);

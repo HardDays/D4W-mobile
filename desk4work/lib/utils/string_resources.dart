@@ -253,7 +253,7 @@ class StringResources {
       _textNoSeat: 'No available seat',
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
-      _textNothingToShow: 'No co-working nearby, you can set another filter',
+      _textNothingToShow: 'There are no coworkings around you',
       _textPromptConfirmVisit: 'Вы уже находитесь в коворкинге ',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',

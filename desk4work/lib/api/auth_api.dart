@@ -114,8 +114,19 @@ class AuthApi {
   }
 
   Future<String> vkOrFacebookLogin(String accessToken, bool isFacebook) {
-    String socialUrl = (isFacebook) ? "facebok" : "vk";
+    String socialUrl = (isFacebook) ? "facebook" : "vk";
     String url = ConstantsManager.BASE_URL + "auth/$socialUrl";
+    Map<String, String> body = {'access_token': accessToken};
+    return _networkUtil
+        .post(url, headers: _headers, body: body)
+        .then((response) {
+      if (response != null && response[ConstantsManager.SERVER_ERROR] == null)
+        return response[ConstantsManager.TOKEN_KEY];
+    });
+  }
+
+  Future<String> googleLogin(String accessToken) {
+    String url = ConstantsManager.BASE_URL + "auth/google";
     Map<String, String> body = {'access_token': accessToken};
     return _networkUtil
         .post(url, headers: _headers, body: body)

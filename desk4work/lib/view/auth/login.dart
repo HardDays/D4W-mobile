@@ -8,8 +8,13 @@ import 'package:desk4work/view/common/curved_clipper.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -30,12 +35,27 @@ class LoginScreenState extends State<LoginScreen> {
   String _authToken;
   bool _isLoading, _autoValidate;
   StringResources _stringResources;
+  final GoogleSignIn _googleSignIn =GoogleSignIn();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  GoogleSignInAccount _googleSignInAccount;
 
   @override
   void initState() {
     _isLoading = false;
     _autoValidate = false;
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+      setState(() {
+        _googleSignInAccount = account;
+      });
+      if(_googleSignInAccount !=null){
+        _handleGoogleSignIn();
+      }else{
+        print('user changed account null');
+      }
+      _googleSignIn.signInSilently();
+    });
     super.initState();
+
     try {
       flutterWebViewPlugin.close();
     } catch (e) {
@@ -133,31 +153,31 @@ class LoginScreenState extends State<LoginScreen> {
                           width: (_screenSize.width * .3893).toDouble(),
                           height: (_screenSize.height * .0510).toDouble(),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-//                              InkWell(
-//                                child: Image.asset(
-//                                  'assets/google_plus.png',
-//                                  width: (_screenSize.width * .08).toDouble(),
-//                                  height:
-//                                      (_screenSize.height * .0299).toDouble(),
-//                                  fit: BoxFit.scaleDown,
-//                                ),
-//                                onTap: () {
-//                                  _handleGoogleSignIn();
-//                                },
-//                              ),
-//                              InkWell(
-//                                child: Image.asset(
-//                                  'assets/facebook.png',
-//                                  width: (_screenSize.width * .0453).toDouble(),
-//                                  height: (_screenSize.height * .04).toDouble(),
-//                                ),
-//                                onTap: () {
-//                                  _handleFacebookSignIn();
-//                                },
-//                              ),
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/google_plus.png',
+                                  width: (_screenSize.width * .08).toDouble(),
+                                  height:
+                                      (_screenSize.height * .0299).toDouble(),
+                                  fit: BoxFit.scaleDown,
+                                ),
+                                onTap: () {
+                                  _startGoogleSignInProcess();
+                                },
+                              ),
+                              InkWell(
+                                child: Image.asset(
+                                  'assets/facebook.png',
+                                  width: (_screenSize.width * .0453).toDouble(),
+                                  height: (_screenSize.height * .04).toDouble(),
+                                ),
+                                onTap: () {
+                                  _handleFacebookSignIn();
+                                },
+                              ),
                               InkWell(
                                 child: Image.asset(
                                   'assets/vk_social_network.png',
@@ -304,10 +324,63 @@ class LoginScreenState extends State<LoginScreen> {
     } else
       _showToast(_stringResources.eServer);
   }
+  
+  _startGoogleSignInProcess() async{
+    _googleSignInAccount = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication = await _googleSignInAccount.authentication;
+    FirebaseUser user = await _firebaseAuth.signInWithGoogle(idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
+   print('$googleSignInAuthentication');
+  }
 
-  _handleGoogleSignIn() {}
+  _handleGoogleSignIn() {
+      print(' infooooooo ');
 
-  _handleFacebookSignIn() {}
+    _googleSignInAccount.authentication.then((GoogleSignInAuthentication authentication){
+      String idToken = authentication.idToken;
+      String accessToken = authentication.accessToken;
+      String email = _googleSignInAccount.email;
+
+      print(' infooooooo $accessToken');
+      _authApi.googleLogin(accessToken).then((token) {
+        SharedPreferences.getInstance().then((sp) {
+          sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
+            _openMainScreen();
+          });
+        });
+      });
+    });
+
+  }
+
+  _handleFacebookSignIn() async {
+    var facebookLogin = FacebookLogin();
+    var facebookLoginResult = await facebookLogin.logInWithReadPermissions(['email']);
+    switch (facebookLoginResult.status) {
+      case FacebookLoginStatus.error:
+        print("Error");
+        onLoginStatusChanged(false);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        print("CancelledByUser");
+        onLoginStatusChanged(false);
+        break;
+      case FacebookLoginStatus.loggedIn:
+        print("LoggedIn");
+
+        String facebookToken = facebookLoginResult.accessToken.token;
+        _authApi.vkOrFacebookLogin(facebookToken, true).then((token) {
+          print('facetoken $token');
+          SharedPreferences.getInstance().then((sp) {
+            sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
+              _openMainScreen();
+            });
+          });
+        });
+        onLoginStatusChanged(true);
+        break;
+    }
+
+  }
 
   _handleVkSignIn() {
     try {
@@ -381,4 +454,6 @@ class LoginScreenState extends State<LoginScreen> {
     });
     _screenKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
+
+  void onLoginStatusChanged(bool param0) {}
 }
