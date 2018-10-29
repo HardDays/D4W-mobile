@@ -147,6 +147,7 @@ class StringResources {
       'messageBookingRequestSentPrefix';
   static final String _messageBookingRequestSentSuffix =
       'messageBookingRequestSentPrefix';
+  static final String _alertTerminateRequest = 'alertTermanteRequest';
 
   static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
 
@@ -158,6 +159,7 @@ class StringResources {
 
   static Map<String, Map<String, String>> _localizedValues = {
     'en': {
+      _alertTerminateRequest: 'Do you really want to end up this section ?',
       _buttonEnter: 'ENTER',
       _buttonContinue: 'CONTINUE',
       _buttonRecover: 'RECOVER',
@@ -173,7 +175,7 @@ class StringResources {
       _hintPlaceFilter: 'Place',
       _hintDateFilter: 'Date',
       _hintStartFilter: 'Start',
-      _hintEndFilter: 'end',
+      _hintEndFilter: 'End',
       _hintPopular: 'Popular',
       _hintFirstName: 'First name',
       _hintLastName: 'Last name',
@@ -299,6 +301,7 @@ class StringResources {
       _tipCoffeeTea: "Coffee and/or Tea"
     },
     'ru': {
+      _alertTerminateRequest: 'Вы действительно хотите завершить сессию ?',
       _buttonEnter: 'ВОЙТИ',
       _buttonContinue: 'ПРОДОЛЖИТЬ',
       _buttonRecover: 'ВОССТАНОВИТЬ',
@@ -440,6 +443,9 @@ class StringResources {
       _tipCoffeeTea: "чай/кофе"
     }
   };
+
+  String get aEndSession =>
+      _localizedValues[locale.languageCode][_alertTerminateRequest];
 
   String get bEnter {
     return _localizedValues[locale.languageCode][_buttonEnter];

@@ -137,6 +137,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
+  flutter_paystack:
+    dependency: "direct main"
+    description:
+      name: flutter_paystack
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.1+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -197,7 +204,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.3+17"
+    version: "0.12.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -562,4 +569,4 @@ packages:
     version: "2.1.15"
 sdks:
   dart: ">=2.0.0 <3.0.0"
-  flutter: ">=0.1.4 <2.0.0"
+  flutter: ">=0.5.1 <2.0.0"
