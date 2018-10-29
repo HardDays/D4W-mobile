@@ -20,10 +20,9 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   FilterStateContainerState _container;
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _container.getFilter();
     });
     super.initState();
@@ -46,7 +45,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     _container = container;
 
     String date = (filter != null && filter.date != null)
-        ? filter.date[0].substring(0, 5) + "-" + filter.date[1].substring(0, 5)
+        ? filter.date[0].substring(0, 5) + ((filter.date.length <2) ?"" : "-" + filter.date[1].substring(0, 5))
         : _stringResources.hDate;
 
     return Scaffold(
@@ -102,7 +101,14 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0),
                               ),
-                              Text((filter?.place ?? _stringResources.hPlace))
+                              Container(
+                                width: textFilterParameterWidth - 40,
+                                child: Text(
+                                  (filter?.place ?? _stringResources.hPlace),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -168,6 +174,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                           width: textFilterParameterWidth,
                           decoration: BoxDecorationUtil
                               .getGreyRoundedCornerBoxDecoration(),
+
                           child: Row(
                             children: <Widget>[
                               Icon(Icons.access_time),
@@ -339,19 +346,20 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   }
 
   void _openDatePicker() {
+    List<DateTime> dates= _getDatesFromFilter();
     Navigator.push(
-            context, MaterialPageRoute(builder: (ctx) => DateFilterScreen()))
+            context, MaterialPageRoute(builder: (ctx) => DateFilterScreen(dates)))
         .then((dates) {
       if (dates != null && dates.length > 0) {
         List<String> filterDates = [];
-        print('those are dates: $dates');
 
         String dateTimeStart = _getFilterDate(dates[0]);
         String dateTimeEnd = _getFilterDate(dates[dates.length - 1]);
 
-        print("Start $dateTimeStart and end $dateTimeEnd");
+
         filterDates.add(dateTimeStart);
-        filterDates.add(dateTimeEnd);
+        if(dates[0] != dates[dates.length - 1])
+          filterDates.add(dateTimeEnd);
         _container.updateFilterInfo(date: filterDates);
       }
     });
@@ -365,6 +373,19 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     String year = dateTime.year.toString();
     return "$day.$month.$year";
   }
+  
+  List<DateTime> _getDatesFromFilter(){
+    List<DateTime> dates = [];
+    if(filter !=null && filter.date != null){
+      filter.date.forEach((string){
+        String year = string.substring(6);
+        String month = string.substring(3,5);
+        String day = string.substring(0,2);
+        dates.add(DateTime.parse('$year$month$day'));
+      });
+    }
+    return dates;
+  }
 
   void _openTimePicker(bool isForStartTime) {
     Navigator.push(
@@ -374,18 +395,15 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                     filter?.startHour, filter?.endHour, isForStartTime)))
         .then((result) {
       if (result != null) {
-        print('start timeeee: ${result[0]}');
-        String toParseStart=result[0];
-        if(toParseStart!=null && toParseStart.length <5)
-          toParseStart = '0'+toParseStart;
+        String toParseStart = result[0];
+        if (toParseStart != null && toParseStart.length < 5)
+          toParseStart = '0' + toParseStart;
 
-        String toParseEnd=result[1];
-        if(toParseEnd !=null && toParseEnd.length < 5)
-          toParseEnd ='0'+toParseEnd;
+        String toParseEnd = result[1];
+        if (toParseEnd != null && toParseEnd.length < 5)
+          toParseEnd = '0' + toParseEnd;
         int start = int.parse(toParseStart?.substring(0, 2) ?? '0');
         int end = int.parse(toParseEnd?.substring(0, 2) ?? '0');
-
-        print('starrrrrrrrt $start end $end');
         _container.updateFilterInfo(startHour: result[0], endHour: result[1]);
       }
     });

@@ -36,6 +36,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   GlobalKey<ScaffoldState> _screenState = GlobalKey<ScaffoldState>();
   int _startHour, _endHour;
   bool _isLoading;
+  DateTime _selectedDate;
 
 
   @override
@@ -43,6 +44,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
     _starWork = "09:00";
     _endWork = "10:00";
     _isLoading = false;
+    _selectedDate = DateTime.now();
     _availableSeats = widget._coWorking.freeSeats;
     _neededNumberOfSeats = 1;
     _bookingApi = BookingApi();
@@ -305,7 +307,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
   void _openDatePicker(){
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (ctx)=> DateFilterScreen())).then((dates){
+        MaterialPageRoute(builder: (ctx)=> DateFilterScreen([_selectedDate], isMultiple: false,))).then((dates){
       if(dates !=null && dates.length >0){
 
         print('format ${dates[0]}');
@@ -316,6 +318,7 @@ class _NewBookingScreenState extends State<NewBookingScreen>{
         setState(() {
           _screenDate = dateTimeStart;
           DateTime serverDate = dates[0];
+          _selectedDate = serverDate;
 
           _serverDate = '${serverDate.year}-${serverDate.month}-${serverDate.day}';
         });

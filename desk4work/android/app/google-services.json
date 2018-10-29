@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "56579409450",
+    "firebase_url": "https://desk4work-220819.firebaseio.com",
+    "project_id": "desk4work-220819",
+    "storage_bucket": "desk4work-220819.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56579409450:android:a0951ed10d94919d",
+        "android_client_info": {
+          "package_name": "com.example.desk4work"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56579409450-tjknhga0mm7ep1h2sj627oqeepiban85.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.desk4work",
+            "certificate_hash": "126fa1c44b1d132a84b6e4171d2c5ede78d95e64"
+          }
+        },
+        {
+          "client_id": "56579409450-nhjrs535prdpfmhvventhjskkaim028n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQk9VyrpVCFY3t_U2XBTiuYcEDZnBwR10"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56579409450-nhjrs535prdpfmhvventhjskkaim028n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

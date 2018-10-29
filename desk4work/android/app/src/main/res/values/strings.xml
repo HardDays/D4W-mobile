@@ -1,0 +1,5 @@
+<resources>
+    <string name="facebook_app_id">331839240915679</string>
+    <string name="fb_login_protocol_scheme">fb331839240915679</string>
+    <string name="app_name">Desk4Work</string>
+</resources>

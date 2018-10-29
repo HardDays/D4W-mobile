@@ -107,11 +107,25 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          child: InkWell(
-                              child: Text(_stringResources.tWherever),
-                            onTap: (){
-                                _choosePlace(_stringResources.tWherever);
-                            },
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    splashColor: Colors.white,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(_stringResources.tWherever),
+                                        ],
+                                      ),
+                                    onTap: (){
+                                        _choosePlace(_stringResources.tWherever);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           padding: EdgeInsets.symmetric(
                               vertical: (_screenHeight * .0225).toDouble(),
@@ -124,11 +138,22 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                                       color: Colors.white, width: .5))),
                         ),
                         Container(
-                          child: InkWell(
-                              onTap: () {
-                                _choosePlace(_stringResources.tNearby);
-                              },
-                              child: Text(_stringResources.tNearby)),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: () {
+                                        _choosePlace(_stringResources.tNearby);
+                                      },
+                                      child: Text(_stringResources.tNearby)),
+                                ),
+                              ),
+                            ],
+                          ),
+
                           padding: EdgeInsets.symmetric(
                               vertical: (_screenHeight * .0225).toDouble(),
                               horizontal: (_screenWidth * .0567).toDouble()),
@@ -165,13 +190,23 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                                       color: Colors.white, width: .5))),
                           child: Row(
                             children: <Widget>[
-                              InkWell(
-                                child: Text(
-                                  PlaceFilterScreen.KAZAN,
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    splashColor: Colors.white,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          PlaceFilterScreen.KAZAN,
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      _choosePlace(PlaceFilterScreen.KAZAN);
+                                    },
+                                  ),
                                 ),
-                                onTap: () {
-                                  _choosePlace(PlaceFilterScreen.KAZAN);
-                                },
                               ),
                             ],
                           ),
@@ -186,13 +221,19 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                                       color: Colors.white, width: .5))),
                           child: Row(
                             children: <Widget>[
-                              InkWell(
-                                child: Text(
-                                  PlaceFilterScreen.MOSCOW,
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    splashColor: Colors.white,
+                                    child: Text(
+                                      PlaceFilterScreen.MOSCOW,
+                                    ),
+                                    onTap: () {
+                                      _choosePlace(PlaceFilterScreen.MOSCOW);
+                                    },
+                                  ),
                                 ),
-                                onTap: () {
-                                  _choosePlace(PlaceFilterScreen.MOSCOW);
-                                },
                               ),
                             ],
                           ),
@@ -207,13 +248,19 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                                       color: Colors.white, width: .5))),
                           child: Row(
                             children: <Widget>[
-                              InkWell(
-                                child: Text(
-                                  PlaceFilterScreen.YEKATERINBURG,
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    splashColor: Colors.white,
+                                    child: Text(
+                                      PlaceFilterScreen.YEKATERINBURG,
+                                    ),
+                                    onTap: () {
+                                      _choosePlace(PlaceFilterScreen.YEKATERINBURG);
+                                    },
+                                  ),
                                 ),
-                                onTap: () {
-                                  _choosePlace(PlaceFilterScreen.YEKATERINBURG);
-                                },
                               ),
                             ],
                           ),
@@ -228,13 +275,21 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
                                       color: Colors.white, width: .5))),
                           child: Row(
                             children: <Widget>[
-                              InkWell(
-                                child: Text(
-                                  PlaceFilterScreen.SAINT_PETERSBURG,
+                              Expanded(
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    splashColor: Colors.white,
+                                    child: Container(
+                                      child: Text(
+                                        PlaceFilterScreen.SAINT_PETERSBURG,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      _choosePlace(PlaceFilterScreen.SAINT_PETERSBURG);
+                                    },
+                                  ),
                                 ),
-                                onTap: () {
-                                  _choosePlace(PlaceFilterScreen.SAINT_PETERSBURG);
-                                },
                               ),
                             ],
                           ),

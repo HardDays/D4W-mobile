@@ -141,6 +141,8 @@ class StringResources {
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
 
+  static final String  _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
+
   StringResources(this.locale);
 
   static StringResources of(BuildContext context) {
@@ -251,7 +253,7 @@ class StringResources {
       _textNoSeat: 'No available seat',
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
-      _textNothingToShow: 'No co-working nearby, you can set another filter',
+      _textNothingToShow: 'There are no coworkings around you',
       _textPromptConfirmVisit: 'Вы уже находитесь в коворкинге ',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
@@ -272,6 +274,7 @@ class StringResources {
       _errorToLongPhoneNumber: "Phone number too long",
       _errorToLongLogin: "Login too long",
       _errorToShortPassword: "Password too short(min 6)",
+      _errorShortPasswordConfirm: "Password Confirm too short(min 6)",
       _errorSameAsOldPassword: "Password is the same as the old one",
       _errorInvalidEmail: 'Not valid email',
       _messageNoInternet: 'No internet connection',
@@ -406,6 +409,7 @@ class StringResources {
       _errorToLongPhoneNumber: "Слишком длинный телефон",
       _errorToLongLogin: "Слишком длинный логин",
       _errorToShortPassword: "Слишком короткый пароль (мин 6)",
+      _errorShortPasswordConfirm: "Слишком короткый  (мин 6)",
       _errorSameAsOldPassword: "Новый и старый пароли совпадаются",
       _errorInvalidEmail: 'Неправильный формат',
       _messageNoInternet: 'Нет соединение к интернету',
@@ -616,6 +620,10 @@ class StringResources {
 
   String get eEmptyPasswordConfirm {
     return _localizedValues[locale.languageCode][_errorEmptyPasswordConfirm];
+  }
+
+  String get eShortPasswordConfirm {
+    return _localizedValues[locale.languageCode][_errorShortPasswordConfirm];
   }
 
   String get eEmptyPhone {

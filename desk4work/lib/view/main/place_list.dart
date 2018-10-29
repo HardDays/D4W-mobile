@@ -24,7 +24,7 @@ class CoWorkingPlaceListScreen extends StatefulWidget {
 class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<CoWorking> _coWorkings = [];
   CoWorkingApi _coWorkingApi = CoWorkingApi();
-  GlobalKey _scaffoldState = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   StringResources stringResources;
   Size _screenSize;
   Geolocator _geolocator;
@@ -40,7 +40,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   @override
   void initState() {
-    _showAsList = true;
+    _showAsList = false;
     _offset = 0;
     _isLoading = true;
     _cities = {
@@ -66,10 +66,13 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         _coWorkingApi.searchCoWorkingPlaces(_token).then((coWorkings) {
           if (coWorkings != null && coWorkings.length > 0) {
             setState(() {
-              _isLoading = false;
               this._coWorkings.addAll(coWorkings);
+              _isLoading = false;
             });
           }
+        }).catchError((error) {
+          _showToast(stringResources.mServerError);
+          print('coworking search error: $error');
         });
       });
     });
@@ -121,7 +124,13 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                     child: CircularProgressIndicator(),
                   ),
                 )
-              : _showAsList ? _showList() : _showMap()),
+              : (_coWorkings.length > 0)
+                  ? (_showAsList ? _showList() : _showMap())
+                  : Container(
+                      child: Center(
+                        child: Text(stringResources.tNothingToShow),
+                      ),
+                    )),
     );
   }
 
@@ -190,18 +199,18 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
           .searchCoWorkingPlaces(_token,
               location: _cities[_filter?.place], // ?? _userLocation,
               filter: _filter,
-              offset: offset ==0 ? offset : _offset + offset)
+              offset: offset == 0 ? offset : _offset + offset)
           .then((coWorkings) {
-            print(' loaded ooooo: $coWorkings');
+        print(' loaded ooooo: $coWorkings');
         if (coWorkings != null && coWorkings.length > 0) {
           setState(() {
             _offset += 20;
-            _isLoading= false;
+            _isLoading = false;
             this._coWorkings.addAll(coWorkings);
           });
-        }else{
+        } else {
           setState(() {
-            _isLoading= false;
+            _isLoading = false;
           });
         }
       });
@@ -250,6 +259,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               filter: _filter)
           .then((coWorkings) {
         return coWorkings;
+      }).catchError((error) {
+        _showToast(stringResources.mServerError);
+        print('coworking search error: $error');
       });
     });
   }
@@ -336,6 +348,14 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     return Center(
       child: Text(message),
     );
+  }
+
+  _showToast(String message) {
+    setState() {
+      _isLoading = false;
+    }
+
+    _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
   _openDetails(CoWorking coWorking) {

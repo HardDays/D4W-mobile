@@ -4,10 +4,9 @@ import 'package:desk4work/view/common/theme_util.dart';
 import 'package:desk4work/view/common/timer_picker_util.dart';
 import 'package:flutter/material.dart';
 
-class TimeFilterScreen extends StatefulWidget{
+class TimeFilterScreen extends StatefulWidget {
   final String _startTime, _endTime;
   final bool _isStart;
-
 
   TimeFilterScreen(this._startTime, this._endTime, this._isStart);
 
@@ -15,13 +14,27 @@ class TimeFilterScreen extends StatefulWidget{
   State<StatefulWidget> createState() => TimeFilterState();
 }
 
-class TimeFilterState extends State<TimeFilterScreen>{
+class TimeFilterState extends State<TimeFilterScreen> {
   StringResources _stringResources;
   Size _screenSize;
   double _screenHeight, _screenWidth;
   String _tempStart, _tempEnd;
   double _confirmButtonHeight;
   double _confirmButtonWidth;
+  bool _isStart;
+
+  @override
+  void initState() {
+    _tempStart = widget._startTime;
+    _tempEnd = widget._endTime;
+    _isStart = widget._isStart;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_tempStart == null) _getDefaultStart();
+
+      if (_tempEnd == null) _getDefaultEnd();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,83 +55,110 @@ class TimeFilterState extends State<TimeFilterScreen>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: (_screenHeight * .0308).toDouble(),
+                margin: EdgeInsets.only(
+                  top: (_screenHeight * .0308).toDouble(),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     BackButton(),
                     Text(_stringResources.tFilter),
-                    IconButton(icon: Icon(Icons.check),
-                        onPressed: (){
+                    IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: () {
                           _validate();
                         }),
-
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    top: (_screenHeight * .029)),),
+                padding: EdgeInsets.only(top: (_screenHeight * .029)),
+              ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: (_screenWidth * .048).toDouble()),
+                padding: EdgeInsets.symmetric(
+                    horizontal: (_screenWidth * .048).toDouble()),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 8.0),
-                      height: textFilterParameterHeight,
-                      width: textFilterParameterWidth,
-                      decoration: BoxDecorationUtil
-                          .getGreyRoundedCornerBoxDecoration(),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time),
-                          Padding(padding: EdgeInsets.only(left: 8.0),),
-                          Text((widget._startTime ?? _tempStart ?? _stringResources.hStart))
-                        ],
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _isStart = true;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8.0),
+                        height: textFilterParameterHeight,
+                        width: textFilterParameterWidth,
+                        decoration: _isStart
+                            ? BoxDecorationUtil
+                                .getGreyRoundedWhiteCornerBoxDecoration()
+                            : BoxDecorationUtil
+                                .getGreyRoundedCornerBoxDecoration(),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.access_time),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                            ),
+                            Text((_tempStart ?? _stringResources.hStart))
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(left: 8.0),
-                      height: textFilterParameterHeight,
-                      width: textFilterParameterWidth,
-                      decoration: BoxDecorationUtil
-                          .getGreyRoundedCornerBoxDecoration(),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time),
-                          Padding(padding: EdgeInsets.only(left: 8.0),),
-                          Text((widget._endTime ?? _tempEnd ?? _stringResources.hEnd))
-                        ],
+                    InkWell(
+                      onTap: (){
+                        setState(() {
+                          _isStart = false;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 8.0),
+                        height: textFilterParameterHeight,
+                        width: textFilterParameterWidth,
+                        decoration:
+                        !_isStart
+                            ? BoxDecorationUtil
+                            .getGreyRoundedWhiteCornerBoxDecoration()
+                            : BoxDecorationUtil
+                            .getGreyRoundedCornerBoxDecoration(),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.access_time),
+                            Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                            ),
+                            Text((_tempEnd ?? _stringResources.hEnd))
+                          ],
+                        ),
                       ),
                     )
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    top: (_screenHeight * .132)),),
+                padding: EdgeInsets.only(top: (_screenHeight * .132)),
+              ),
               Container(
                 height: (_screenHeight * .3253).toDouble(),
                 padding: EdgeInsets.symmetric(vertical: (_screenHeight * .029)),
                 child: CupertinoTimerPicker(
                   mode: CupertinoTimerPickerMode.hm,
-                  initialTimerDuration: Duration(hours: 9),
-                  onTimerDurationChanged: (duration){
+                  initialTimerDuration: Duration(
+                      hours: (_isStart)
+                          ? _getTimePickerStart()<24 ? _getTimePickerStart() : 1
+                          : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1),
+                  onTimerDurationChanged: (duration) {
                     String hh = (duration.inMinutes / 60).truncate().toString();
-                    if(int.parse(hh) < 10)
-                      hh ='0'+hh;
+                    if (int.parse(hh) < 10) hh = '0' + hh;
                     String mm = (duration.inMinutes % 60).toString();
-                    if(int.parse(mm) < 10)
-                      mm = '0'+mm;
-                    if(widget._isStart){
+                    if (int.parse(mm) < 10) mm = '0' + mm;
+                    if (_isStart) {
                       setState(() {
                         int hour = _getStart(int.parse(hh));
                         _tempStart = "$hour:$mm";
                       });
-                    }
-                    else {
+                    } else {
                       setState(() {
                         int hour = _getEndTime(int.parse(hh));
                         _tempEnd = "$hour:$mm";
@@ -128,7 +168,8 @@ class TimeFilterState extends State<TimeFilterScreen>{
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: (_screenHeight * .0974)),
+                padding:
+                    EdgeInsets.symmetric(vertical: (_screenHeight * .0974)),
               ),
               _getSaveButton()
             ],
@@ -138,27 +179,24 @@ class TimeFilterState extends State<TimeFilterScreen>{
     );
   }
 
-
-  int _getEndTime(int selected){
-    int start = 0;
-    try{
-      if(widget._startTime !=null){
-        start = (widget._startTime.length >1)
-            ? int.parse(widget._startTime.substring(0,2))
-            : int.parse(widget._startTime.substring(0));
-
-        if(start >= selected)
-          selected = start+1;
-      }
-    }catch (e){
-      print('parsing time start error $e');
-
-    }
-    if(selected <10) selected =10;
+  int _getEndTime(int selected) {
+//    int start = 0;
+//    try {
+//      if (widget._startTime != null) {
+//        start = (widget._startTime.length > 1)
+//            ? int.parse(widget._startTime.substring(0, 2))
+//            : int.parse(widget._startTime.substring(0));
+//
+//        if (start >= selected) selected = start + 1;
+//      }
+//    } catch (e) {
+//      print('parsing time start error $e');
+//    }
+//    if (selected < 10) selected = 10;
     return selected;
   }
 
-  int _getStart(int selected){
+  int _getStart(int selected) {
 //    if(selected > 17)
 //      selected --;
 //    if(selected <9)
@@ -166,41 +204,95 @@ class TimeFilterState extends State<TimeFilterScreen>{
     return selected;
   }
 
-  Widget _getSaveButton(){
+  Widget _getSaveButton() {
     return Center(
       child: Container(
         width: _confirmButtonWidth,
         height: _confirmButtonHeight,
         decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(28.0))
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(28.0))),
         child: InkWell(
-          onTap: (){
+          onTap: () {
             _validate();
           },
           child: Center(
-            child: Text(_stringResources.bSave.toUpperCase(),
-              style: TextStyle(color: Colors.orange),),
+            child: Text(
+              _stringResources.bSave.toUpperCase(),
+              style: TextStyle(color: Colors.orange),
+            ),
           ),
         ),
       ),
     );
   }
 
+  _getDefaultStart() {
+    DateTime dateTime = DateTime.now();
+    int hour = dateTime.hour;
+    int minutes = dateTime.minute;
+    String stringHour = hour > 9 ? hour.toString() : '0$hour';
+    String stringMinutes = minutes > 9 ? minutes.toString() : '0$minutes';
 
-  void _chooseEndTime(String startTime){
+    setState(() {
+      _tempStart = stringHour + ':' + stringMinutes;
+    });
+  }
+
+  int _getTimePickerStart() {
+    if (_tempStart == null) {
+      return DateTime.now().hour + 1;
+    } else {
+      return (_tempStart.length > 1)
+          ? int.parse(_tempStart.substring(0, 2))
+          : int.parse(_tempStart.substring(0));
+    }
+  }
+
+  int _getTimePickerEnd() {
+    if (_tempStart == null && _tempEnd == null) {
+      return _getTimePickerStart() + 1;
+    } else if (_tempEnd == null) {
+      return (_tempStart.length > 1)
+          ? int.parse(_tempStart.substring(0, 2))
+          : int.parse(_tempStart.substring(0));
+    } else {
+      return (_tempEnd.length > 1)
+          ? int.parse(_tempEnd.substring(0, 2))
+          : int.parse(_tempEnd.substring(0));
+    }
+  }
+
+  _getDefaultEnd() {
+    if (_tempStart == null) {
+      DateTime dateTime = DateTime.now();
+      int hour = dateTime.hour + 2;
+      int minutes = dateTime.minute;
+      String stringHour = hour > 9 ? hour.toString() : '0$hour';
+      String stringMinutes = minutes > 9 ? minutes.toString() : '0$minutes';
+      setState(() {
+        _tempEnd = stringHour + ':' + stringMinutes;
+      });
+    }else{
+      setState(() {
+        _tempEnd = (_getTimePickerEnd() + 2).toString() +':'+ '00';
+      });
+    }
+  }
+
+  void _chooseEndTime(String startTime) {
     setState(() {
       _tempStart = startTime;
     });
   }
 
-  void _chooseStartTime(String endTime){
+  void _chooseStartTime(String endTime) {
     setState(() {
       _tempEnd = endTime;
     });
   }
-  void _validate(){
-    Navigator.pop(context,{0: _tempStart, 1 : _tempEnd});
+
+  void _validate() {
+    Navigator.pop(context, {0: _tempStart, 1: _tempEnd});
   }
 }

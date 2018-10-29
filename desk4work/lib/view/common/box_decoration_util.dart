@@ -40,6 +40,16 @@ class BoxDecorationUtil {
     );
   }
 
+  static BoxDecoration getGreyRoundedWhiteCornerBoxDecoration(){
+    return BoxDecoration(
+        color: Colors.white12,
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.all(Radius.circular(41.0))
+    );
+  }
+
+
+
   static BoxDecoration getOrangeRoundedCornerBoxDecoration(){
     return BoxDecoration(
         color: Colors.orange,
