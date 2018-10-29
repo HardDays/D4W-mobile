@@ -17,6 +17,12 @@ class BookingApi {
   factory BookingApi() => _instance;
 
   Future<List<Booking>> getUserBookings(String token) {
+    DateTime now = DateTime.now();
+//    int day = now.day;
+//    int month = now.month;
+//    int year = now.year;
+//    String date = '$day.$month.$year';
+//    String url = ConstantsManager.BASE_URL + "users/get_my_bookings?date=$date";
     String url = ConstantsManager.BASE_URL + "users/get_my_bookings";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response) {

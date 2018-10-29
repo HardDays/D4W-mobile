@@ -64,27 +64,30 @@ class _BookingDetailsState extends State<BookingDetails> {
             )
           : RefreshIndicator(
               onRefresh: _loadBooking,
-              child: Column(
-                children: <Widget>[
-                  _buildHeader(_booking.coWorking.images),
-                  _buildProgressBar(),
-                  _buildStartEndWidget(),
-                  Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
-                    height: _screenHeight * .1454,
-                    child: _buildChronoWidget(),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      _buildExtendButton(),
-                      _buildTerminateButton()
-                    ],
-                  )
-                ],
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: <Widget>[
+                    _buildHeader(_booking.coWorking.images),
+                    _buildProgressBar(),
+                    _buildStartEndWidget(),
+                    Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
+                      height: _screenHeight * .1454,
+                      child: _buildChronoWidget(),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        _buildExtendButton(),
+                        _buildTerminateButton()
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
     );
@@ -232,7 +235,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                     style: Theme.of(context).textTheme.headline,
                   ),
                   Text(
-                    _stringResources.hStart,
+                    _stringResources.hStart +' '+ _buildDate(DateTime.parse(_booking.beginDate)).data,
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
@@ -253,7 +256,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                   Text(
                     _hasFreeMinutes
                         ? _stringResources.tFreeMinutes
-                        : _stringResources.hEnd,
+                        : _stringResources.hEnd +' '+_buildDate(DateTime.parse(_booking.endDate)).data,
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
@@ -351,8 +354,52 @@ class _BookingDetailsState extends State<BookingDetails> {
           ),
         ),
       ),
-      onTap: _booking.isUserLeaving ? (){}:() => _terminateBooking(),
+      onTap: _booking.isUserLeaving ? (){}:() => _onTerminateRequest(),
     );
+  }
+
+  _onTerminateRequest() {
+
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children : <Widget>[
+                Text(
+                  _stringResources.aEndSession,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.red,
+
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    FlatButton(
+                        child: Text(_stringResources.tNo.toUpperCase()),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    FlatButton(
+                        child: Text(_stringResources.tYes.toUpperCase()),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _terminateBooking();
+                        }),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      );
+
   }
 
   Widget _buildExtendButton() {
@@ -391,14 +438,50 @@ class _BookingDetailsState extends State<BookingDetails> {
         });
       } else {
         showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (ctx) {
-              return CupertinoAlertDialog(
-                  title: Text(_stringResources.tPromptConfirmVisit +
-                      '${_booking.coWorking?.shortName ?? " "}?'),
-                  actions: [_buildNoActionButton(), _buildYesActionButton()]);
-            });
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children : <Widget>[
+                  Text(
+                    _stringResources.tPromptConfirmVisit +
+                        '${_booking.coWorking?.shortName ?? " "}?',
+                    textAlign: TextAlign.center,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FlatButton(
+                          child: Text(_stringResources.tNo.toUpperCase()),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      FlatButton(
+                          child: Text(_stringResources.tYes.toUpperCase()),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _confirmVisit();
+                          }),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        );
+//        showDialog(
+//            context: context,
+//            barrierDismissible: false,
+//            builder: (ctx) {
+//              return CupertinoAlertDialog(
+//                  title: Text(_stringResources.tPromptConfirmVisit +
+//                      '${_booking.coWorking?.shortName ?? " "}?'),
+//                  actions: [_buildNoActionButton(), _buildYesActionButton()]);
+//            });
       }
     });
   }
@@ -599,5 +682,46 @@ class _BookingDetailsState extends State<BookingDetails> {
       _isLoading = false;
     });
     _screenState.currentState.showSnackBar(SnackBar(content: Text(message)));
+  }
+
+
+  Text _buildDate(DateTime dateTime){
+    String day  = dateTime.day.toString();
+    String year = dateTime.year.toString();
+    int hour = dateTime.hour;
+    int min = dateTime.minute;
+    String hourString = hour > 9 ? hour.toString() : '0$hour';
+    String minString = min > 9 ? min.toString() : '0$min';
+//    String time = '$hourString'+ 'h$minString';
+    String month;
+    switch(dateTime.month){
+      case 1: month = _stringResources.tJanuary;
+      break;
+      case 2: month = _stringResources.tFebruary;
+      break;
+      case 3: month = _stringResources.tMarch;
+      break;
+      case 4: month = _stringResources.tApril;
+      break;
+      case 5: month = _stringResources.tMay;
+      break;
+      case 6: month = _stringResources.tJune;
+      break;
+      case 7: month = _stringResources.tJuly;
+      break;
+      case 8: month = _stringResources.tAugust;
+      break;
+      case 9: month = _stringResources.tSeptember;
+      break;
+      case 10: month = _stringResources.tOctober;
+      break;
+      case 11: month = _stringResources.tNovember;
+      break;
+      case 12: month = _stringResources.tDecember;
+      break;
+
+    }
+
+    return Text(" $day $month $year", style: Theme.of(context).textTheme.caption,);
   }
 }
