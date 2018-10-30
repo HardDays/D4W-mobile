@@ -106,8 +106,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         ],
       ),
       body: Container(
-          padding: EdgeInsets.symmetric(
-              vertical: _showAsList ? (_screenHeight * .0304) : .0),
+          padding: EdgeInsets.only(
+              top: _showAsList ? (_screenHeight * .0304) : .0),
           child: _isLoading
               ? Container(
                   color: Colors.white,
@@ -279,8 +279,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   Widget _getCoWorkingCard(CoWorking coWorking) {
     return Container(
-      height: (_screenHeight * .42728),
-      padding: EdgeInsets.only(bottom: .015),
+      height: (_screenHeight * .36),
+//      padding: EdgeInsets.only(bottom: .015),
       child: InkWell(
         onTap: () => _openDetails(coWorking),
         child: Card(
@@ -320,6 +320,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 height: _screenHeight * .127,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
                         padding:

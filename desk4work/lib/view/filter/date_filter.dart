@@ -129,7 +129,7 @@ class _DateFilterScreenState extends State<DateFilterScreen> {
       thisMonthDayBorderColor: Colors.grey,
       height: (_screenHeight * .5262),
       selectedDateTime: _selectedDate,
-      selectedDayTextStyle: TextStyle(color: Colors.orange),
+      selectedDayTextStyle: TextStyle(color: Colors.orange, letterSpacing: _screenWidth < 360.0 ? -3.0 : null),
       selectedDayButtonColor: Colors.white,
       selectedDayBorderColor: Colors.white,
       iconColor: Colors.white,

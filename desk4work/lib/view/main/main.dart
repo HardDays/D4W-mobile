@@ -35,6 +35,7 @@ class _MainScreenState extends State<MainScreen>  {
 
   BookingApi _bookingApi = BookingApi();
   StringResources stringResources;
+  double _screenWidth, _screenHeight;
 
   List<Booking> _bookings;
   String _token;
@@ -62,6 +63,7 @@ class _MainScreenState extends State<MainScreen>  {
   @override
   Widget build(BuildContext context) {
     stringResources = StringResources.of(context);
+    _screenHeight = MediaQuery.of(context).size.height;
     return Theme(
       data: Theme.of(context).copyWith(canvasColor: Colors.white),
       child: DefaultTabController(
@@ -130,19 +132,21 @@ class _MainScreenState extends State<MainScreen>  {
   }
 
   TabBar _getBottomNavigationBar() {
-    return TabBar(
+    TabBar tabBar = TabBar(
       tabs: [
-        Tab(icon: Icon(Icons.search)),
-        Tab(icon: Icon(Icons.assignment)),
-        Tab(icon: Icon(Icons.perm_identity)),
+        Container( height: _screenHeight * .072,child:  Icon(Icons.search)),
+        Container(height: _screenHeight * .072, child: Icon(Icons.assignment)),
+        Container(height: _screenHeight * .072, child:  Icon(Icons.perm_identity)),
       ],
       labelColor: Colors.orange,
       unselectedLabelColor: Colors.grey,
       indicatorSize: TabBarIndicatorSize.label,
       indicatorColor: Colors.white,
-      indicatorPadding: EdgeInsets.all(5.0),
+      indicatorWeight: .1,
+//      indicatorPadding: EdgeInsets.all(5.0),
 
     );
+    return tabBar;
 //    return BottomNavigationBar(
 //      type: BottomNavigationBarType.fixed,
 //      fixedColor: Colors.orange,
@@ -170,6 +174,8 @@ class _MainScreenState extends State<MainScreen>  {
 //      ],
 //    );
   }
+
+
 
   Widget showMessage(String message) {
     return Center(
