@@ -326,10 +326,14 @@ class LoginScreenState extends State<LoginScreen> {
   }
   
   _startGoogleSignInProcess() async{
-    _googleSignInAccount = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication = await _googleSignInAccount.authentication;
-    FirebaseUser user = await _firebaseAuth.signInWithGoogle(idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
-   print('$googleSignInAuthentication');
+    try {
+      _googleSignInAccount = await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleSignInAuthentication = await _googleSignInAccount.authentication;
+      FirebaseUser user = await _firebaseAuth.signInWithGoogle(idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
+         print('$googleSignInAuthentication');
+    }  catch (e) {
+      print('google sign in error: $e');
+    }
   }
 
   _handleGoogleSignIn() {

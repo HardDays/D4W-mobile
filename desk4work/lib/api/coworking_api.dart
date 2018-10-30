@@ -58,10 +58,13 @@ class CoWorkingApi {
         stringFilter += '$k=$v&';
       });
       List<String> workingDays = [];
-      if (filter.date != null && filter.date.length > 0) {
+      if (filter.date != null && filter.date.length >= 1) {
         String beginDate = filter.date[0];
         String endDate = realEndDate;
         stringFilter += "begin_date=$beginDate&end_date=$endDate";
+      }else{
+        DateTime dateTime = DateTime.now();
+        stringFilter+= 'begin_date=${dateTime.day}.${dateTime.month}.${dateTime.year}';
       }
       if (filter.conferenceRoomNeeded ?? false)
         stringFilter += Uri.encodeQueryComponent('&ementies[]=conference_room');

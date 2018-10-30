@@ -43,10 +43,23 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
 
   @override
   void initState() {
-    _starWork = "09:00";
-    _endWork = "10:00";
+    DateTime now = DateTime.now();
+    int time =(now.hour < 23)? now.hour + 1 : 1;
+    int min = now.minute;
+    String timeStartString = (time < 10) ? '0$time' : time.toString();
+    String minString = (min < 10) ?  '0$min': min.toString();
+
+    int timeEnd = (time < 23) ? time + 1 : 1;
+    String timeEndString = (timeEnd < 10) ? '0$timeEnd' : timeEnd.toString();
+
+    _starWork = "$timeStartString:$minString";
+    _endWork = "$timeEndString:$minString";
+
     _isLoading = false;
     _selectedDate = DateTime.now();
+    _serverDate =
+    '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}';
+    _screenDate = _getFilterDate(DateTime.now());
     _availableSeats = widget._coWorking.freeSeats;
     _neededNumberOfSeats = 1;
     _bookingApi = BookingApi();

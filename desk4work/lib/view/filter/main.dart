@@ -46,7 +46,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
 
     String date = (filter != null && filter.date != null)
         ? filter.date[0].substring(0, 5) + ((filter.date.length <2) ?"" : "-" + filter.date[1].substring(0, 5))
-        : _stringResources.hDate;
+        : _getFilterDate(DateTime.now());
 
     return Scaffold(
       key: _scaffoldState,

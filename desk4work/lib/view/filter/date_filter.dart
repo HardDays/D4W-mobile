@@ -26,6 +26,8 @@ class _DateFilterScreenState extends State<DateFilterScreen> {
   @override
   void initState() {
     _selectedDate.addAll(widget._selectedDate);
+    if(_selectedDate.length<1)
+      _selectedDate.add(DateTime.now());
     super.initState();
   }
 

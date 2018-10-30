@@ -9,6 +9,8 @@ import 'package:desk4work/view/main/place_list.dart';
 import 'package:desk4work/view/main/profile_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:desk4work/utils/constants.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
@@ -41,6 +43,7 @@ class _MainScreenState extends State<MainScreen>  {
   void initState() {
     _currentTab = widget.firstTab;
 //    _tabController = TabController(length: 3, vsync: this);
+
     _tabs = [
       _getCoWorkingBuilder(),
       _getBookingsBuilder(),

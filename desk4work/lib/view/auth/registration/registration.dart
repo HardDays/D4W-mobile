@@ -44,7 +44,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
     _stringResources = StringResources.of(context);
     return Scaffold(
       key: _scaffoldKey,
-//      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.transparent,
       body: _isLoading
           ? Center(
@@ -70,6 +70,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                   Container(
                     height: _screenSize.height * .65,
                     child: ListView(
+//                      shrinkWrap: true,
 //                      reverse: true,
 //          mainAxisAlignment: MainAxisAlignment.start,
 //          crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,7 +93,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                         _getSendFormButton(),
                         Padding(
                           padding: EdgeInsets.only(
-                              bottom: (_screenSize.height * .0735).toDouble()),
+                              bottom: (_screenSize.height * .3735).toDouble()),
                         )
                       ]
 //                          .reversed.toList(),

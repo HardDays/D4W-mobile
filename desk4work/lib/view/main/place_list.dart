@@ -52,19 +52,6 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     _imageApi = ImageApi();
     _geolocator = Geolocator();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      try {
-        _geolocator.getCurrentPosition().then((pos) {
-          if (pos != null) {
-            setState(() {
-              _userLocation = LatLng(pos.latitude, pos.longitude);
-            });
-          }
-        }).catchError((error) {
-          print('location error: $error');
-        }).timeout(Duration(seconds: 5));
-      } catch (e) {
-        print('location error: $e');
-      }
       SharedPreferences.getInstance().then((sp) {
         _token = sp.getString(ConstantsManager.TOKEN_KEY);
         _coWorkingApi.searchCoWorkingPlaces(_token).then((coWorkings) {
@@ -199,25 +186,45 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   Future _loadMoreBooking(int offset) {
     return SharedPreferences.getInstance().then((sp) {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
-      return _coWorkingApi
-          .searchCoWorkingPlaces(_token,
-              location: _cities[_filter?.place], // ?? _userLocation,
-              filter: _filter,
-              offset: offset == 0 ? offset : _offset + offset)
-          .then((coWorkings) {
-        print(' loaded ooooo: $coWorkings');
-        if (coWorkings != null && coWorkings.length > 0) {
-          setState(() {
-            _offset += 20;
-            _isLoading = false;
-            this._coWorkings.addAll(coWorkings);
+      if(_cities[_filter?.place] == _cities[stringResources.tNearby]){
+        try {
+          _geolocator.getCurrentPosition().then((pos) {
+            if (pos != null) {
+              setState(() {
+                _userLocation = LatLng(pos.latitude, pos.longitude);
+              });
+            }
+          }).catchError((error) {
+            print('location error: $error');
+          }).timeout(Duration(seconds: 5)).whenComplete((){
+            return _coWorkingApi
+                .searchCoWorkingPlaces(_token,
+                location: _cities[_filter?.place], // ?? _userLocation,
+                filter: _filter,
+                offset: offset == 0 ? offset : _offset + offset)
+                .then((coWorkings) {
+              print(' loaded ooooo: $coWorkings');
+              if (coWorkings != null && coWorkings.length > 0) {
+                setState(() {
+                  _offset += 20;
+                  _isLoading = false;
+                  this._coWorkings.addAll(coWorkings);
+                });
+              } else {
+                setState(() {
+                  _isLoading = false;
+                });
+              }
+            }).catchError((_){
+              print('loadding error');
+              _showMessage(stringResources.eServer);
+            });
           });
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
+        } catch (e) {
+          print('location error: $e');
         }
-      });
+      }
+
     });
   }
 
@@ -355,10 +362,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   }
 
   _showToast(String message) {
-    setState() {
+    setState(() {
       _isLoading = false;
-    }
-
+    });
     _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
