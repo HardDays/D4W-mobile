@@ -177,6 +177,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             _filter.place != stringResources.tWherever)
         ? _cities[_filter.place]
         : _userLocation;
+    print('default location: $defautPosition');
     return CoWorkingPlaceMapScreen(
       _coWorkings,
       defaultPosition: defautPosition,
@@ -223,6 +224,29 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         } catch (e) {
           print('location error: $e');
         }
+      }else{
+        return _coWorkingApi
+            .searchCoWorkingPlaces(_token,
+            location: _cities[_filter?.place], // ?? _userLocation,
+            filter: _filter,
+            offset: offset == 0 ? offset : _offset + offset)
+            .then((coWorkings) {
+          print(' loaded ooooo: $coWorkings');
+          if (coWorkings != null && coWorkings.length > 0) {
+            setState(() {
+              _offset += 20;
+              _isLoading = false;
+              this._coWorkings.addAll(coWorkings);
+            });
+          } else {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        }).catchError((_){
+          print('loadding error');
+          _showMessage(stringResources.eServer);
+        });
       }
 
     });

@@ -46,6 +46,7 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
   void initState(){
     super.initState();
     _lastPos = widget.defaultPosition;
+    print('last position: $_lastPos');
     _geolocator = Geolocator();
     _mapController.onReady.then(
       (ready){
@@ -58,20 +59,22 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
       }
     );
     WidgetsBinding.instance.addPostFrameCallback((_){
-      try {
-        _geolocator.getCurrentPosition().then((pos){
-          if (pos != null){
-            setState(() {
-              _lastPos = LatLng(pos.latitude, pos.longitude);
-              _mapController.move(_lastPos, 13.0);
-            });
-          }
-        }).timeout(Duration(seconds: 5)).catchError((e){
-          print("location error: $e");
+      if(_lastPos == null){
+        try {
+          _geolocator.getCurrentPosition().then((pos){
+            if (pos != null){
+              setState(() {
+                _lastPos = LatLng(pos.latitude, pos.longitude);
+                _mapController.move(_lastPos, 13.0);
+              });
+            }
+          }).timeout(Duration(seconds: 5)).catchError((e){
+            print("location error: $e");
 
-        });
-      }  catch (e) {
-        print("location error: $e");
+          });
+        }  catch (e) {
+          print("location error: $e");
+        }
       }
     });
   }
