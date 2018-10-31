@@ -40,6 +40,34 @@ class Filter {
       this.kitchenNeeded = false,
       this.parkForBicycleNeeded = false});
 
+
+  static Future<Filter> savedFilter() {
+    return SharedPreferences.getInstance().then((sp) {
+      bool isFilterSet = sp.getBool(Filter.FILTER_IS_SET);
+      print('gettting filter preferences');
+      if (isFilterSet != null && isFilterSet == true) {
+        Filter filter = Filter();
+        filter.place = sp.getString(Filter.FILTER_PLACE);
+        filter.date = [];
+        filter.date = sp.getStringList(Filter.FILTER_DATES);
+        filter.endHour = sp.getString(Filter.FILTER_END_HOUR);
+        filter.startHour = sp.getString(Filter.FILTER_START_HOUR);
+        filter.parkForBicycleNeeded =
+            sp.getBool(Filter.FILTER_BIKE_STORAGE) ?? false;
+        filter.teaOrCoffeeNeeded =
+            sp.getBool(Filter.FILTER_TEA_COFFEE) ?? false;
+        filter.conferenceRoomNeeded =
+            sp.getBool(Filter.FILTER_CONFERENCE_ROOM) ?? false;
+        filter.printerNeeded = sp.getBool(Filter.FILTER_PRINTER) ?? false;
+        filter.kitchenNeeded = sp.getBool(Filter.FILTER_KITCHEN) ?? false;
+        filter.numberOfSeatsNeeded =
+            sp.getInt(Filter.FILTER_NUMBER_OF_SEATS_NEEDED) ?? 1;
+        return filter;
+      } else
+        return Future.value(null);
+    });
+  }
+
   @override
   String toString() {
     return 'Filter{place: $place, startHour: $startHour, endHour: $endHour, '
@@ -70,7 +98,7 @@ class FilterStateContainer extends StatefulWidget {
 class FilterStateContainerState extends State<FilterStateContainer> {
   Filter filter;
 
-  void getFilter() {
+   void getFilter() {
     SharedPreferences.getInstance().then((sp){
       bool isFilterSet = sp.getBool(Filter.FILTER_IS_SET);
       print('gettting filter preferences');
@@ -93,7 +121,9 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         });
       }
     });
-  }
+    }
+
+
 
   void updateFilterInfo(
       {String latLong,

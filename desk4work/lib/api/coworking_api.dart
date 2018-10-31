@@ -90,6 +90,8 @@ class CoWorkingApi {
     url = (stringFilter == null && stringFilter.length > 1)
         ? url + "?$lastParam"
         : url + stringFilter + "&$lastParam";
+
+    print('coworking url $url');
     return _networkUtil.get(url, headers: _headers).then((responseBody) {
       List<CoWorking> coWorkings = [];
 

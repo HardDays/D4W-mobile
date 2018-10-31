@@ -295,7 +295,7 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
                     )
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 7.0, right: 7.0, top: 7.0, bottom: 7.0),
+                    margin: EdgeInsets.only(left: 7.0, right: 7.0, top: 5.0, bottom: 5.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -54,16 +54,23 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((sp) {
         _token = sp.getString(ConstantsManager.TOKEN_KEY);
-        _coWorkingApi.searchCoWorkingPlaces(_token).then((coWorkings) {
-          if (coWorkings != null && coWorkings.length > 0) {
+        Filter.savedFilter().then((filter){
+          if(filter?.place !=null){
             setState(() {
-              this._coWorkings.addAll(coWorkings);
-              _isLoading = false;
+              _userLocation = _cities[filter.place];
             });
           }
-        }).catchError((error) {
-          _showToast(stringResources.mServerError);
-          print('coworking search error: $error');
+          _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place]).then((coWorkings) {
+            if (coWorkings != null && coWorkings.length > 0) {
+              setState(() {
+                this._coWorkings.addAll(coWorkings);
+                _isLoading = false;
+              });
+            }
+          }).catchError((error) {
+            _showToast(stringResources.mServerError);
+            print('coworking search error: $error');
+          });
         });
       });
     });
@@ -107,7 +114,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       ),
       body: Container(
           padding: EdgeInsets.only(
-              top: _showAsList ? (_screenHeight * .0304) : .0),
+              top: _showAsList ? (_screenHeight * .029985) : .0),
           child: _isLoading
               ? Container(
                   color: Colors.white,
@@ -161,14 +168,39 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     );
   }
 
-  ListView _showList() {
-    return ListView.builder(
+  RefreshIndicator _showList() {
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: ListView.builder(
 //        shrinkWrap: true,
-        itemCount: _coWorkings.length,
-        itemBuilder: (ctx, index) {
-          if (index == _coWorkings.length - 2) _loadMoreBooking(10);
-          return _getCoWorkingCard(_coWorkings[index]);
+          itemCount: _coWorkings.length,
+          itemBuilder: (ctx, index) {
+            if (index == _coWorkings.length - 2) _loadMoreBooking(10);
+            return _getCoWorkingCard(_coWorkings[index]);
+          }),
+    );
+  }
+
+  Future<Null> _refresh(){
+    return SharedPreferences.getInstance().then((sp) {
+      _token = sp.getString(ConstantsManager.TOKEN_KEY);
+      Filter.savedFilter().then((filter){
+
+       return _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place]).then((coWorkings) {
+          if (coWorkings != null && coWorkings.length > 0) {
+            setState(() {
+              this._coWorkings.addAll(coWorkings);
+              _isLoading = false;
+            });
+            return null;
+          }
+        }).catchError((error) {
+          _showToast(stringResources.mServerError);
+          print('coworking search error: $error');
+          return null;
         });
+      });
+    });
   }
 
   CoWorkingPlaceMapScreen _showMap() {
@@ -303,7 +335,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 
   Widget _getCoWorkingCard(CoWorking coWorking) {
     return Container(
-      height: (_screenHeight * .36),
+      margin: EdgeInsets.only(bottom: _screenHeight * .015),
+      height: (_screenHeight * .448),
 //      padding: EdgeInsets.only(bottom: .015),
       child: InkWell(
         onTap: () => _openDetails(coWorking),
@@ -324,12 +357,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                           fit: BoxFit.fill,
                           placeholder: Image.asset(
                             'assets/placeholder.png',
-                            height: (_screenHeight * .23),
+                            height: (_screenHeight * .32),
                           ),
-                          height: (_screenHeight * .23),
+                          height: (_screenHeight * .32),
                           errorWidget: Icon(
                             Icons.error,
-                            size: (_screenHeight * .23),
+                            size: (_screenHeight * .32),
                           ),
                           imageUrl: ConstantsManager.BASE_URL +
                               "images/get_full/${coWorking.imageId}",
@@ -341,35 +374,38 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               Container(
                 padding:
                     EdgeInsets.symmetric(horizontal: (_screenWidth * .048)),
-                height: _screenHeight * .127,
+                height: _screenHeight * .125,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
                         padding:
-                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                            EdgeInsets.only(bottom: _screenHeight * .009)),
                     Row(
                       children: <Widget>[
-                        Text(coWorking.fullName ?? ""),
+                        Text(coWorking.fullName ?? "", overflow: TextOverflow.ellipsis,),
 //                        TODO: get the distance and add it to the end
                       ],
                     ),
                     Padding(
                         padding:
-                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                            EdgeInsets.only(bottom: _screenHeight * .009)),
                     Row(
                       children: <Widget>[
-                        Text(coWorking.address ?? " ",
-                            style: Theme.of(context).textTheme.caption),
+                        Container(
+                          width: _screenWidth * .632 ,
+                          child: Text(coWorking.address ?? " ",
+                              style: Theme.of(context).textTheme.caption, overflow: TextOverflow.ellipsis,),
+                        ),
                       ],
                     ),
                     Padding(
                         padding:
-                            EdgeInsets.only(bottom: _screenHeight * .01049)),
+                            EdgeInsets.only(bottom: _screenHeight * .009)),
                     Row(
                       children: <Widget>[_getTime(coWorking)],
-                    )
+                    ),
                   ],
                 ),
               )
