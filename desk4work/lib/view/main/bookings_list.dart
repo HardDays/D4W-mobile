@@ -38,6 +38,7 @@ class _BookingsListState extends State<BookingsListScreen> {
     _bookingApi = BookingApi();
     _token = widget._token;
     _coWorkingApi = CoWorkingApi();
+    _bookings = widget._bookings;
     _isLoading = false;
     super.initState();
   }
@@ -48,7 +49,6 @@ class _BookingsListState extends State<BookingsListScreen> {
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
     _stringResources = StringResources.of(context);
-    _bookings = widget._bookings; //TODO change it to the global model
     return Scaffold(
         key: _screenState,
         appBar: AppBar(
@@ -68,16 +68,19 @@ class _BookingsListState extends State<BookingsListScreen> {
                 margin: EdgeInsets.symmetric(
 //            horizontal: _screenWidth * .0293,
                     vertical: _screenHeight * .0225),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _bookings.length,
-                  itemBuilder: (ctx, index) {
-                    return Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: _screenHeight * .015,
-                            horizontal: _screenWidth * .0293),
-                        child: _getBookingBuilder(index));
-                  },
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _bookings.length,
+                    itemBuilder: (ctx, index) {
+                      return Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: _screenHeight * .015,
+                              horizontal: _screenWidth * .0293),
+                          child: _getBookingBuilder(index));
+                    },
+                  ),
                 ),
               ));
   }
@@ -114,7 +117,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                 height: _screenHeight * .1409,
                 width: _screenWidth * .6613,
                 padding: EdgeInsets.only(
-                    left: _screenWidth * .0386, top: _screenHeight * .0179),
+                    left: _screenWidth * .0386, top: _screenHeight * .01),
                 child: Stack(
                   children: <Widget>[
                     Text(
@@ -131,7 +134,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                     ),
                     Positioned(
                         top: _screenHeight * .0915,
-                        left: _screenWidth * .4373,
+                        left: _screenWidth * .4173,
                         child: _buildTerminateOrExtendTextButton(booking))
 
 //                    _getLowerCardPart(booking.endWork) ?? " ",
@@ -147,14 +150,15 @@ class _BookingsListState extends State<BookingsListScreen> {
 
   InkWell _buildTerminateOrExtendTextButton(Booking booking) {
     bool isBookingTimeUp = _isBookingTimeUp(booking);
+
     return InkWell(
-      onTap: isBookingTimeUp
+      onTap: (!booking.isUserLeaving || !booking.isExtendPending) ? (isBookingTimeUp
           ? () => _extendBooking(booking)
-          : () => _endBooking(booking.id),
+          : () => _endBooking(booking.id)):(){},
       child: Text(
-        isBookingTimeUp
+        (!booking.isUserLeaving || !booking.isExtendPending) ? (isBookingTimeUp
             ? _stringResources.tExtend
-            : _stringResources.tTerminate,
+            : _stringResources.tTerminate) : ' ',
         style:
             Theme.of(context).textTheme.button.copyWith(color: Colors.orange),
       ),
@@ -209,7 +213,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                         width: _screenWidth * .6613,
                         padding: EdgeInsets.only(
                             left: _screenWidth * .0386,
-                            top: _screenHeight * .0179),
+                            top: _screenHeight * .01),
                         child: Stack(
                           children: <Widget>[
                             Text(
@@ -227,7 +231,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                             ),
                             Positioned(
                                 top: _screenHeight * .0915,
-                                left: _screenWidth * .4373,
+                                left: _screenWidth * .4173,
                                 child:
                                     _buildTerminateOrExtendTextButton(booking))
 
@@ -269,16 +273,17 @@ class _BookingsListState extends State<BookingsListScreen> {
     _bookingApi.leaveCoworking(_token, id).then((isCanceled) {
       if (isCanceled != null && isCanceled.length == 0) {
         _showToast(_stringResources.mStopRequestSent);
-        Booking toRemove;
-        widget._bookings.forEach((b) {
+        int toBeRemovedSoon;
+        _bookings.forEach((b) {
           if (b.id == id) {
-            toRemove = b;
+            toBeRemovedSoon = _bookings.indexOf(b);
           }
         });
-        if (toRemove != null) {
-          widget._bookings.remove(toRemove);
+        if (toBeRemovedSoon != null) {
+          _bookings[toBeRemovedSoon].isUserLeaving = true;
+//          _bookings.remove(toBeRomovedSoon);
           setState(() {
-            _bookings = widget._bookings;
+            _bookings = _bookings;
           });
         }
       } else {
@@ -305,6 +310,20 @@ class _BookingsListState extends State<BookingsListScreen> {
           if (resp != null) {
             if (resp.length == 0) {
               _showToast(_stringResources.mExtendRequestSent);
+              int toBeExtended;
+              int id = booking.id;
+              _bookings.forEach((b) {
+                if (b.id == id) {
+                  toBeExtended = _bookings.indexOf(b);
+                }
+              });
+              if (toBeExtended != null) {
+//          _bookings.remove(toBeRomovedSoon);
+                _bookings[toBeExtended].isExtendPending = true;
+                setState(() {
+                  _bookings = _bookings;
+                });
+              }
               setState(() {
                 _isLoading = false;
               });
@@ -316,15 +335,32 @@ class _BookingsListState extends State<BookingsListScreen> {
     }
   }
 
+  Future<Null> _refresh(){
+     return SharedPreferences.getInstance().then((sp){
+       String token = sp.getString(ConstantsManager.TOKEN_KEY);
+       return _bookingApi.getUserBookings(token).then((bookings){
+         if(bookings!=null && bookings.length>0){
+           setState(() {
+             _bookings = bookings;
+           });
+         }
+         return null;
+       }).catchError((error){
+         showMessage(_stringResources.mServerError);
+         return null;
+       });
+     });
+  }
+
   _openBooking(Booking booking) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => BookingDetails(booking)))
         .then((b) {
       if (b != null) {
         Booking booking = b;
-        widget._bookings.remove(booking);
+        _bookings.remove(booking);
         setState(() {
-          _bookings = widget._bookings;
+          _bookings = _bookings;
         });
       }
     });
@@ -337,7 +373,7 @@ class _BookingsListState extends State<BookingsListScreen> {
     int min = dateTime.minute;
     String hourString = hour > 9 ? hour.toString() : '0$hour';
     String minString = min > 9 ? min.toString() : '0$min';
-    String time = '$hourString' + 'h$minString';
+    String time = '$hourString' + ':$minString';
     String month;
     switch (dateTime.month) {
       case 1:

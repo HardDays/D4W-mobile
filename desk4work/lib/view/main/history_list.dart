@@ -157,13 +157,7 @@ FutureBuilder<List<Booking>> _buildCoWorkingList(){
                   Container(
                     margin: EdgeInsets.only(top: 10.0),
                     width: _screenWidth * 0.6,
-                    child: Text(booking.beginDate ?? "",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 13.0
-                      ),
-                    ),
+                    child: _buildDate(DateTime.parse(booking.beginDate)),
                   ),
                 ],
               )
@@ -171,6 +165,60 @@ FutureBuilder<List<Booking>> _buildCoWorkingList(){
           ],
         ),
       ),
+    );
+  }
+
+  Text _buildDate(DateTime dateTime) {
+    String day = dateTime.day.toString();
+    String year = dateTime.year.toString();
+    int hour = dateTime.hour;
+    int min = dateTime.minute;
+    String hourString = hour > 9 ? hour.toString() : '0$hour';
+    String minString = min > 9 ? min.toString() : '0$min';
+    String time = '$hourString' + ':$minString';
+    String month;
+    switch (dateTime.month) {
+      case 1:
+        month = _stringResources.tJanuary;
+        break;
+      case 2:
+        month = _stringResources.tFebruary;
+        break;
+      case 3:
+        month = _stringResources.tMarch;
+        break;
+      case 4:
+        month = _stringResources.tApril;
+        break;
+      case 5:
+        month = _stringResources.tMay;
+        break;
+      case 6:
+        month = _stringResources.tJune;
+        break;
+      case 7:
+        month = _stringResources.tJuly;
+        break;
+      case 8:
+        month = _stringResources.tAugust;
+        break;
+      case 9:
+        month = _stringResources.tSeptember;
+        break;
+      case 10:
+        month = _stringResources.tOctober;
+        break;
+      case 11:
+        month = _stringResources.tNovember;
+        break;
+      case 12:
+        month = _stringResources.tDecember;
+        break;
+    }
+
+    return Text(
+      "$day $month $year $time",
+      style: Theme.of(context).textTheme.caption,
     );
   }
 
