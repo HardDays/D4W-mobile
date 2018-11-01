@@ -66,16 +66,20 @@ class CoWorkingApi {
         DateTime dateTime = DateTime.now();
         stringFilter+= 'begin_date=${dateTime.day}.${dateTime.month}.${dateTime.year}';
       }
-      if (filter.conferenceRoomNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=conference_room');
+      if (filter.parkingNeeded ?? false)
+        stringFilter += Uri.encodeQueryComponent('&ementies[]=parking');
+      if (filter.freeParkingNeeded ?? false)
+        stringFilter += Uri.encodeQueryComponent('&ementies[]=free_parking');
+      if (filter.freePrinter ?? false)
+        stringFilter += Uri.encodeQueryComponent('&ementies[]=free_printing');
+
       if (filter.kitchenNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=kitchen');
+        stringFilter += Uri.encodeQueryComponent('&ementies[]=snacks');
       if (filter.printerNeeded ?? false)
         stringFilter += Uri.encodeQueryComponent('&ementies[]=printing');
       if (filter.teaOrCoffeeNeeded ?? false)
         stringFilter += Uri.encodeQueryComponent('&ementies[]=coffee');
-      if (filter.parkForBicycleNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=bike_storage');
+
     }
     if (location != null) {
       double lat = location.latitude;

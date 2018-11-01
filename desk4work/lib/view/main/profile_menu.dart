@@ -85,6 +85,9 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _usersApi.getMe(token).then((user) {
         return user;
+      }).catchError((error){
+        print('get me front error: $error');
+        return null;
       });
     });
   }

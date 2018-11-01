@@ -40,8 +40,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   bool _isPrinterSelected = false,
       _isCoffeeSelected = false,
-      _isConferenceRoomSelected = false,
-      _isBikeStorageSelected = false,
+      _isParkingSelected = false,
       _isKitchenSelected = false;
   String _token;
   String _explanations;
@@ -57,14 +56,16 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     _coWorkingApi = CoWorkingApi();
     _hasFreeSeats = true;
     _hasLocation =
-        (widget._coWorking.lat != null && widget._coWorking.lng != null);
+    (widget._coWorking.lat != null && widget._coWorking.lng != null);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     _stringResources = StringResources.of(context);
-    _screenSize = MediaQuery.of(context).size;
+    _screenSize = MediaQuery
+        .of(context)
+        .size;
     _screenHeight = _screenSize.height;
     _screenWidth = _screenSize.width;
     _token = widget._token; // global
@@ -109,8 +110,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               child: (widget._coWorking.images != null)
                   ? _buildImagesSlide()
                   : Container(
-                      child: Image.asset('assets/placeholder.png'),
-                    )),
+                child: Image.asset('assets/placeholder.png'),
+              )),
           Container(
             margin: EdgeInsets.symmetric(
               vertical: _screenHeight * .03,
@@ -121,14 +122,20 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               children: <Widget>[
                 Text(
                   widget._coWorking.fullName,
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .subhead,
                 ),
                 Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
+                    EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
                 Text(
                   widget._coWorking.description ?? '',
-                  style: Theme.of(context).textTheme.caption,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
                 ),
               ],
             ),
@@ -147,32 +154,38 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               children: <Widget>[
                 Text(
                   _stringResources.tMainInfo,
-                  style: Theme.of(context).textTheme.subhead,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .subhead,
                 ),
                 Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
+                    EdgeInsets.symmetric(vertical: _screenHeight * .0105)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
                       _stringResources.tFreePlaces,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .caption,
                     ),
                     _buildFreeSeats(widget._coWorking.id)
                   ],
                 ),
                 Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: _screenHeight * .009)),
+                    EdgeInsets.symmetric(vertical: _screenHeight * .009)),
               ],
             ),
           ),
           (_hasLocation)
               ? Container(
-                  height: (_screenHeight * .276),
-                  child: _buildMap(),
-                )
+            height: (_screenHeight * .276),
+            child: _buildMap(),
+          )
               : Container(),
           Container(
             height: (_screenHeight * .0618),
@@ -191,17 +204,23 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
               child: widget._coWorking.address == null
                   ? Container()
                   : Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.place,
-                          color: Colors.orange,
-                        ),
-                        Text(widget._coWorking.address ?? " ",
-                            style: Theme.of(context).textTheme.caption)
-                      ],
-                    ),
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.place,
+                    color: Colors.orange,
+                  ),
+                  Container(
+                    width: _screenWidth * .85,
+                    child: Text(widget._coWorking.address ?? " ",
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption, overflow: TextOverflow.ellipsis,),
+                  )
+                ],
+              ),
             ),
           ),
           _getWorkingHours(),
@@ -216,20 +235,23 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.rectangle,
-                gradient: BoxDecorationUtil.getOrangeGradient().gradient,
+                gradient: BoxDecorationUtil
+                    .getOrangeGradient()
+                    .gradient,
                 borderRadius: BorderRadius.all(Radius.circular(28.0))),
             child: InkWell(
               onTap: _bookPlace,
               child: Center(
                   child: Text(
-                _hasFreeSeats
-                    ? _stringResources.bBook
-                    : _stringResources.tNoSeat,
-                style: Theme.of(context)
-                    .textTheme
-                    .button
-                    .copyWith(color: Colors.white),
-              )),
+                    _hasFreeSeats
+                        ? _stringResources.bBook
+                        : _stringResources.tNoSeat,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .button
+                        .copyWith(color: Colors.white),
+                  )),
             ),
           )
         ],
@@ -255,40 +277,43 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         children: <Widget>[
           mapCenter != null
               ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: FlutterMap(
-                      mapController: _mapController,
-                      options: MapOptions(
-                        center: LatLng(lat, lng),
-                        zoom: 15.0,
-                      ),
-                      layers: [
-                        TileLayerOptions(
-                          urlTemplate: _mapBoxUrl,
-                          additionalOptions: {
-                            'accessToken': _mapBoxToken,
-                            'id': _mapBoxId,
-                          },
-                        ),
-                        MarkerLayerOptions(markers: <Marker>[
-                          Marker(
-                              point: LatLng(lat, lng),
-                              builder: (ctx) {
-                                return Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitHeight,
-                                      image:
-                                          AssetImage('assets/pin_orange.png'),
-                                    ),
-                                  ),
-                                );
-                              })
-                        ])
-                      ]),
-                )
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  center: LatLng(lat, lng),
+                  zoom: 15.0,
+                ),
+                layers: [
+                  TileLayerOptions(
+                    urlTemplate: _mapBoxUrl,
+                    additionalOptions: {
+                      'accessToken': _mapBoxToken,
+                      'id': _mapBoxId,
+                    },
+                  ),
+                  MarkerLayerOptions(markers: <Marker>[
+                    Marker(
+                        point: LatLng(lat, lng),
+                        builder: (ctx) {
+                          return Container(
+                            width: 70.0,
+                            height: 70.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.fitHeight,
+                                image:
+                                AssetImage('assets/pin_orange.png'),
+                              ),
+                            ),
+                          );
+                        })
+                  ])
+                ]),
+          )
               : Container()
         ],
       );
@@ -312,7 +337,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         children: <Widget>[
           Text(
             _stringResources.tWorkingHours,
-            style: Theme.of(context).textTheme.subhead,
+            style: Theme
+                .of(context)
+                .textTheme
+                .subhead,
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -351,42 +379,48 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     return amenities.length < 1
         ? Container()
         : Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: _screenWidth * .0413,
+      margin: EdgeInsets.symmetric(
+        horizontal: _screenWidth * .0413,
+      ),
+      decoration: BoxDecoration(
+          border: BorderDirectional(
+              bottom: BorderSide(color: Colors.black26, width: .5))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Title(
+              color: Colors.black,
+              child: Text(
+                _stringResources.tComfort,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .subhead,
+              )),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _getAmenitiesWidget(amenities)),
+          Padding(
+              padding: EdgeInsets.only(
+                bottom: _screenHeight * .015,
+              )),
+          Container(
+            height: _screenHeight * .054,
+            child: Text(
+              _explanations ?? " ",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption,
             ),
-            decoration: BoxDecoration(
-                border: BorderDirectional(
-                    bottom: BorderSide(color: Colors.black26, width: .5))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Title(
-                    color: Colors.black,
-                    child: Text(
-                      _stringResources.tComfort,
-                      style: Theme.of(context).textTheme.subhead,
-                    )),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: _getAmenitiesWidget(amenities)),
-                Padding(
-                    padding: EdgeInsets.only(
-                  bottom: _screenHeight * .015,
-                )),
-                Container(
-                  height: _screenHeight * .054,
-                  child: Text(
-                    _explanations ?? " ",
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                  bottom: _screenHeight * .03,
-                ))
-              ],
-            ),
-          );
+          ),
+          Padding(
+              padding: EdgeInsets.only(
+                bottom: _screenHeight * .03,
+              ))
+        ],
+      ),
+    );
   }
 
   Widget _getWorkgingHours(WorkingDays workingDay) {
@@ -447,7 +481,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         weekDay = 7;
         break;
     }
-    TextStyle textStyle = Theme.of(context).textTheme.caption;
+    TextStyle textStyle = Theme
+        .of(context)
+        .textTheme
+        .caption;
     Text dayText = Text(
       day,
       style: textStyle.copyWith(color: dayTextColor),
@@ -456,14 +493,16 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       "$start-$end",
       style: textStyle.copyWith(color: timeTextColor),
     );
-    bool isToday = DateTime.now().day == weekDay;
+    bool isToday = DateTime
+        .now()
+        .day == weekDay;
     return Container(
       width: _screenWidth * .3653,
       margin: EdgeInsets.only(bottom: 5.0),
       decoration: (isToday)
           ? BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.all(Radius.circular(36.0)))
+          color: Colors.orange,
+          borderRadius: BorderRadius.all(Radius.circular(36.0)))
           : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -560,9 +599,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   static const String PRINTER = "printer",
       COFFEE_OR_TEA = "coffeOrTea",
-      CONFERENCE_ROOM = "conferenceRoom",
-      BIKE_STORAGE = 'bikeStorage',
-      KITCHEN = "kitchen";
+      PARKING = "parking",
+      KITCHEN = "snacks";
 
   Map<String, bool> _getAmenities() {
     Map<String, bool> amenities = {};
@@ -580,24 +618,16 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         case "coffee":
           amenities[COFFEE_OR_TEA] = false;
           break;
-        case "free_conference_room":
-          amenities[CONFERENCE_ROOM] = true;
+        case "free_parking":
+          amenities[PARKING] = true;
           break;
-        case "conference_room":
-          amenities[CONFERENCE_ROOM] = false;
+        case "parking":
+          amenities[PARKING] = false;
           break;
-        case "free_bike_storage":
-          amenities[BIKE_STORAGE] = true;
-          break;
-        case "bike_storage":
-          amenities[BIKE_STORAGE] = false;
-          break;
-        case "free_kitchen":
+        case "snack":
           amenities[KITCHEN] = true;
           break;
-        case "kitchen":
-          amenities[KITCHEN] = false;
-          break;
+
       }
     });
     return amenities;
@@ -610,43 +640,36 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       amenities.keys.forEach((amenity) {
         switch (amenity) {
           case PRINTER:
-            String message =_isPrinterSelected ? " " : _getMessageStart(amenities[amenity]) +
+            String message = _isPrinterSelected ? " " : _getMessageStart(
+                amenities[amenity]) +
                 " ${_stringResources.tipPrinter}";
             Widget printerIconButton = _getEquipmentButton(Icons.print,
                 _stringResources.tPrint, _isPrinterSelected, message, 1);
             amenitiesWidgets.add(printerIconButton);
             break;
           case COFFEE_OR_TEA:
-            String message =_isCoffeeSelected ? " " : _getMessageStart(amenities[amenity]) +
+            String message = _isCoffeeSelected ? " " : _getMessageStart(
+                amenities[amenity]) +
                 " ${_stringResources.tipTeaCoffee}";
             Widget coffeeIconButton = _getEquipmentButton(Icons.local_cafe,
                 _stringResources.tTeaOrCoffee, _isCoffeeSelected, message, 2);
             amenitiesWidgets.add(coffeeIconButton);
             break;
           case PRINTER:
-            String message = _isPrinterSelected ? " " :_getMessageStart(amenities[amenity]) +
-                " ${_stringResources.tipConferenceRoom}";
-            Widget peopleIconButton = _getEquipmentButton(
-                Icons.people,
-                _stringResources.tConferenceRoom,
-                _isPrinterSelected,
+            String message = _isPrinterSelected ? " " : _getMessageStart(
+                amenities[amenity]) +
+                " ${_stringResources.tipPrinter}";
+            Widget parkingIconButton = _getEquipmentButton(
+                Icons.local_parking,
+                _stringResources.tipParking,
+                _isParkingSelected,
                 message,
                 3);
-            amenitiesWidgets.add(peopleIconButton);
+            amenitiesWidgets.add(parkingIconButton);
             break;
           case PRINTER:
-            String message =_isPrinterSelected ? " " : _getMessageStart(amenities[amenity]) +
-                " ${_stringResources.tipBikeStorage}";
-            Widget bikeIconButton =  _getEquipmentButton(
-                Icons.print,
-                _stringResources.tParkForBicycle,
-                _isPrinterSelected,
-                message,
-                4);
-            amenitiesWidgets.add(bikeIconButton);
-            break;
-          case PRINTER:
-            String message = _isKitchenSelected ? " " :_getMessageStart(amenities[amenity]) +
+            String message = _isKitchenSelected ? " " : _getMessageStart(
+                amenities[amenity]) +
                 " ${_stringResources.tipKitchen}";
             Widget kitchenIconButton = _getEquipmentButton(Icons.local_dining,
                 _stringResources.tKitchen, _isKitchenSelected, message, 5);
@@ -697,7 +720,40 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 ))),
         Text(
           caption,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme
+              .of(context)
+              .textTheme
+              .caption,
+        )
+      ],
+    );
+  }
+
+
+  Column _getEquipmentButtonFromPng(String urlClicked, String urlUnclicked, String caption, bool isSelected,
+      String explain, int buttonToSwitch) {
+    return Column(
+      children: <Widget>[
+        Container(
+            height: _screenHeight * .072,
+            width: _screenWidth * .128,
+            decoration: (isSelected)
+                ? BoxDecoration(color: Colors.orange, shape: BoxShape.circle)
+                : null,
+            child: InkWell(
+                onTap: () {
+                  _setTipText(explain);
+                  _switchButton(buttonToSwitch);
+                },
+                child: Image.asset(
+                  isSelected ? urlClicked : urlUnclicked, fit: BoxFit.scaleDown,
+                ))),
+        Text(
+          caption,
+          style: Theme
+              .of(context)
+              .textTheme
+              .caption,
         )
       ],
     );
@@ -708,8 +764,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     switch (i) {
       case 1:
         setState(() {
-          _isConferenceRoomSelected = false;
-          _isBikeStorageSelected = false;
+          _isParkingSelected = false;
           _isKitchenSelected = false;
           _isCoffeeSelected = false;
           _isPrinterSelected = !_isPrinterSelected;
@@ -717,8 +772,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         break;
       case 2:
         setState(() {
-          _isConferenceRoomSelected = false;
-          _isBikeStorageSelected = false;
+          _isParkingSelected = false;
           _isKitchenSelected = false;
           _isPrinterSelected = false;
           _isCoffeeSelected = !_isCoffeeSelected;
@@ -726,26 +780,24 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         break;
       case 3:
         setState(() {
-          _isBikeStorageSelected = false;
           _isKitchenSelected = false;
           _isCoffeeSelected = false;
           _isPrinterSelected = false;
-          _isConferenceRoomSelected = !_isConferenceRoomSelected;
+          _isParkingSelected = !_isParkingSelected;
         });
         break;
-      case 4:
-        setState(() {
-          _isConferenceRoomSelected = false;
-          _isKitchenSelected = false;
-          _isCoffeeSelected = false;
-          _isPrinterSelected = false;
-          _isBikeStorageSelected = !_isBikeStorageSelected;
-        });
-        break;
+//      case 4:
+//        setState(() {
+//          _isParkingSelected = false;
+//          _isKitchenSelected = false;
+//          _isCoffeeSelected = false;
+//          _isPrinterSelected = false;
+//          _isBikeStorageSelected = !_isBikeStorageSelected;
+//        });
+//        break;
       case 5:
         setState(() {
-          _isConferenceRoomSelected = false;
-          _isBikeStorageSelected = false;
+          _isParkingSelected = false;
           _isCoffeeSelected = false;
           _isPrinterSelected = false;
           _isKitchenSelected = !_isKitchenSelected;
@@ -823,7 +875,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             size: (_screenHeight * .3238),
           ),
           imageUrl:
-              ConstantsManager.BASE_URL + "images/get_full/${images[index]}",
+          ConstantsManager.BASE_URL + "images/get_full/${images[index]}",
         ));
   }
 
@@ -868,13 +920,17 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   }
 
   BoxDecoration _getOrangeBoxDecoration(int dayOfTheWeek) {
-    return (DateTime.now().day == dayOfTheWeek)
+    return (DateTime
+        .now()
+        .day == dayOfTheWeek)
         ? BoxDecorationUtil.getOrangeRoundedCornerBoxDecoration()
         : null;
   }
 
   Color _getTextColor(int dayOfTheWeek, {Color defaultColor = Colors.grey}) {
-    return (DateTime.now().day == dayOfTheWeek) ? Colors.white : defaultColor;
+    return (DateTime
+        .now()
+        .day == dayOfTheWeek) ? Colors.white : defaultColor;
   }
 
   Widget showMessage(String message) {

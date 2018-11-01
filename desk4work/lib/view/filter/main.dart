@@ -249,12 +249,12 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                                 : true);
                       }),
                       _getRoundedIconButton(
-                          Icons.people,
-                          _stringResources.tConferenceRoom,
-                          (filter?.conferenceRoomNeeded ?? false), () {
+                          Icons.local_parking,
+                          _stringResources.tParkingNeeded,
+                          (filter?.parkingNeeded ?? false), () {
                         container.updateFilterInfo(
-                            conferenceRoomNeeded: (filter != null)
-                                ? !filter.conferenceRoomNeeded
+                            parkingNeeded: (filter != null)
+                                ? !filter.parkingNeeded
                                 : true);
                       }),
                       _getRoundedIconButton(
@@ -266,13 +266,24 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                                 ? !filter.kitchenNeeded
                                 : true);
                       }),
-                      _getRoundedIconButton(
-                          Icons.directions_bike,
-                          _stringResources.tParkForBicycle,
-                          (filter?.parkForBicycleNeeded ?? false), () {
+                      _getRoundedIconButtonFromPng(
+                          'assets/free_printing_orange.png',
+                          'assets/free_printing.png',
+                          _stringResources.tFreePrinter,
+                          (filter?.freePrinter ?? false), () {
                         container.updateFilterInfo(
-                            parkForBicycleNeeded: (filter != null)
-                                ? !filter.parkForBicycleNeeded
+                            freePrinterNeeded: (filter != null)
+                                ? !filter.freePrinter
+                                : true);
+                      }),
+                      _getRoundedIconButtonFromPng(
+                          'assets/free_parking_orange.png',
+                          'assets/free_parking_white.png',
+                          _stringResources.tFreeParkingNeeded,
+                          (filter?.freeParkingNeeded ?? false), () {
+                        container.updateFilterInfo(
+                            freeParkingNeeded: (filter != null)
+                                ? !filter.freeParkingNeeded
                                 : true);
                       }),
                     ],
@@ -450,4 +461,37 @@ class FilterMainScreenState extends State<FilterMainScreen> {
       ),
     );
   }
+
+
+  Widget _getRoundedIconButtonFromPng(
+      String urlClicked,String urlUnclicked, String caption, bool isSelected, Function onPressed) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: (_screenWidth * .128).toDouble(),
+            height: (_screenHeight * .072).toDouble(),
+            child: FloatingActionButton(
+              heroTag: caption,
+              onPressed: onPressed,
+              backgroundColor: isSelected ? Colors.white : Colors.transparent,
+              child:
+              Image.asset(isSelected ? urlClicked : urlUnclicked, fit: BoxFit.contain, width: 24.0, height: 24.0,),
+              shape: CircleBorder(side: BorderSide(color: Colors.white)),
+              elevation: 0.0,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: (_screenHeight * .009)),
+          ),
+          Text(
+            caption,
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
+    );
+  }
+
+
 }

@@ -41,8 +41,9 @@ class StringResources {
   static final String _textComfort = 'textComfortFilter';
   static final String _textPrint = 'textPrintFilter';
   static final String _textTeaCoffee = 'textTeaCoffeeFilter';
-  static final String _textConferenceRoom = 'textConferenceRoomFilter';
-  static final String _textBicycleParkFilter = 'textBycicleFilter';
+  static final String _textFreePrinter = 'textFreePrinterFilter';
+  static final String _textParkFilter = 'textParkingFilter';
+  static final String _textFreeParkFilter = 'textFreeParkingFilter';
   static final String _textKitchen = 'textKitchen';
   static final String _textWherever = 'textWherever';
   static final String _textNearby = 'textNearby';
@@ -115,7 +116,7 @@ class StringResources {
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
   static final String _tipBikeStorage = "toolTipBikeStorage";
-  static final String _tipConferenceRoom = "toolTipConferenceRoom";
+  static final String _tipParking = "toolTipParking";
   static final String _tipCoffeeTea = "toolTipCoffeeTea";
 
   static final String _errorEmptyLogin = 'errorEmptyLogin';
@@ -195,9 +196,10 @@ class StringResources {
       _textComfort: 'Comfort',
       _textPrint: 'Print',
       _textTeaCoffee: 'Tea/Coffee',
-      _textConferenceRoom: 'Conference room',
-      _textKitchen: 'Kitchen',
-      _textBicycleParkFilter: 'Bike storage',
+      _textFreePrinter: 'Free printing',
+      _textKitchen: 'Snacks',
+      _textParkFilter: 'Parking',
+      _textFreeParkFilter: 'Free parking',
       _textNearby: 'Nearby',
       _textWherever: 'Wherever',
       _textMonday: 'Mon',
@@ -297,7 +299,7 @@ class StringResources {
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
-      _tipConferenceRoom: "Conference Room",
+      _tipParking: "Parking",
       _tipCoffeeTea: "Coffee and/or Tea"
     },
     'ru': {
@@ -338,8 +340,8 @@ class StringResources {
       _textComfort: 'Удобства',
       _textPrint: 'Печать',
       _textTeaCoffee: 'Чай/кофе',
-      _textConferenceRoom: 'Конференц-зал',
-      _textKitchen: 'Кухня',
+      _textFreePrinter: 'Бесплатная печать',
+      _textKitchen: 'Закуски',
       _textNearby: 'Рядом',
       _textWherever: 'Где угодно',
       _textMonday: 'Пн',
@@ -349,7 +351,8 @@ class StringResources {
       _textFriday: 'ПТ',
       _textSaturday: 'СБ',
       _textSunday: 'ВС',
-      _textBicycleParkFilter: 'Парковка для велосипедов',
+      _textParkFilter: 'Парковка',
+      _textFreeParkFilter: 'Бесплатная парковка',
       _textDateExplanation: 'Выберите дату или диапазон дат',
       _textMainInfo: 'Основная информация',
       _textFreePlaces: 'Свободных мест',
@@ -439,7 +442,7 @@ class StringResources {
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
-      _tipConferenceRoom: "конффффф",
+      _tipParking: "Парковка",
       _tipCoffeeTea: "чай/кофе"
     }
   };
@@ -506,8 +509,11 @@ class StringResources {
 
   String get tPlace => _localizedValues[locale.languageCode][_textPlace];
 
-  String get tParkForBicycle =>
-      _localizedValues[locale.languageCode][_textBicycleParkFilter];
+  String get tParkingNeeded =>
+      _localizedValues[locale.languageCode][_textParkFilter];
+
+  String get tFreeParkingNeeded =>
+      _localizedValues[locale.languageCode][_textFreeParkFilter];
 
   String get tComfort => _localizedValues[locale.languageCode][_textComfort];
 
@@ -534,8 +540,8 @@ class StringResources {
   String get tTeaOrCoffee =>
       _localizedValues[locale.languageCode][_textTeaCoffee];
 
-  String get tConferenceRoom =>
-      _localizedValues[locale.languageCode][_textConferenceRoom];
+  String get tFreePrinter =>
+      _localizedValues[locale.languageCode][_textFreePrinter];
 
   String get tKitchen => _localizedValues[locale.languageCode][_textKitchen];
 
@@ -784,8 +790,8 @@ class StringResources {
   String get tipTeaCoffee =>
       _localizedValues[locale.languageCode][_tipCoffeeTea];
 
-  String get tipConferenceRoom =>
-      _localizedValues[locale.languageCode][_tipConferenceRoom];
+  String get tipParking =>
+      _localizedValues[locale.languageCode][_tipParking];
 
   String get tipKitchen => _localizedValues[locale.languageCode][_tipKitchen];
 

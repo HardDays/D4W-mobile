@@ -330,7 +330,7 @@ class LoginScreenState extends State<LoginScreen> {
       _googleSignInAccount = await _googleSignIn.signIn();
       GoogleSignInAuthentication googleSignInAuthentication = await _googleSignInAccount.authentication;
       FirebaseUser user = await _firebaseAuth.signInWithGoogle(idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
-         print('$googleSignInAuthentication');
+         print('i loggggeeeed ; $googleSignInAuthentication');
     }  catch (e) {
       print('google sign in error: $e');
     }

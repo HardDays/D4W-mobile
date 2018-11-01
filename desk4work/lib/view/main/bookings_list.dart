@@ -338,16 +338,16 @@ class _BookingsListState extends State<BookingsListScreen> {
   Future<Null> _refresh(){
      return SharedPreferences.getInstance().then((sp){
        String token = sp.getString(ConstantsManager.TOKEN_KEY);
-       return _bookingApi.getUserBookings(token).then((bookings){
+        _bookingApi.getUserBookings(token).then((bookings){
          if(bookings!=null && bookings.length>0){
            setState(() {
              _bookings = bookings;
            });
          }
-         return null;
+         return Future.value(null);
        }).catchError((error){
          showMessage(_stringResources.mServerError);
-         return null;
+         return Future.value(null);
        });
      });
   }
