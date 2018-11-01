@@ -40,6 +40,16 @@ class _BookingsListState extends State<BookingsListScreen> {
     _coWorkingApi = CoWorkingApi();
     _bookings = widget._bookings;
     _isLoading = false;
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      if(_bookings == null || _bookings.length <1){
+        setState(() {
+          _isLoading = true;
+        });
+        _refresh().then((_){
+          _isLoading = false;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -156,7 +166,7 @@ class _BookingsListState extends State<BookingsListScreen> {
           ? () => _extendBooking(booking)
           : () => _endBooking(booking.id)):(){},
       child: Text(
-        (!booking.isUserLeaving || !booking.isExtendPending) ? (isBookingTimeUp
+        (!booking.isUserLeaving && !booking.isExtendPending) ? (isBookingTimeUp
             ? _stringResources.tExtend
             : _stringResources.tTerminate) : ' ',
         style:
@@ -164,6 +174,8 @@ class _BookingsListState extends State<BookingsListScreen> {
       ),
     );
   }
+
+
 
   Future<CoWorking> _getCoWorking(int id) {
     return _coWorkingApi.getCoWorking(_token, id);

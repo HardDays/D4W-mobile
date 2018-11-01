@@ -268,7 +268,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
   _getDefaultEnd() {
     if (_tempStart == null) {
       DateTime dateTime = DateTime.now();
-      int hour = dateTime.hour + 2;
+      int hour =(dateTime.hour <23) ? dateTime.hour + 2 : 1;
       int minutes = dateTime.minute;
       String stringHour = hour > 9 ? hour.toString() : '0$hour';
       String stringMinutes = minutes > 9 ? minutes.toString() : '0$minutes';
@@ -276,8 +276,11 @@ class TimeFilterState extends State<TimeFilterScreen> {
         _tempEnd = stringHour + ':' + stringMinutes;
       });
     }else{
+      int timePickerEnd = _getTimePickerEnd();
+      timePickerEnd =(timePickerEnd <23) ? timePickerEnd : timePickerEnd -2;
       setState(() {
-        _tempEnd = (_getTimePickerEnd() + 2).toString() +':'+ '00';
+
+        _tempEnd = (timePickerEnd + 2).toString() +':'+ '00';
       });
     }
   }

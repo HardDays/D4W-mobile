@@ -66,6 +66,10 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 this._coWorkings.addAll(coWorkings);
                 _isLoading = false;
               });
+            }else{
+              setState(() {
+                _isLoading = false;
+              });
             }
           }).catchError((error) {
             _showToast(stringResources.mServerError);

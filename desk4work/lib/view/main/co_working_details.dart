@@ -431,6 +431,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     Color timeTextColor;
     int weekDay;
 
+    print('working days: ${workingDay.day}');
     switch (workingDay.day) {
       case ConstantsManager.MONDAY:
         day = _stringResources.tMonday;
@@ -495,7 +496,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     );
     bool isToday = DateTime
         .now()
-        .day == weekDay;
+        .weekday == weekDay;
     return Container(
       width: _screenWidth * .3653,
       margin: EdgeInsets.only(bottom: 5.0),
@@ -922,7 +923,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   BoxDecoration _getOrangeBoxDecoration(int dayOfTheWeek) {
     return (DateTime
         .now()
-        .day == dayOfTheWeek)
+        .weekday == dayOfTheWeek)
         ? BoxDecorationUtil.getOrangeRoundedCornerBoxDecoration()
         : null;
   }
@@ -930,7 +931,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   Color _getTextColor(int dayOfTheWeek, {Color defaultColor = Colors.grey}) {
     return (DateTime
         .now()
-        .day == dayOfTheWeek) ? Colors.white : defaultColor;
+        .weekday == dayOfTheWeek) ? Colors.white : defaultColor;
   }
 
   Widget showMessage(String message) {

@@ -69,153 +69,156 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
     _stringResources = StringResources.of(context);
-    return Scaffold(
-      key: _screenKey,
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.white,
-      body: (_isLoading)
-          ? Container(
-              color: Colors.white,
-              child: Center(child: CircularProgressIndicator()))
-          : Stack(
-              children: <Widget>[
-                ClipPath(
-                  child: Container(
-                    width: _screenSize.width,
-                    padding: EdgeInsets.only(
-                        top: (_screenSize.height * .1169).toDouble()),
-                    decoration: BoxDecorationUtil.getOrangeGradient(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/logo_horizontal.png',
-                          width: (_screenSize.width * .5573),
-                          height: (_screenSize.height * .1079),
-                          fit: BoxFit.fill,
-                        ),
-                        _getLoginForm(),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: (_screenSize.height * .0165).toDouble()),
-                          width: (_screenSize.width * .84).toDouble(),
-                          child: InkWell(
+    return Theme(
+      data: Theme.of(context).copyWith(textSelectionColor: Colors.white, cursorColor: Colors.white),
+      child: Scaffold(
+        key: _screenKey,
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.white,
+        body: (_isLoading)
+            ? Container(
+                color: Colors.white,
+                child: Center(child: CircularProgressIndicator()))
+            : Stack(
+                children: <Widget>[
+                  ClipPath(
+                    child: Container(
+                      width: _screenSize.width,
+                      padding: EdgeInsets.only(
+                          top: (_screenSize.height * .1169).toDouble()),
+                      decoration: BoxDecorationUtil.getOrangeGradient(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/logo_horizontal.png',
+                            width: (_screenSize.width * .5573),
+                            height: (_screenSize.height * .1079),
+                            fit: BoxFit.fill,
+                          ),
+                          _getLoginForm(),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: (_screenSize.height * .0165).toDouble()),
+                            width: (_screenSize.width * .84).toDouble(),
+                            child: InkWell(
+                              child: Text(
+                                StringResources.of(context).tForgotPassword,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onTap: () {
+                                _openPasswordRecovery();
+                              },
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(
+                                  top: (_screenSize.height * .0255).toDouble()),
+                              width: (_screenSize.width * .84).toDouble(),
+                              height: (_screenSize.height * .0825).toDouble(),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(28.0))),
+                              child: InkWell(
+                                onTap: () {
+                                  if (_formKey.currentState.validate())
+                                    _sendForm();
+                                  else{
+                                    setState(() {
+                                      _autoValidate = true;
+                                    });
+                                  }
+                                },
+                                child: Center(
+                                  child: Text(
+                                    StringResources.of(context).bEnter,
+                                    style: TextStyle(color: Colors.orange),
+                                  ),
+                                ),
+                              )),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: (_screenSize.height * .069).toDouble()),
                             child: Text(
-                              StringResources.of(context).tForgotPassword,
-                              textAlign: TextAlign.end,
+                              StringResources.of(context).tSocialLogin,
+                              textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.white),
                             ),
-                            onTap: () {
-                              _openPasswordRecovery();
-                            },
                           ),
-                        ),
-                        Container(
+                          Container(
                             margin: EdgeInsets.only(
                                 top: (_screenSize.height * .0255).toDouble()),
-                            width: (_screenSize.width * .84).toDouble(),
-                            height: (_screenSize.height * .0825).toDouble(),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.rectangle,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(28.0))),
-                            child: InkWell(
-                              onTap: () {
-                                if (_formKey.currentState.validate())
-                                  _sendForm();
-                                else{
-                                  setState(() {
-                                    _autoValidate = true;
-                                  });
-                                }
-                              },
-                              child: Center(
-                                child: Text(
-                                  StringResources.of(context).bEnter,
-                                  style: TextStyle(color: Colors.orange),
+                            width: (_screenSize.width * .3893).toDouble(),
+                            height: (_screenSize.height * .0510).toDouble(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                InkWell(
+                                  child: Image.asset(
+                                    'assets/google_plus.png',
+                                    width: (_screenSize.width * .08).toDouble(),
+                                    height:
+                                        (_screenSize.height * .0299).toDouble(),
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                  onTap: () {
+                                    _startGoogleSignInProcess();
+                                  },
                                 ),
-                              ),
-                            )),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: (_screenSize.height * .069).toDouble()),
-                          child: Text(
-                            StringResources.of(context).tSocialLogin,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
+                                InkWell(
+                                  child: Image.asset(
+                                    'assets/facebook.png',
+                                    width: (_screenSize.width * .0453).toDouble(),
+                                    height: (_screenSize.height * .04).toDouble(),
+                                  ),
+                                  onTap: () {
+                                    _handleFacebookSignIn();
+                                  },
+                                ),
+                                InkWell(
+                                  child: Image.asset(
+                                    'assets/vk_social_network.png',
+                                    width: (_screenSize.width * .0853).toDouble(),
+                                    height:
+                                        (_screenSize.height * .027).toDouble(),
+                                  ),
+                                  onTap: () {
+                                    _handleVkSignIn();
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: (_screenSize.height * .0255).toDouble()),
-                          width: (_screenSize.width * .3893).toDouble(),
-                          height: (_screenSize.height * .0510).toDouble(),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              InkWell(
-                                child: Image.asset(
-                                  'assets/google_plus.png',
-                                  width: (_screenSize.width * .08).toDouble(),
-                                  height:
-                                      (_screenSize.height * .0299).toDouble(),
-                                  fit: BoxFit.scaleDown,
-                                ),
-                                onTap: () {
-                                  _startGoogleSignInProcess();
-                                },
-                              ),
-                              InkWell(
-                                child: Image.asset(
-                                  'assets/facebook.png',
-                                  width: (_screenSize.width * .0453).toDouble(),
-                                  height: (_screenSize.height * .04).toDouble(),
-                                ),
-                                onTap: () {
-                                  _handleFacebookSignIn();
-                                },
-                              ),
-                              InkWell(
-                                child: Image.asset(
-                                  'assets/vk_social_network.png',
-                                  width: (_screenSize.width * .0853).toDouble(),
-                                  height:
-                                      (_screenSize.height * .027).toDouble(),
-                                ),
-                                onTap: () {
-                                  _handleVkSignIn();
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    clipper:
+                        CurvedClipper((_screenSize.height * .8786).toDouble()),
                   ),
-                  clipper:
-                      CurvedClipper((_screenSize.height * .8786).toDouble()),
-                ),
-                PositionedDirectional(
-                  bottom: 0.0,
-                  child: InkWell(
-                    onTap: () => _openRegistrationScreen(),
-                    child: Container(
-                        width: _screenSize.width,
-                        height: (_screenSize.height * .1214).toDouble(),
-                        decoration: BoxDecoration(color: Colors.white),
-                        child: Center(
-                          child: Text(
-                            StringResources.of(context).bRegister,
-                            style: TextStyle(color: Colors.orange),
-                          ),
-                        )),
-                  ),
-                )
-              ],
-            ),
+                  PositionedDirectional(
+                    bottom: 0.0,
+                    child: InkWell(
+                      onTap: () => _openRegistrationScreen(),
+                      child: Container(
+                          width: _screenSize.width,
+                          height: (_screenSize.height * .1214).toDouble(),
+                          decoration: BoxDecoration(color: Colors.white),
+                          child: Center(
+                            child: Text(
+                              StringResources.of(context).bRegister,
+                              style: TextStyle(color: Colors.orange),
+                            ),
+                          )),
+                    ),
+                  )
+                ],
+              ),
+      ),
     );
   }
 

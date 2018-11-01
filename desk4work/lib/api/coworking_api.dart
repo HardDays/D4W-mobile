@@ -99,6 +99,8 @@ class CoWorkingApi {
     return _networkUtil.get(url, headers: _headers).then((responseBody) {
       List<CoWorking> coWorkings = [];
 
+      if(responseBody[ConstantsManager.SERVER_ERROR] !=null)
+        return coWorkings;
       responseBody['coworkings'].forEach((coWorking) {
         CoWorking cw = CoWorking.fromJson(coWorking);
         coWorkings.add(cw);
@@ -125,7 +127,6 @@ class CoWorkingApi {
   Future<int> getFreeSeat(String token, int id, {DateTime start, end}) {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _coWorkingUrl + "get_free_seats/$id";
-    print('url $url');
     return _networkUtil.get(url, headers: _headers).then((response) {
       return response['free_seats'];
     });

@@ -103,8 +103,9 @@ class _BookingDetailsState extends State<BookingDetails> {
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
     _bookingApi = BookingApi();
+    print('booking user leaving : ${_booking.isUserLeaving}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
+      _startCountDown();
       SharedPreferences.getInstance().then((sp) {
         int id = sp.getInt(_booking.id.toString());
         if (id != null && id == _booking.id) {
@@ -308,7 +309,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   Future<Null> _loadBooking() {
     return SharedPreferences.getInstance().then((sp) {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      return _bookingApi.getBooking(token, _booking.id).then((bookingMaybe) {
+       _bookingApi.getBooking(token, _booking.id).then((bookingMaybe) {
         print('booking: $_booking');
         if (bookingMaybe[ConstantsManager.SERVER_ERROR] == null) {
           Booking booking = bookingMaybe["booking"];
@@ -317,15 +318,19 @@ class _BookingDetailsState extends State<BookingDetails> {
               _booking = booking;
               _isLoading =false;
             });
-            if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
+            print('is conffffiiirmed ${_booking.isUserLeaving} and ${_booking.isVisitConfirmed}');
+            if (!_booking.isUserLeaving && !_booking.isVisitConfirmed)
               _showConfirmVisitDialog();
+
           }
         } else {
           _showToast(_stringResources.eServer);
         }
+        return Future.value(null);
       }).catchError((error) {
         print('server error: $error');
         _showToast(_stringResources.eServer);
+        return Future.value(null);
       });
     });
   }
@@ -384,12 +389,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                     FlatButton(
                         child: Text(_stringResources.tNo.toUpperCase()),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                         }),
                     FlatButton(
                         child: Text(_stringResources.tYes.toUpperCase()),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                           _terminateBooking();
                         }),
                   ],
@@ -429,6 +434,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _showConfirmVisitDialog() {
+    print('showing dialog');
     SharedPreferences.getInstance().then((sp) {
       int id = sp.getInt(_booking.id.toString());
       if (id != null && id == _booking.id) {
@@ -463,7 +469,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       FlatButton(
                           child: Text(_stringResources.tYes.toUpperCase()),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                             _confirmVisit();
                           }),
                     ],
@@ -565,7 +571,6 @@ class _BookingDetailsState extends State<BookingDetails> {
         _hasBeenThere = true;
       });
     });
-    _startCountDown();
 
 //    SharedPreferences.getInstance().then((sp) {
 //      String token = sp.getString(ConstantsManager.TOKEN_KEY);
@@ -623,13 +628,18 @@ class _BookingDetailsState extends State<BookingDetails> {
     String start = _booking.beginDate;
     String end = _booking.endDate;
     try {
-      DateTime startTime = DateTime.parse(start);
-      DateTime endTime = DateTime.parse(end);
+
+      DateTime startTime = DateTime.parse(start.substring(0,start.length -1));
+      DateTime endTime = DateTime.parse(end.substring(0, end.length -1));
+      print('start :$start, end:$end');
       DateTime now = DateTime.now();
+      Duration offset = now.timeZoneOffset;
+      now.toUtc();
+
       if (now.isBefore(startTime))
-        remaining = DateTime.parse(end).difference(DateTime.parse(start));
+        remaining = endTime.difference(startTime);
       else if (now.isAfter(startTime) && now.isBefore(endTime))
-        remaining = DateTime.parse(end).difference(now);
+        remaining = endTime.difference(now);
       else
         remaining = Duration();
     } catch (e) {
@@ -639,14 +649,15 @@ class _BookingDetailsState extends State<BookingDetails> {
 
     String remainingTime;
     if (remaining.isNegative || remaining.inMinutes == 0) {
+      print('negative');
       setState(() {
         _isTimeUp = true;
       });
       remainingTime = '00 : 00 : 00';
     } else {
-      int hours = (remaining.inMinutes ~/ 60);
+      int hours = (remaining.inHours ~/ 60);
       int minutes = (remaining.inMinutes % 60);
-      int seconds = (remaining.inSeconds % 3600);
+      int seconds = (remaining.inSeconds % 60);
 
       String hoursAsString = (hours < 10) ? '0$hours' : hours.toString();
       String minutesAsString =
@@ -663,13 +674,16 @@ class _BookingDetailsState extends State<BookingDetails> {
     try {
       const oneSec = const Duration(seconds: 1);
       Timer.periodic(oneSec, (Timer t) {
+        print('count');
         if (_isTimeUp) {
           t.cancel();
         } else {
           setState(() {
             _progress = _getProgress();
             _remainingTime = _getRemainingTime();
+
           });
+          print(' remaining time :$_remainingTime');
         }
       });
     } catch (e) {
