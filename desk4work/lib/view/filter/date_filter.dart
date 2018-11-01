@@ -129,7 +129,7 @@ class _DateFilterScreenState extends State<DateFilterScreen> {
       thisMonthDayBorderColor: Colors.grey,
       height: (_screenHeight * .5262),
       selectedDateTime: _selectedDate,
-      selectedDayTextStyle: TextStyle(color: Colors.orange, letterSpacing: _screenWidth < 360.0 ? -3.0 : null),
+      selectedDayTextStyle: TextStyle(color: Colors.orange, letterSpacing: _screenWidth < 360.0 ? -1.86 : null),
       selectedDayButtonColor: Colors.white,
       selectedDayBorderColor: Colors.white,
       iconColor: Colors.white,
@@ -137,7 +137,7 @@ class _DateFilterScreenState extends State<DateFilterScreen> {
       weekdayTextStyle: TextStyle(color: Colors.white),
       prevDaysTextStyle: TextStyle(color: Colors.white.withOpacity(0.54)),
       daysTextStyle: TextStyle(
-          color: Colors.white, letterSpacing: _screenWidth < 360.0 ? -3.0 : null),
+          color: Colors.white, letterSpacing: _screenWidth < 360.0 ? -1.86 : null),
       todayTextStyle: TextStyle(color: Colors.white),
       weekDayMargin:
           EdgeInsets.only(bottom: (_screenHeight * .0435).toDouble()),

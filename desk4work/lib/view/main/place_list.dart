@@ -100,7 +100,8 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               });
             }),
         title: Text(
-          stringResources.tPlace,
+//          stringResources.tPlace,
+          'Desk4work',
           style: TextStyle(color: Colors.white),
         ),
         actions: <Widget>[
