@@ -240,12 +240,14 @@ class TimeFilterState extends State<TimeFilterScreen> {
   }
 
   int _getTimePickerStart() {
+
     if (_tempStart == null) {
       return DateTime.now().hour + 1;
     } else {
-      return (_tempStart.length > 1)
+      print('time before crashhh: $_tempStart');
+      return (_tempStart.length > 4)
           ? int.parse(_tempStart.substring(0, 2))
-          : int.parse(_tempStart.substring(0));
+          : int.parse(_tempStart.substring(0,1));
     }
   }
 
@@ -253,13 +255,13 @@ class TimeFilterState extends State<TimeFilterScreen> {
     if (_tempStart == null && _tempEnd == null) {
       return _getTimePickerStart() + 1;
     } else if (_tempEnd == null) {
-      return (_tempStart.length > 1)
+      return (_tempStart.length > 4)
           ? int.parse(_tempStart.substring(0, 2))
-          : int.parse(_tempStart.substring(0));
+          : int.parse(_tempStart.substring(0,1));
     } else {
-      return (_tempEnd.length > 1)
+      return (_tempEnd.length > 4)
           ? int.parse(_tempEnd.substring(0, 2))
-          : int.parse(_tempEnd.substring(0));
+          : int.parse(_tempEnd.substring(0,1));
     }
   }
 
