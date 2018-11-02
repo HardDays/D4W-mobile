@@ -98,7 +98,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     _booking = widget._booking;
     _isTimeUp = false;
     _isLoading = false;
-    _hasBeenThere = false;
+    _hasBeenThere = true;
     _progress = _getProgress();
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
@@ -116,6 +116,7 @@ class _BookingDetailsState extends State<BookingDetails> {
         } else {
           setState(() {
             _isLoading = true;
+            _hasBeenThere = false;
           });
           _loadBooking().then((_) {
             setState(() {
@@ -359,7 +360,9 @@ class _BookingDetailsState extends State<BookingDetails> {
           ),
         ),
       ),
-      onTap: _booking.isUserLeaving ? (){}:() => _onTerminateRequest(),
+      onTap: _booking.isUserLeaving ? (){
+        _showToast(_stringResources.mStopRequestPending);
+      }:() => _onTerminateRequest(),
     );
   }
 
@@ -434,7 +437,6 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _showConfirmVisitDialog() {
-    print('showing dialog');
     SharedPreferences.getInstance().then((sp) {
       int id = sp.getInt(_booking.id.toString());
       if (id != null && id == _booking.id) {
@@ -469,8 +471,8 @@ class _BookingDetailsState extends State<BookingDetails> {
                       FlatButton(
                           child: Text(_stringResources.tYes.toUpperCase()),
                           onPressed: () {
-                            Navigator.pop(context);
                             _confirmVisit();
+                            Navigator.pop(context);
                           }),
                     ],
                   )
@@ -521,17 +523,28 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _terminateBooking() {
-    SharedPreferences.getInstance().then((sp) {
-      String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
-        if (isCanceled !=null && isCanceled.length == 0)
-          _showToast(_stringResources.mStopRequestSent);
-        else {
-          print('can\'t cancel the booking $isCanceled');
-          _showToast(_stringResources.eServer);
-        }
+    if(!_booking.isUserLeaving){
+      setState(() {
+        _isLoading = true;
       });
-    });
+      SharedPreferences.getInstance().then((sp) {
+        String token = sp.getString(ConstantsManager.TOKEN_KEY);
+        _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
+          if (isCanceled !=null && isCanceled.length == 0){
+            _loadBooking().then((_){
+              sp.remove(_booking.id.toString());
+              _showToast(_stringResources.mStopRequestSent);
+            });
+            }
+          else {
+            print('can\'t cancel the booking $isCanceled');
+            _showToast(_stringResources.eServer);
+          }
+        });
+      });
+    }else{
+      _showToast(_stringResources.mStopRequestPending);
+    }
   }
 
   _extendBooking() {
@@ -593,7 +606,7 @@ class _BookingDetailsState extends State<BookingDetails> {
 //      });
 //    });
 
-    Navigator.pop(context);
+//    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });

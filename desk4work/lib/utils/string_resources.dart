@@ -148,6 +148,7 @@ class StringResources {
       'messageBookingRequestSentPrefix';
   static final String _messageBookingRequestSentSuffix =
       'messageBookingRequestSentPrefix';
+  static final String _messageStopRequestPending = 'messageStopRequestPending';
   static final String _alertTerminateRequest = 'alertTermanteRequest';
 
   static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
@@ -295,6 +296,7 @@ class StringResources {
       _messageBookingRequestSentPrefix:
           'Your booking request has been sent to ',
       _messageBookingRequestSentSuffix: 'See you soon at the reception desk!',
+      _messageStopRequestPending: 'Terminate request already sent',
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
@@ -439,6 +441,7 @@ class StringResources {
       _messageBookingRequestSentPrefix: 'Отправляйтесь в ',
       _messageBookingRequestSentSuffix:
           'и отметьтесь, когда приедете. Скоро увидимся!',
+      _messageStopRequestPending: 'Вы уже отправили запрос',
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
@@ -803,6 +806,9 @@ class StringResources {
 
   String get mStopRequestSent =>
       _localizedValues[locale.languageCode][_messageStopRequestSent];
+
+  String get mStopRequestPending =>
+      _localizedValues[locale.languageCode][_messageStopRequestPending];
 
   String get mExtendRequestSent =>
       _localizedValues[locale.languageCode][_messageExtendRequestSent];
