@@ -32,6 +32,7 @@ class _BookingsListState extends State<BookingsListScreen> {
   BookingApi _bookingApi;
   GlobalKey<ScaffoldState> _screenState = GlobalKey<ScaffoldState>();
   bool _isLoading;
+  int _loadingCount;
 
   @override
   void initState() {
@@ -40,15 +41,34 @@ class _BookingsListState extends State<BookingsListScreen> {
     _coWorkingApi = CoWorkingApi();
     _bookings = widget._bookings;
     _isLoading = false;
+    _loadingCount = _bookings.length;
     WidgetsBinding.instance.addPostFrameCallback((_){
+      setState(() {
+        _isLoading = true;
+      });
       if(_bookings == null || _bookings.length <1){
-        setState(() {
-          _isLoading = true;
-        });
+
         _refresh().then((_){
-          _isLoading = false;
+          setState(() {
+            _isLoading = false;
+          });
         });
+      }else{
+        List<Booking> temp = [];
+        temp.addAll(_bookings);
+        for(Booking b in _bookings){
+          int coworkingId = b.coworkingId;
+          _getCoWorking(coworkingId).then((coworking){
+            b.coWorking = coworking;
+          }).catchError((error){
+            print('load coworking error $error');
+            _showToast(_stringResources.eServer);
+          });
+        }
       }
+      setState(() {
+        _isLoading = false;
+      });
     });
     super.initState();
   }
@@ -181,101 +201,103 @@ class _BookingsListState extends State<BookingsListScreen> {
     return _coWorkingApi.getCoWorking(_token, id);
   }
 
-  FutureBuilder<CoWorking> _getBookingBuilder(index) {
+//  FutureBuilder<CoWorking> _getBookingBuilder(index) {
+  Widget _getBookingBuilder(index) {
     Booking booking = _bookings[index];
-    return FutureBuilder<CoWorking>(
-      future: _getCoWorking(booking.coworkingId),
-      builder: (ctx, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return showMessage(_stringResources.mNoInternet);
-          case ConnectionState.waiting:
-            return Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 8.0),
-              width: _screenWidth * .2773,
-              height: _screenHeight * .1409,
-              child: Card(
-                margin: EdgeInsets.all(.0),
-                elevation: 2.0,
-                child: Container(
-                  height: _screenHeight * .1409,
-//        width: _screenWidth * .9413,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Hero(
-                          tag: -booking.id,
-                          child: CachedNetworkImage(
-                            imageUrl: ConstantsManager.IMAGE_BASE_URL +
-                                "${booking.coWorking.imageId}",
-                            fit: BoxFit.fill,
-                            width: _screenWidth * .2773,
-                            height: _screenHeight * .1409,
-                            errorWidget: Image.asset(
-                              'assets/placeholder.png',
-                              width: _screenWidth * .2773,
-                              height: _screenHeight * .1409,
-                              fit: BoxFit.fill,
-                            ),
-                          )),
+    return Container(child: _getBookingCard(booking));
+//    return FutureBuilder<CoWorking>(
+//      future: _getCoWorking(booking.coworkingId),
+//      builder: (ctx, snapshot) {
+//        switch (snapshot.connectionState) {
+//          case ConnectionState.none:
+//            return showMessage(_stringResources.mNoInternet);
+//          case ConnectionState.waiting:
+//            return Container(
+//              alignment: Alignment.center,
+//              margin: const EdgeInsets.only(top: 8.0),
+//              width: _screenWidth * .2773,
+//              height: _screenHeight * .1409,
+//              child: Card(
+//                margin: EdgeInsets.all(.0),
+//                elevation: 2.0,
+//                child: Container(
+//                  height: _screenHeight * .1409,
+////        width: _screenWidth * .9413,
+//                  child: Row(
+//                    crossAxisAlignment: CrossAxisAlignment.start,
+//                    children: <Widget>[
+//                      Hero(
+//                          tag: -booking.id,
+//                          child: CachedNetworkImage(
+//                            imageUrl: ConstantsManager.IMAGE_BASE_URL +
+//                                "${booking.coWorking.imageId}",
+//                            fit: BoxFit.fill,
+//                            width: _screenWidth * .2773,
+//                            height: _screenHeight * .1409,
+//                            errorWidget: Image.asset(
+//                              'assets/placeholder.png',
+//                              width: _screenWidth * .2773,
+//                              height: _screenHeight * .1409,
+//                              fit: BoxFit.fill,
+//                            ),
+//                          )),
+////
+//                      Container(
+//                        height: _screenHeight * .1409,
+//                        width: _screenWidth * .6613,
+//                        padding: EdgeInsets.only(
+//                            left: _screenWidth * .0386,
+//                            top: _screenHeight * .01),
+//                        child: Stack(
+//                          children: <Widget>[
+//                            Text(
+//                              booking.coWorking?.shortName ?? " ",
+//                              style: Theme.of(context).textTheme.body2,
+//                            ),
+//                            Positioned(
+//                                top: _screenHeight * .050,
+//                                child: _buildDate(
+//                                    DateTime.parse(booking.beginDate))),
+//                            Positioned(
+//                              child: _buildRemainingTime(
+//                                  booking.beginDate, booking.endDate),
+//                              top: _screenHeight * .0809,
+//                            ),
+//                            Positioned(
+//                                top: _screenHeight * .0915,
+//                                left: _screenWidth * .4173,
+//                                child:
+//                                    _buildTerminateOrExtendTextButton(booking))
 //
-                      Container(
-                        height: _screenHeight * .1409,
-                        width: _screenWidth * .6613,
-                        padding: EdgeInsets.only(
-                            left: _screenWidth * .0386,
-                            top: _screenHeight * .01),
-                        child: Stack(
-                          children: <Widget>[
-                            Text(
-                              booking.coWorking?.shortName ?? " ",
-                              style: Theme.of(context).textTheme.body2,
-                            ),
-                            Positioned(
-                                top: _screenHeight * .050,
-                                child: _buildDate(
-                                    DateTime.parse(booking.beginDate))),
-                            Positioned(
-                              child: _buildRemainingTime(
-                                  booking.beginDate, booking.endDate),
-                              top: _screenHeight * .0809,
-                            ),
-                            Positioned(
-                                top: _screenHeight * .0915,
-                                left: _screenWidth * .4173,
-                                child:
-                                    _buildTerminateOrExtendTextButton(booking))
-
-//                    _getLowerCardPart(booking.endWork) ?? " ",
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          case ConnectionState.done:
-            if (snapshot.hasError) {
-              return showMessage(_stringResources.mServerError);
-            } else {
-              if (snapshot.data == null)
-                return Container(
-                  width: _screenWidth * .2773,
-                  height: _screenHeight * .1409,
-                );
-              else {
-                booking.coWorking = snapshot.data;
-                return Container(child: _getBookingCard(booking));
-              }
-            }
-            break;
-          case ConnectionState.active:
-            break;
-        }
-      },
-    );
+////                    _getLowerCardPart(booking.endWork) ?? " ",
+//                          ],
+//                        ),
+//                      )
+//                    ],
+//                  ),
+//                ),
+//              ),
+//            );
+//          case ConnectionState.done:
+//            if (snapshot.hasError) {
+//              return showMessage(_stringResources.mServerError);
+//            } else {
+//              if (snapshot.data == null)
+//                return Container(
+//                  width: _screenWidth * .2773,
+//                  height: _screenHeight * .1409,
+//                );
+//              else {
+//                booking.coWorking = snapshot.data;
+//                return Container(child: _getBookingCard(booking));
+//              }
+//            }
+//            break;
+//          case ConnectionState.active:
+//            break;
+//        }
+//      },
+//    );
   }
 
   _endBooking(int id) {
@@ -352,6 +374,15 @@ class _BookingsListState extends State<BookingsListScreen> {
        String token = sp.getString(ConstantsManager.TOKEN_KEY);
         _bookingApi.getUserBookings(token).then((bookings){
          if(bookings!=null && bookings.length>0){
+           for(Booking b in bookings){
+             int coworkingId = b.coworkingId;
+             _getCoWorking(coworkingId).then((coworking){
+               b.coWorking = coworking;
+             }).catchError((error){
+               print('load coworking error $error');
+               _showToast(_stringResources.eServer);
+             });
+           }
            setState(() {
              _bookings = bookings;
            });

@@ -29,6 +29,7 @@ class BookingApi {
       List<Booking> bookings = [];
       response.forEach((r) {
         Booking b = Booking.fromJson(r);
+
         bookings.add(b);
       });
       return bookings;
