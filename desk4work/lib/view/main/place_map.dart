@@ -50,8 +50,7 @@ class _CoWorkingPlaceMapScreenState extends State<CoWorkingPlaceMapScreen> {
     _geolocator = Geolocator();
     _mapController.onReady.then(
       (ready){
-        if(_lastPos == null){
-        }else{
+        if(_lastPos != null){
           setState(() {
             _mapController.move(_lastPos, 13.0);
           });

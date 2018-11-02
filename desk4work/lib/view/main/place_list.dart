@@ -60,7 +60,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               _userLocation = _cities[filter.place];
             });
           }
-          _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place]).then((coWorkings) {
+          _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
             if (coWorkings != null && coWorkings.length > 0) {
               setState(() {
                 this._coWorkings.addAll(coWorkings);
@@ -191,7 +191,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       Filter.savedFilter().then((filter){
 
-       return _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place]).then((coWorkings) {
+       return _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
           if (coWorkings != null && coWorkings.length > 0) {
             setState(() {
               this._coWorkings.addAll(coWorkings);
