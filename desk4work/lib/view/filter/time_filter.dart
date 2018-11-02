@@ -147,7 +147,9 @@ class TimeFilterState extends State<TimeFilterScreen> {
                   initialTimerDuration: Duration(
                       hours: (_isStart)
                           ? _getTimePickerStart()<24 ? _getTimePickerStart() : 1
-                          : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1),
+                          : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1,
+                    minutes: DateTime.now().minute
+                  ),
                   onTimerDurationChanged: (duration) {
                     String hh = (duration.inMinutes / 60).truncate().toString();
                     if (int.parse(hh) < 10) hh = '0' + hh;
@@ -250,6 +252,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
           : int.parse(_tempStart.substring(0,1));
     }
   }
+
 
   int _getTimePickerEnd() {
     if (_tempStart == null && _tempEnd == null) {
