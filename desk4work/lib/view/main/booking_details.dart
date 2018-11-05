@@ -30,6 +30,8 @@ class _BookingDetailsState extends State<BookingDetails> {
   Booking _booking;
   final _controller = new PageController();
   bool _hasBeenThere;
+  int _updateCounter;
+  Timer _countDownTimer;
 
   static const _kDuration = const Duration(milliseconds: 300);
 
@@ -71,14 +73,16 @@ class _BookingDetailsState extends State<BookingDetails> {
                     _buildHeader(_booking.coWorking.images),
                     _buildProgressBar(),
                     _buildStartEndWidget(),
-                    Padding(padding: EdgeInsets.only(top: _screenHeight * .0465)),
+                    Padding(
+                        padding: EdgeInsets.only(top: _screenHeight * .0465)),
                     Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: _screenWidth * .0627),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: _screenWidth * .0627),
                       height: _screenHeight * .1454,
                       child: _buildChronoWidget(),
                     ),
-                    Padding(padding: EdgeInsets.only(top: _screenHeight * .057)),
+                    Padding(
+                        padding: EdgeInsets.only(top: _screenHeight * .057)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -103,9 +107,9 @@ class _BookingDetailsState extends State<BookingDetails> {
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
     _bookingApi = BookingApi();
-    print('booking user leaving : ${_booking.isUserLeaving}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startCountDown();
+      _updateCounter = 5;
+      if (_booking.isVisitConfirmed) _startCountDown();
       SharedPreferences.getInstance().then((sp) {
         int id = sp.getInt(_booking.id.toString());
         if (id != null && id == _booking.id) {
@@ -237,7 +241,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                     style: Theme.of(context).textTheme.headline,
                   ),
                   Text(
-                    _stringResources.hStart +' '+ _buildDate(DateTime.parse(_booking.beginDate)).data,
+                    _stringResources.hStart +
+                        ' ' +
+                        _buildDate(DateTime.parse(_booking.beginDate)).data,
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
@@ -258,7 +264,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                   Text(
                     _hasFreeMinutes
                         ? _stringResources.tFreeMinutes
-                        : _stringResources.hEnd +' '+_buildDate(DateTime.parse(_booking.endDate)).data,
+                        : _stringResources.hEnd +
+                            ' ' +
+                            _buildDate(DateTime.parse(_booking.endDate)).data,
                     style: Theme.of(context).textTheme.caption,
                   )
                 ],
@@ -310,19 +318,20 @@ class _BookingDetailsState extends State<BookingDetails> {
   Future<Null> _loadBooking() {
     return SharedPreferences.getInstance().then((sp) {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
-       _bookingApi.getBooking(token, _booking.id).then((bookingMaybe) {
+      _bookingApi.getBooking(token, _booking.id).then((bookingMaybe) {
         print('booking: $_booking');
         if (bookingMaybe[ConstantsManager.SERVER_ERROR] == null) {
           Booking booking = bookingMaybe["booking"];
           if (booking != null) {
+            if (booking.isVisitConfirmed) _startCountDown();
             setState(() {
               _booking = booking;
-              _isLoading =false;
+              _isLoading = false;
             });
-            print('is conffffiiirmed ${_booking.isUserLeaving} and ${_booking.isVisitConfirmed}');
+            print(
+                'is conffffiiirmed ${_booking.isUserLeaving} and ${_booking.isVisitConfirmed}');
             if (!_booking.isUserLeaving && !_booking.isVisitConfirmed)
               _showConfirmVisitDialog();
-
           }
         } else {
           _showToast(_stringResources.eServer);
@@ -338,7 +347,6 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   Widget _buildTerminateButton() {
     String buttonText = _stringResources.tTerminate;
-
 
     Gradient oragandeGradient =
         BoxDecorationUtil.getDarkOrangeGradient().gradient;
@@ -360,54 +368,53 @@ class _BookingDetailsState extends State<BookingDetails> {
           ),
         ),
       ),
-      onTap: _booking.isUserLeaving ? (){
-        _showToast(_stringResources.mStopRequestPending);
-      }:() => _onTerminateRequest(),
+      onTap: _booking.isUserLeaving
+          ? () {
+              _showToast(_stringResources.mStopRequestPending);
+            }
+          : () => _onTerminateRequest(),
     );
   }
 
   _onTerminateRequest() {
-
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children : <Widget>[
-                Text(
-                  _stringResources.aEndSession,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.red,
-
-                  ),
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                _stringResources.aEndSession,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    FlatButton(
-                        child: Text(_stringResources.tNo.toUpperCase()),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    FlatButton(
-                        child: Text(_stringResources.tYes.toUpperCase()),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _terminateBooking();
-                        }),
-                  ],
-                )
-              ],
-            ),
-          );
-        },
-      );
-
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  FlatButton(
+                      child: Text(_stringResources.tNo.toUpperCase()),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  FlatButton(
+                      child: Text(_stringResources.tYes.toUpperCase()),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _terminateBooking();
+                      }),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildExtendButton() {
@@ -454,7 +461,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children : <Widget>[
+                children: <Widget>[
                   Text(
                     _stringResources.tPromptConfirmVisit +
                         '${_booking.coWorking?.shortName ?? " "}?',
@@ -523,26 +530,25 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _terminateBooking() {
-    if(!_booking.isUserLeaving){
+    if (!_booking.isUserLeaving) {
       setState(() {
         _isLoading = true;
       });
       SharedPreferences.getInstance().then((sp) {
         String token = sp.getString(ConstantsManager.TOKEN_KEY);
         _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
-          if (isCanceled !=null && isCanceled.length == 0){
-            _loadBooking().then((_){
+          if (isCanceled != null && isCanceled.length == 0) {
+            _loadBooking().then((_) {
               sp.remove(_booking.id.toString());
               _showToast(_stringResources.mStopRequestSent);
             });
-            }
-          else {
+          } else {
             print('can\'t cancel the booking $isCanceled');
             _showToast(_stringResources.eServer);
           }
         });
       });
-    }else{
+    } else {
       _showToast(_stringResources.mStopRequestPending);
     }
   }
@@ -565,7 +571,6 @@ class _BookingDetailsState extends State<BookingDetails> {
                 setState(() {
                   _isLoading = false;
                 });
-                _getUpdate();
               });
             }
           } else
@@ -575,36 +580,49 @@ class _BookingDetailsState extends State<BookingDetails> {
     }
   }
 
-  _getUpdate() {}
+  _getUpdate() {
+    _loadBooking();
+  }
 
   _confirmVisit() {
-    SharedPreferences.getInstance().then((sp) {
-      sp.setInt(_booking.id.toString(), _booking.id);
-      setState(() {
-        _hasBeenThere = true;
-      });
-    });
-
 //    SharedPreferences.getInstance().then((sp) {
 //      String token = sp.getString(ConstantsManager.TOKEN_KEY);
-//      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
-//        if (resp != null) {
-//          if (resp[ConstantsManager.SERVER_ERROR] == null) {
-//            Booking booking = resp["booking"];
-//            if (booking != null) {
-//              setState(() {
-//                _booking = booking;
-//              });
-//            }
-//          }
-//        } else {
-//          _showToast(_stringResources.eServer);
+//      _bookingApi.confirmVisit(token, _booking.id).then((serverResp){
+//        if(serverResp!=null && serverResp[ConstantsManager.SERVER_ERROR] == null){
+//          sp.setInt(_booking.id.toString(), _booking.id);
+//          setState(() {
+//            _hasBeenThere = true;
+//          });
 //        }
-//      }).catchError((error) {
-//        print('server error: $error');
-//        _showToast(_stringResources.eServer);
+//      }).catchError((error){
+//
 //      });
+//
 //    });
+
+    SharedPreferences.getInstance().then((sp) {
+      String token = sp.getString(ConstantsManager.TOKEN_KEY);
+      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
+        if (resp != null) {
+          if (resp[ConstantsManager.SERVER_ERROR] == null) {
+            Booking booking = resp["booking"];
+            if (booking != null) {
+              if (booking.isVisitConfirmed) _startCountDown();
+              sp.setInt(_booking.id.toString(), _booking.id);
+              setState(() {
+                _hasBeenThere = true;
+                _booking = booking;
+              });
+            }
+          }
+        } else {
+          _showToast(_stringResources.eServer);
+        }
+      }).catchError((error) {
+        print('server error: $error');
+        _showToast(_stringResources.eServer);
+      });
+    });
 
 //    Navigator.pop(context);
     setState(() {
@@ -641,9 +659,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     String start = _booking.beginDate;
     String end = _booking.endDate;
     try {
-
-      DateTime startTime = DateTime.parse(start.substring(0,start.length -1));
-      DateTime endTime = DateTime.parse(end.substring(0, end.length -1));
+      DateTime startTime = DateTime.parse(start.substring(0, start.length - 1));
+      DateTime endTime = DateTime.parse(end.substring(0, end.length - 1));
       print('start :$start, end:$end');
       DateTime now = DateTime.now();
       Duration offset = now.timeZoneOffset;
@@ -684,23 +701,24 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _startCountDown() {
-    try {
-      const oneSec = const Duration(seconds: 1);
-      Timer.periodic(oneSec, (Timer t) {
-        print('count');
-        if (_isTimeUp) {
-          t.cancel();
-        } else {
-          setState(() {
-            _progress = _getProgress();
-            _remainingTime = _getRemainingTime();
-
-          });
-          print(' remaining time :$_remainingTime');
-        }
-      });
-    } catch (e) {
-      print('contDown error $e');
+    if(!_countDownTimer.isActive){
+      try {
+        const oneSec = const Duration(seconds: 1);
+        _countDownTimer = Timer.periodic(oneSec, (Timer t) {
+          print('count');
+          if (_isTimeUp) {
+            t.cancel();
+          } else {
+            setState(() {
+              _progress = _getProgress();
+              _remainingTime = _getRemainingTime();
+            });
+            print(' remaining time :$_remainingTime');
+          }
+        });
+      } catch (e) {
+        print('contDown error $e');
+      }
     }
   }
 
@@ -711,9 +729,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     _screenState.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
-
-  Text _buildDate(DateTime dateTime){
-    String day  = dateTime.day.toString();
+  Text _buildDate(DateTime dateTime) {
+    String day = dateTime.day.toString();
     String year = dateTime.year.toString();
     int hour = dateTime.hour;
     int min = dateTime.minute;
@@ -721,34 +738,48 @@ class _BookingDetailsState extends State<BookingDetails> {
     String minString = min > 9 ? min.toString() : '0$min';
 //    String time = '$hourString'+ 'h$minString';
     String month;
-    switch(dateTime.month){
-      case 1: month = _stringResources.tJanuary;
-      break;
-      case 2: month = _stringResources.tFebruary;
-      break;
-      case 3: month = _stringResources.tMarch;
-      break;
-      case 4: month = _stringResources.tApril;
-      break;
-      case 5: month = _stringResources.tMay;
-      break;
-      case 6: month = _stringResources.tJune;
-      break;
-      case 7: month = _stringResources.tJuly;
-      break;
-      case 8: month = _stringResources.tAugust;
-      break;
-      case 9: month = _stringResources.tSeptember;
-      break;
-      case 10: month = _stringResources.tOctober;
-      break;
-      case 11: month = _stringResources.tNovember;
-      break;
-      case 12: month = _stringResources.tDecember;
-      break;
-
+    switch (dateTime.month) {
+      case 1:
+        month = _stringResources.tJanuary;
+        break;
+      case 2:
+        month = _stringResources.tFebruary;
+        break;
+      case 3:
+        month = _stringResources.tMarch;
+        break;
+      case 4:
+        month = _stringResources.tApril;
+        break;
+      case 5:
+        month = _stringResources.tMay;
+        break;
+      case 6:
+        month = _stringResources.tJune;
+        break;
+      case 7:
+        month = _stringResources.tJuly;
+        break;
+      case 8:
+        month = _stringResources.tAugust;
+        break;
+      case 9:
+        month = _stringResources.tSeptember;
+        break;
+      case 10:
+        month = _stringResources.tOctober;
+        break;
+      case 11:
+        month = _stringResources.tNovember;
+        break;
+      case 12:
+        month = _stringResources.tDecember;
+        break;
     }
 
-    return Text(" $day $month $year", style: Theme.of(context).textTheme.caption,);
+    return Text(
+      " $day $month $year",
+      style: Theme.of(context).textTheme.caption,
+    );
   }
 }
