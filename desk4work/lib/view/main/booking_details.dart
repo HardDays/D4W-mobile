@@ -29,8 +29,6 @@ class _BookingDetailsState extends State<BookingDetails> {
   BookingApi _bookingApi;
   Booking _booking;
   final _controller = new PageController();
-  bool _hasBeenThere;
-  int _updateCounter;
   Timer _countDownTimer;
 
   static const _kDuration = const Duration(milliseconds: 300);
@@ -102,25 +100,21 @@ class _BookingDetailsState extends State<BookingDetails> {
     _booking = widget._booking;
     _isTimeUp = false;
     _isLoading = false;
-    _hasBeenThere = true;
     _progress = _getProgress();
     _remainingTime = _getRemainingTime();
     _hasFreeMinutes = false;
     _bookingApi = BookingApi();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateCounter = 5;
-      if (_booking.isVisitConfirmed) _startCountDown();
       SharedPreferences.getInstance().then((sp) {
         int id = sp.getInt(_booking.id.toString());
         if (id != null && id == _booking.id) {
           setState(() {
-            _hasBeenThere = true;
             _isLoading = false;
           });
+          _startCountDown();
         } else {
           setState(() {
             _isLoading = true;
-            _hasBeenThere = false;
           });
           _loadBooking().then((_) {
             setState(() {
@@ -323,14 +317,13 @@ class _BookingDetailsState extends State<BookingDetails> {
         if (bookingMaybe[ConstantsManager.SERVER_ERROR] == null) {
           Booking booking = bookingMaybe["booking"];
           if (booking != null) {
-            if (booking.isVisitConfirmed) _startCountDown();
             setState(() {
               _booking = booking;
               _isLoading = false;
             });
             print(
                 'is conffffiiirmed ${_booking.isUserLeaving} and ${_booking.isVisitConfirmed}');
-            if (!_booking.isUserLeaving && !_booking.isVisitConfirmed)
+            if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
               _showConfirmVisitDialog();
           }
         } else {
@@ -448,9 +441,9 @@ class _BookingDetailsState extends State<BookingDetails> {
       int id = sp.getInt(_booking.id.toString());
       if (id != null && id == _booking.id) {
         setState(() {
-          _hasBeenThere = true;
           _isLoading = false;
         });
+        _startCountDown();
       } else {
         showDialog(
           context: context,
@@ -473,7 +466,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       FlatButton(
                           child: Text(_stringResources.tNo.toUpperCase()),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                           }),
                       FlatButton(
                           child: Text(_stringResources.tYes.toUpperCase()),
@@ -601,27 +594,8 @@ class _BookingDetailsState extends State<BookingDetails> {
 //    });
 
     SharedPreferences.getInstance().then((sp) {
-      String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      _bookingApi.confirmVisit(token, _booking.id).then((resp) {
-        if (resp != null) {
-          if (resp[ConstantsManager.SERVER_ERROR] == null) {
-            Booking booking = resp["booking"];
-            if (booking != null) {
-              if (booking.isVisitConfirmed) _startCountDown();
-              sp.setInt(_booking.id.toString(), _booking.id);
-              setState(() {
-                _hasBeenThere = true;
-                _booking = booking;
-              });
-            }
-          }
-        } else {
-          _showToast(_stringResources.eServer);
-        }
-      }).catchError((error) {
-        print('server error: $error');
-        _showToast(_stringResources.eServer);
-      });
+      sp.setInt(_booking.id.toString(), _booking.id);
+      _startCountDown();
     });
 
 //    Navigator.pop(context);
@@ -636,8 +610,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     DateTime now = DateTime.now();
     if (start != null && end != null) {
       try {
-        DateTime startTime = DateTime.parse(start);
-        DateTime endTime = DateTime.parse(end);
+        DateTime startTime = DateTime.parse(start.substring(0, start.length - 1));
+        DateTime endTime = DateTime.parse(end.substring(0, start.length - 1));
         if (now.isAfter(startTime) && now.isBefore(endTime)) {
           int totalTime = endTime.difference(startTime).inSeconds;
           int consumedTime = now.difference(startTime).inSeconds;
@@ -701,7 +675,7 @@ class _BookingDetailsState extends State<BookingDetails> {
   }
 
   _startCountDown() {
-    if(!_countDownTimer.isActive){
+    if(_countDownTimer ==null || !_countDownTimer.isActive){
       try {
         const oneSec = const Duration(seconds: 1);
         _countDownTimer = Timer.periodic(oneSec, (Timer t) {
@@ -720,6 +694,13 @@ class _BookingDetailsState extends State<BookingDetails> {
         print('contDown error $e');
       }
     }
+  }
+
+
+  @override
+  void dispose() {
+    _countDownTimer?.cancel();
+    super.dispose();
   }
 
   _showToast(String message) {

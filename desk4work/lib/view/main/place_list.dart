@@ -23,6 +23,7 @@ class CoWorkingPlaceListScreen extends StatefulWidget {
 
 class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   List<CoWorking> _coWorkings = [];
+  Set<int> coWorkingIds = Set();
   CoWorkingApi _coWorkingApi = CoWorkingApi();
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
   StringResources stringResources;
@@ -35,10 +36,13 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   String _token;
   Filter _filter;
   bool _showAsList, _isLoading;
+  bool _shouldLoadMore;
+
   @override
   void initState() {
     _showAsList = false;
     _isLoading = true;
+    _shouldLoadMore = true;
     _cities = {
       PlaceFilterScreen.SAINT_PETERSBURG: LatLng(59.93863, 30.31413),
       PlaceFilterScreen.MOSCOW: LatLng(55.75222, 37.61556),
@@ -59,7 +63,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
           _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
             if (coWorkings != null && coWorkings.length > 0) {
               setState(() {
-                this._coWorkings.addAll(coWorkings);
+                for(CoWorking c in coWorkings){
+                  if(!coWorkingIds.contains(c.id)){
+                    coWorkingIds.add(c.id);
+                    this._coWorkings.add(c);
+                  }
+                }
                 _isLoading = false;
               });
             }else{
@@ -133,42 +142,6 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     );
   }
 
-  FutureBuilder<List<CoWorking>> _buildCoWorkingList() {
-    return FutureBuilder<List<CoWorking>>(
-      future: _getCoWorkings(),
-      builder: (ctx, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-            return _showMessage(stringResources.mNoInternet);
-          case ConnectionState.waiting:
-            return Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 50.0),
-                child: CircularProgressIndicator());
-          case ConnectionState.done:
-            if (snapshot.hasError) {
-              print("error  loading coWorkings ${snapshot.error}");
-              return _showMessage(stringResources.mServerError);
-            } else {
-              if (snapshot.data == null || snapshot.data.length < 1)
-                return Container(
-                  child: Center(
-                    child: Text(stringResources.tNothingToShow),
-                  ),
-                );
-              else {
-                _coWorkings = snapshot.data;
-                return _showAsList ? _showList() : _showMap();
-              }
-            }
-            break;
-          case ConnectionState.active:
-            break;
-        }
-      },
-    );
-  }
-
   RefreshIndicator _showList() {
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -176,7 +149,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
 //        shrinkWrap: true,
           itemCount: _coWorkings.length,
           itemBuilder: (ctx, index) {
-            if (index == _coWorkings.length - 2) _loadMoreBooking(true);
+            if (index == _coWorkings.length - 2 && _shouldLoadMore) _loadMoreBooking(true);
             return _getCoWorkingCard(_coWorkings[index]);
           }),
     );
@@ -192,8 +165,13 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
           if (coWorkings != null && coWorkings.length > 0) {
             setState(() {
               this._coWorkings = [];
+              coWorkingIds.clear();
               this._coWorkings.addAll(coWorkings);
+              coWorkings.forEach((c){
+                coWorkingIds.add(c.id);
+              });
               _isLoading = false;
+              _shouldLoadMore = true;
             });
             return null;
           }
@@ -220,90 +198,97 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   }
 
   Future _loadMoreBooking(bool withOffSet) {
-    return Filter.savedFilter().then((filter){
-      print('filter:: $filter');
-      return SharedPreferences.getInstance().then((sp) {
-        _token = sp.getString(ConstantsManager.TOKEN_KEY);
-        if(filter!= null && filter.place == stringResources.tNearby){
-          print(' doing thissss; ................');
-          print(' doing thissss filter place; ................${filter.place}');
-          print(' doing thissss nearby; ................${stringResources.tNearby}');
-          try {
-            _geolocator.getCurrentPosition().then((pos) {
-              if (pos != null) {
-                setState(() {
-                  _userLocation = LatLng(pos.latitude, pos.longitude);
-                });
-              }
-            }).catchError((error) {
-              print('location error: $error');
-            }).timeout(Duration(seconds: 5)).whenComplete((){
-              return _coWorkingApi
-                  .searchCoWorkingPlaces(_token,
-                  location: _cities[filter?.place], // ?? _userLocation,
-                  filter: filter,
-                  offset: withOffSet ? _coWorkings.length : 0)
-                  .then((coWorkings) {
-                print(' loaded 1: $coWorkings');
-                if (coWorkings != null && coWorkings.length > 0) {
+    if(_shouldLoadMore){
+      return Filter.savedFilter().then((filter){
+        print('filter:: $filter');
+        return SharedPreferences.getInstance().then((sp) {
+          _token = sp.getString(ConstantsManager.TOKEN_KEY);
+          if(filter!= null && filter.place == stringResources.tNearby){
+            print(' doing thissss; ................');
+            print(' doing thissss filter place; ................${filter.place}');
+            print(' doing thissss nearby; ................${stringResources.tNearby}');
+            try {
+              _geolocator.getCurrentPosition().then((pos) {
+                if (pos != null) {
                   setState(() {
-                    _isLoading = false;
-                    this._coWorkings.addAll(coWorkings);
-                  });
-                } else {
-                  setState(() {
-                    _isLoading = false;
+                    _userLocation = LatLng(pos.latitude, pos.longitude);
+
                   });
                 }
-              }).catchError((_){
-                print('loadding error');
-                _showMessage(stringResources.eServer);
+              }).catchError((error) {
+                print('location error: $error');
+              }).timeout(Duration(seconds: 5)).whenComplete((){
+                return _coWorkingApi
+                    .searchCoWorkingPlaces(_token,
+                    location: _cities[filter?.place], // ?? _userLocation,
+                    filter: filter,
+                    offset: withOffSet ? _coWorkings.length : 0)
+                    .then((coWorkings) {
+                  print(' loaded 1: $coWorkings');
+                  if (coWorkings != null && coWorkings.length > 0) {
+                    setState(() {
+                      _isLoading = false;
+                      coWorkings.forEach((coWorking){
+                        print('coWorkingsIDs $coWorkingIds');
+                        if(!this.coWorkingIds.contains(coWorking.id)){
+                          this._coWorkings.add(coWorking);
+                          coWorkingIds.add(coWorking.id);
+                        }
+                      });
+//                    this._coWorkings.addAll(coWorkings);
+                    });
+                  } else {
+                    setState(() {
+                      _isLoading = false;
+                      _shouldLoadMore = false;
+                    });
+                  }
+                }).catchError((_){
+                  print('loadding error');
+                  _showMessage(stringResources.eServer);
+                });
               });
-            });
-          } catch (e) {
-            print('location error: $e');
-          }
-        }else{
-          return _coWorkingApi
-              .searchCoWorkingPlaces(_token,
-              location: _cities[filter?.place], // ?? _userLocation,
-              filter: filter,
-              offset: withOffSet ? _coWorkings.length : 0)
-              .then((coWorkings) {
-            print(' loaded 2: $coWorkings');
-            if (coWorkings != null && coWorkings.length > 0) {
-              setState(() {
-                _isLoading = false;
-                this._coWorkings.addAll(coWorkings);
-              });
-            } else {
-              setState(() {
-                _isLoading = false;
-              });
+            } catch (e) {
+              print('location error: $e');
             }
-          }).catchError((_){
-            print('loadding error');
-            _showMessage(stringResources.eServer);
-          });
-        }
+          }else{
+            return _coWorkingApi
+                .searchCoWorkingPlaces(_token,
+                location: _cities[filter?.place], // ?? _userLocation,
+                filter: filter,
+                offset: withOffSet ? _coWorkings.length : 0)
+                .then((coWorkings) {
+              print(' loaded 2: $coWorkings');
+              if (coWorkings != null && coWorkings.length > 0) {
+                setState(() {
+                  _isLoading = false;
+                  coWorkings.forEach((coWorking){
+                    if(!coWorkingIds.contains(coWorking.id)) {
+                        this._coWorkings.add(coWorking);
+                        coWorkingIds.add(coWorking.id);
+                      }
+                  });
+                });
+              } else {
+                setState(() {
+                  _isLoading = false;
+                  _shouldLoadMore = false;
+                });
+              }
+            }).catchError((_){
+              print('loadding error');
+              _showMessage(stringResources.eServer);
+            });
+          }
 
+        });
       });
-    });
-  }
-
-  _showOnMap() {
-    LatLng defautPosition = (_filter != null &&
-            _filter.place != null &&
-            _filter.place != stringResources.tWherever)
-        ? _cities[_filter.place]
-        : _userLocation;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CoWorkingPlaceMapScreen(
-                  _coWorkings,
-                  defaultPosition: defautPosition,
-                )));
+    }else{
+      setState(() {
+        _isLoading = false;
+      });
+      return Future.value(null);
+    }
   }
 
   _openFilter() {
@@ -315,7 +300,9 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
         setState(() {
           this._filter = filter;
           _coWorkings = [];
+          coWorkingIds.clear();
           _isLoading = true;
+          _shouldLoadMore = true;
         });
         print('shouldSearch ${shouldSearch[1]}');
 
@@ -360,7 +347,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                   Expanded(
                     child: Hero(
                         tag:
-                            'coWorkingImage-id ${coWorking.imageId ?? DateTime.now().millisecondsSinceEpoch}',
+                            'coWorkingImage-id${coWorking.id}${DateTime.now().millisecondsSinceEpoch} ${coWorking.imageId ?? DateTime.now().millisecondsSinceEpoch}',
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
                           placeholder: Image.asset(

@@ -457,7 +457,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
               _showMessage(_stringResources.eWrongStartDate);
             } else if (errorMessage[0]['end_date'] != null) {
               _showMessage(_stringResources.eWrongEndDate);
-            }
+            }else _showMessage(_stringResources.eServer);
           }
         });
       });

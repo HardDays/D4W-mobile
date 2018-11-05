@@ -230,15 +230,15 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                     shrinkWrap: true,
                     crossAxisCount: 3,
                     children: <Widget>[
-                      _getRoundedIconButton(
-                          Icons.print,
-                          _stringResources.tPrint,
-                          (filter?.printerNeeded ?? false), () {
-                        _container.updateFilterInfo(
-                            printerNeeded: (filter != null)
-                                ? !filter.printerNeeded
-                                : true);
-                      }),
+//                      _getRoundedIconButton(
+//                          Icons.print,
+//                          _stringResources.tPrint,
+//                          (filter?.printerNeeded ?? false), () {
+//                        _container.updateFilterInfo(
+//                            printerNeeded: (filter != null)
+//                                ? !filter.printerNeeded
+//                                : true);
+//                      }),
                       _getRoundedIconButton(
                           Icons.local_cafe,
                           _stringResources.tTeaOrCoffee,

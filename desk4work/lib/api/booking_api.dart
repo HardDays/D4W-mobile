@@ -56,7 +56,7 @@ class BookingApi {
       String startHour, endHour, date) {
     String startDate = date + "T" + startHour;
     String endDate = date + "T" + endHour;
-    String url = ConstantsManager.BASE_URL + "/bookings/create";
+    String url = ConstantsManager.BASE_URL + "bookings/create";
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     Map<String, String> body = {

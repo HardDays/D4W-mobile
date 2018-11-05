@@ -48,9 +48,9 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   CoWorkingApi _coWorkingApi;
 
   bool _showOnMap;
-
   @override
   void initState() {
+    print('coworkin iddddd: ${widget._coWorking.id}');
     _showOnMap = false;
     _mapController = MapController();
     _coWorkingApi = CoWorkingApi();
@@ -605,8 +605,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
 
   Map<String, bool> _getAmenities() {
     Map<String, bool> amenities = {};
+    print('amenties ${widget._coWorking.amenties}');
+
     widget._coWorking.amenties.forEach((amenity) {
-      switch (amenity) {
+      switch (amenity.trim()) {
         case "free_printing":
           amenities[PRINTER] = true;
           break;
@@ -625,7 +627,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         case "parking":
           amenities[PARKING] = false;
           break;
-        case "snack":
+        case "snacks":
           amenities[KITCHEN] = true;
           break;
 
@@ -637,7 +639,8 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   List<Widget> _getAmenitiesWidget(Map<String, bool> amenities) {
     List<Widget> amenitiesWidgets = [];
 
-    if (amenities != null && amenities.length > 1) {
+    print('amenties widgets $amenities');
+    if (amenities != null && amenities.length > 0) {
       amenities.keys.forEach((amenity) {
         switch (amenity) {
           case PRINTER:
@@ -656,10 +659,10 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 _stringResources.tTeaOrCoffee, _isCoffeeSelected, message, 2);
             amenitiesWidgets.add(coffeeIconButton);
             break;
-          case PRINTER:
-            String message = _isPrinterSelected ? " " : _getMessageStart(
+          case PARKING:
+            String message = _isParkingSelected ? " " : _getMessageStart(
                 amenities[amenity]) +
-                " ${_stringResources.tipPrinter}";
+                " ${_stringResources.tipParking}";
             Widget parkingIconButton = _getEquipmentButton(
                 Icons.local_parking,
                 _stringResources.tipParking,
@@ -668,7 +671,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 3);
             amenitiesWidgets.add(parkingIconButton);
             break;
-          case PRINTER:
+          case KITCHEN:
             String message = _isKitchenSelected ? " " : _getMessageStart(
                 amenities[amenity]) +
                 " ${_stringResources.tipKitchen}";
@@ -731,34 +734,6 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
   }
 
 
-  Column _getEquipmentButtonFromPng(String urlClicked, String urlUnclicked, String caption, bool isSelected,
-      String explain, int buttonToSwitch) {
-    return Column(
-      children: <Widget>[
-        Container(
-            height: _screenHeight * .072,
-            width: _screenWidth * .128,
-            decoration: (isSelected)
-                ? BoxDecoration(color: Colors.orange, shape: BoxShape.circle)
-                : null,
-            child: InkWell(
-                onTap: () {
-                  _setTipText(explain);
-                  _switchButton(buttonToSwitch);
-                },
-                child: Image.asset(
-                  isSelected ? urlClicked : urlUnclicked, fit: BoxFit.scaleDown,
-                ))),
-        Text(
-          caption,
-          style: Theme
-              .of(context)
-              .textTheme
-              .caption,
-        )
-      ],
-    );
-  }
 
   _switchButton(int i) {
     print("switching $i");

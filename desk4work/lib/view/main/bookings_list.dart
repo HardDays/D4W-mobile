@@ -13,10 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingsListScreen extends StatefulWidget {
-  final List<Booking> _bookings;
+  List<Booking> _bookings;
   final String _token;
 
-  BookingsListScreen(this._bookings, this._token);
+  BookingsListScreen(List<Booking> bookings, this._token){
+    _bookings = (bookings ?? []).where((b){
+      return DateTime.now().isBefore(DateTime.parse(b.endDate));
+    }).toList();
+  }
 
   @override
   State<StatefulWidget> createState() => _BookingsListState();
@@ -54,9 +58,9 @@ class _BookingsListState extends State<BookingsListScreen> {
           });
         });
       }else{
-        List<Booking> temp = [];
-        temp.addAll(_bookings);
         for(Booking b in _bookings){
+          DateTime endDateTime = DateTime.parse(b.endDate);
+          if(endDateTime.isAfter(DateTime.now())){
           int coworkingId = b.coworkingId;
           _getCoWorking(coworkingId).then((coworking){
             b.coWorking = coworking;
@@ -64,6 +68,7 @@ class _BookingsListState extends State<BookingsListScreen> {
             print('load coworking error $error');
             _showToast(_stringResources.eServer);
           });
+          }
         }
       }
       setState(() {
@@ -307,6 +312,9 @@ class _BookingsListState extends State<BookingsListScreen> {
     _bookingApi.leaveCoworking(_token, id).then((isCanceled) {
       if (isCanceled != null && isCanceled.length == 0) {
         _showToast(_stringResources.mStopRequestSent);
+        SharedPreferences.getInstance().then((sp){
+          sp.remove(id.toString());
+        });
         int toBeRemovedSoon;
         _bookings.forEach((b) {
           if (b.id == id) {
@@ -374,17 +382,24 @@ class _BookingsListState extends State<BookingsListScreen> {
        String token = sp.getString(ConstantsManager.TOKEN_KEY);
         _bookingApi.getUserBookings(token).then((bookings){
          if(bookings!=null && bookings.length>0){
+           List<Booking> temp = [];
            for(Booking b in bookings){
-             int coworkingId = b.coworkingId;
-             _getCoWorking(coworkingId).then((coworking){
-               b.coWorking = coworking;
-             }).catchError((error){
-               print('load coworking error $error');
-               _showToast(_stringResources.eServer);
-             });
+             DateTime endDateTime = DateTime.parse(b.endDate);
+             if(endDateTime.isAfter(DateTime.now())){
+               print(' end date $endDateTime');
+               temp.add(b);
+               int coworkingId = b.coworkingId;
+               _getCoWorking(coworkingId).then((coworking){
+                 b.coWorking = coworking;
+               }).catchError((error){
+                 print('load coworking error $error');
+                 _showToast(_stringResources.eServer);
+               });
+             }
+
            }
            setState(() {
-             _bookings = bookings;
+             _bookings = temp;
            });
          }
          return Future.value(null);
