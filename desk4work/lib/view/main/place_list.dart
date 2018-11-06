@@ -60,7 +60,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
               _userLocation = _cities[filter.place];
             });
           }
-          _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
+          _coWorkingApi.searchCoWorkingPlaces(_token, _showAsList,filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
             if (coWorkings != null && coWorkings.length > 0) {
               setState(() {
                 for(CoWorking c in coWorkings){
@@ -161,7 +161,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       Filter.savedFilter().then((filter){
         print('filterrrr....$filter');
-       return _coWorkingApi.searchCoWorkingPlaces(_token, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
+       return _coWorkingApi.searchCoWorkingPlaces(_token, _showAsList, filter: filter, location: _cities[filter?.place] ?? _userLocation).then((coWorkings) {
           if (coWorkings != null && coWorkings.length > 0) {
             setState(() {
               this._coWorkings = [];
@@ -219,7 +219,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 print('location error: $error');
               }).timeout(Duration(seconds: 5)).whenComplete((){
                 return _coWorkingApi
-                    .searchCoWorkingPlaces(_token,
+                    .searchCoWorkingPlaces(_token, _showAsList,
                     location: _cities[filter?.place], // ?? _userLocation,
                     filter: filter,
                     offset: withOffSet ? _coWorkings.length : 0)
@@ -244,7 +244,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                     });
                   }
                 }).catchError((_){
-                  print('loadding error');
+                  print('loadding error $_');
                   _showMessage(stringResources.eServer);
                 });
               });
@@ -253,7 +253,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
             }
           }else{
             return _coWorkingApi
-                .searchCoWorkingPlaces(_token,
+                .searchCoWorkingPlaces(_token, _showAsList,
                 location: _cities[filter?.place], // ?? _userLocation,
                 filter: filter,
                 offset: withOffSet ? _coWorkings.length : 0)
@@ -276,7 +276,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
                 });
               }
             }).catchError((_){
-              print('loadding error');
+              print('loadding error $_');
               _showMessage(stringResources.eServer);
             });
           }
@@ -316,7 +316,7 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
     return SharedPreferences.getInstance().then((sp) {
       _token = sp.getString(ConstantsManager.TOKEN_KEY);
       return _coWorkingApi
-          .searchCoWorkingPlaces(_token,
+          .searchCoWorkingPlaces(_token, _showAsList,
               location: _cities[_filter?.place], // ?? _userLocation,
               filter: _filter)
           .then((coWorkings) {

@@ -16,7 +16,7 @@ class CoWorkingApi {
 
   factory CoWorkingApi() => _instance;
 
-  Future<List<CoWorking>> searchCoWorkingPlaces(String token,
+  Future<List<CoWorking>> searchCoWorkingPlaces(String token, bool paged,
       {LatLng location, Filter filter, int offset = 0}) {
     String stringFilter = "?";
     String latLong;
@@ -37,11 +37,11 @@ class CoWorkingApi {
                 DateTime.parse('$year$month$day').add(Duration(days: 1));
 
             realEndDate = '${dateTime.day}.${dateTime.month}.${dateTime.year}';
-          }else
+          } else
             realEndDate = filter.date[0];
-        }else
+        } else
           realEndDate = filter.date[0];
-      }else if(filter.date!=null && filter.date.length >1){
+      } else if (filter.date != null && filter.date.length > 1) {
         realEndDate = filter.date[1];
       }
       if (filter.place == "Nearby" || filter.place == "Рядом")
@@ -62,9 +62,10 @@ class CoWorkingApi {
         String beginDate = filter.date[0];
         String endDate = realEndDate;
         stringFilter += "begin_date=$beginDate&end_date=$endDate";
-      }else{
+      } else {
         DateTime dateTime = DateTime.now();
-        stringFilter+= 'begin_date=${dateTime.day}.${dateTime.month}.${dateTime.year}';
+        stringFilter +=
+            'begin_date=${dateTime.day}.${dateTime.month}.${dateTime.year}';
       }
       if (filter.parkingNeeded ?? false)
         stringFilter += Uri.encodeQueryComponent('&ementies[]=parking');
@@ -79,17 +80,19 @@ class CoWorkingApi {
         stringFilter += Uri.encodeQueryComponent('&ementies[]=printing');
       if (filter.teaOrCoffeeNeeded ?? false)
         stringFilter += Uri.encodeQueryComponent('&ementies[]=coffee');
-
     }
     if (location != null) {
       double lat = location.latitude;
       double lon = location.longitude;
       latLong = "&lat=$lat&lng=$lon";
+      latLong = paged ? latLong : latLong.substring(1);
     }
-    String lastParam = "limit=10&offset=$offset${latLong ?? ""}";
+    String lastParam =
+        paged ? "limit=10&offset=$offset${latLong ?? ""}" : '${latLong ?? ""}';
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;
-    String url = _coWorkingUrl + "get_all_paged";
+    String url =
+        (paged) ? _coWorkingUrl + "get_all_paged" : _coWorkingUrl + 'get_all';
 //    url +="?limit=10";
     url = (stringFilter == null && stringFilter.length > 1)
         ? url + "?$lastParam"
@@ -99,9 +102,12 @@ class CoWorkingApi {
     return _networkUtil.get(url, headers: _headers).then((responseBody) {
       List<CoWorking> coWorkings = [];
 
-      if(responseBody[ConstantsManager.SERVER_ERROR] !=null)
+      if (!(responseBody is List) && responseBody[ConstantsManager.SERVER_ERROR] != null) {
         return coWorkings;
-      responseBody['coworkings'].forEach((coWorking) {
+      }
+      var respBody = (responseBody is List) ? responseBody : responseBody['coworkings'];
+
+      respBody.forEach((coWorking) {
         CoWorking cw = CoWorking.fromJson(coWorking);
         coWorkings.add(cw);
       });
