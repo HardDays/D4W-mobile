@@ -83,12 +83,14 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
   Future<User> _getMe() {
     return SharedPreferences.getInstance().then((sp) {
       String token = sp.getString(ConstantsManager.TOKEN_KEY);
-      return _usersApi.getMe(token).then((user) {
-        return user;
-      }).catchError((error){
-        print('get me front error: $error');
-        return null;
-      });
+      if(token !=null){
+        return _usersApi.getMe(token).then((user) {
+          return user;
+        }).catchError((error){
+          print('get me front error: $error');
+          return null;
+        });
+      }else return null;
     });
   }
 

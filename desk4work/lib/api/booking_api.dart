@@ -27,6 +27,8 @@ class BookingApi {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response) {
       List<Booking> bookings = [];
+      print('my booking response: ${response.runtimeType}');
+      print('my booking response: ${response}');
       response.forEach((r) {
         Booking b = Booking.fromJson(r);
 

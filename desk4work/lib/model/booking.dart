@@ -5,7 +5,7 @@ class Booking {
   int coworkingId;
   int coworkingImageId;
   int userId;
-  int price;
+  double price;
 //  bool confirmed;
   String beginWork;
   String endWork;
@@ -61,7 +61,9 @@ class Booking {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     coWorking = CoWorking.fromJson(json['coworking']);
-    price = json['price'];
+    var priceJson = json['price'];
+    print('price json : $priceJson');
+    price = double.parse(json['price'] ?? '.0') ?? .0;
 
 
     userId = json['user_id'];
