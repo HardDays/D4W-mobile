@@ -146,8 +146,8 @@ class TimeFilterState extends State<TimeFilterScreen> {
                   mode: CupertinoTimerPickerMode.hm,
                   initialTimerDuration: Duration(
                       hours: (_isStart)
-                          ? _getTimePickerStart()<24 ? _getTimePickerStart() : 1
-                          : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1,
+                          ? _getTimePickerStart()<23 ? _getTimePickerStart() : 1
+                          : _getTimePickerEnd()<23 ? _getTimePickerEnd() : 1,
                     minutes: DateTime.now().minute
                   ),
                   onTimerDurationChanged: (duration) {
@@ -246,7 +246,6 @@ class TimeFilterState extends State<TimeFilterScreen> {
     if (_tempStart == null) {
       return DateTime.now().hour + 1;
     } else {
-      print('time before crashhh: $_tempStart');
       return (_tempStart.length > 4)
           ? int.parse(_tempStart.substring(0, 2))
           : int.parse(_tempStart.substring(0,1));

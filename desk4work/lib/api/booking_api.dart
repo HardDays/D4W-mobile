@@ -55,10 +55,26 @@ class BookingApi {
   }
 
   Future<Booking> book(String token, int coWorkingId, int numberOfSeats,
-      String startHour, endHour, date) {
+      String startHour, endHour, String date) {
+    int startTime = int.parse(startHour.substring(0,startHour.indexOf(':')));
+    int endTime = int.parse(endHour.substring(0,endHour.indexOf(':')));
+
+
     String startDate = date + "T" + startHour;
     String endDate = date + "T" + endHour;
+    if(endTime < startTime){
+      String year = date.substring(0,4);
+      String month = (date.substring(6).startsWith('-')) ? date.substring(5,6) : date.substring(5,7);
+      month = (int.parse(month) > 9) ? month : "0"+month;
+      String day = (date.substring(6).startsWith('-')) ? date.substring(7) : date.substring(8);
+      day = (int.parse(day) > 9) ? day : "0"+day;
+      DateTime endDateTime = DateTime.parse('$year$month$day').add(Duration(days: 1));
+      endDate = '${endDateTime.year}-${endDateTime.month}-${endDateTime.day}T$endHour';
+
+    }
     String url = ConstantsManager.BASE_URL + "bookings/create";
+    print('start datebooking $startDate');
+    print('end datebooking $endDate');
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     Map<String, String> body = {

@@ -62,7 +62,6 @@ class Booking {
     updatedAt = json['updated_at'];
     coWorking = CoWorking.fromJson(json['coworking']);
     var priceJson = json['price'];
-    print('price json : $priceJson');
     price = double.parse(json['price'] ?? '.0') ?? .0;
 
 
