@@ -12,6 +12,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ProfileMenuScreen extends StatefulWidget {
+  final bool isSocialLogin;
+
+  ProfileMenuScreen(this.isSocialLogin);
+
   @override
   State<StatefulWidget> createState() => _ProfileMenuScreenState();
 }
@@ -23,6 +27,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
   UsersApi _usersApi = UsersApi();
   double _screenHeight, _screenWidth;
+
 
   @override
   void initState() {
@@ -110,7 +115,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ProfileEditScreen(user)));
+                            builder: (context) => ProfileEditScreen(user, socialLogin: widget.isSocialLogin,)));
                   },
                   child: Container(
                       padding: EdgeInsets.only(

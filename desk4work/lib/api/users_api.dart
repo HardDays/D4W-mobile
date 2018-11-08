@@ -18,6 +18,7 @@ class UsersApi {
     String url = _usersUrl +"get_me";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url,headers: _headers).then((respBody){
+
       return User.fromJson(respBody);
     });
   }

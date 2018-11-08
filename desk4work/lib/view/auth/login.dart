@@ -350,6 +350,7 @@ class LoginScreenState extends State<LoginScreen> {
       print(' infooooooo $accessToken');
       _authApi.googleLogin(accessToken).then((token) {
         SharedPreferences.getInstance().then((sp) {
+          sp.setBool(ConstantsManager.IS_SOCIAL_LOGIN, true);
           sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
             _openMainScreen();
           });
@@ -378,6 +379,7 @@ class LoginScreenState extends State<LoginScreen> {
         _authApi.vkOrFacebookLogin(facebookToken, true).then((token) {
           print('facetoken $token');
           SharedPreferences.getInstance().then((sp) {
+            sp.setBool(ConstantsManager.IS_SOCIAL_LOGIN, true);
             sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
               _openMainScreen();
             });
@@ -407,6 +409,7 @@ class LoginScreenState extends State<LoginScreen> {
         });
         _authApi.vkOrFacebookLogin(_authToken, false).then((token) {
           SharedPreferences.getInstance().then((sp) {
+            sp.setBool(ConstantsManager.IS_SOCIAL_LOGIN, true);
             sp.setString(ConstantsManager.TOKEN_KEY, token).then((_) {
               _openMainScreen();
             });

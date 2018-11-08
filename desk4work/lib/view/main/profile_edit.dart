@@ -16,8 +16,8 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   User _user;
-
-  ProfileEditScreen(User user) {
+  bool socialLogin;
+  ProfileEditScreen(User user, {this.socialLogin}) {
     _user = user;
   }
 
@@ -30,6 +30,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
   StringResources _stringResources;
   UsersApi _usersApi;
   Size _screenSize;
+  bool _socialLogin;
   TextEditingController _firstNameController;
   TextEditingController _lastNameController;
   TextEditingController _emailController;
@@ -60,6 +61,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
     _phone = widget._user.phone;
     _emailFocus = FocusNode();
     _phoneFocus = FocusNode();
+    _socialLogin = widget.socialLogin ?? false;
   }
 
   @override
@@ -452,11 +454,11 @@ class _ProfileEditState extends State<ProfileEditScreen> {
   }
 
   bool _validateInfo() {
-    if (!RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
+    if (_email ==null || !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
       Dialogs.showMessage(context, _stringResources.tError,
           _stringResources.eWrongEmail, _stringResources.tOk);
       return false;
-    } else if (_phone.isEmpty) {
+    } else if (_phone ==null || _phone.isEmpty) {
       Dialogs.showMessage(context, _stringResources.tError,
           _stringResources.eEmptyPhone, _stringResources.tOk);
       return false;

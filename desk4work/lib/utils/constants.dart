@@ -25,6 +25,8 @@ class ConstantsManager{
   static const String CONTENT_TYPE = "Content-type";
   static const String CONTENT_TYPE_APPLICATION_JSON = "application/json";
 
+  static const String IS_SOCIAL_LOGIN = "isSocialLogin";
+
   static const String VK_APPLICATION_ID ='6720107';
   static const String VK_APPLICATION_KEY ='21m3goIBLJYRW6M9j4cV';
 

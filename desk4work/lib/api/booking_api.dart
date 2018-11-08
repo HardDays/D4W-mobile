@@ -73,8 +73,6 @@ class BookingApi {
 
     }
     String url = ConstantsManager.BASE_URL + "bookings/create";
-    print('start datebooking $startDate');
-    print('end datebooking $endDate');
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     Map<String, String> body = {
@@ -89,7 +87,6 @@ class BookingApi {
     return _networkUtil
         .post(url, headers: _headers, body: body)
         .then((serverResponse) {
-      print('server response booking: $serverResponse');
 
       int statusCode = serverResponse[ConstantsManager.SERVER_ERROR];
       if (statusCode != null) {
@@ -172,8 +169,6 @@ class BookingApi {
   Future<bool> cancelBooking(String token, int id) {
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     String url = _bookingUrl + 'cancel_booking';
-    print(' cancel booking url $url');
-    print(' cancel booking id $id');
     print('header $_headers');
     Map<String, String> body = {ConstantsManager.BOOKING_ID: id.toString()};
     print('body $body');
@@ -189,6 +184,7 @@ class BookingApi {
     String url = _bookingUrl+ "get/$bookingId";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.get(url, headers: _headers).then((response){
+      print('one booking : $response');
       if(response!=null && response[ConstantsManager.SERVER_ERROR] == null){
         return {"booking" : Booking.fromJson(response)};
       }else if(response !=null && response[ConstantsManager.SERVER_ERROR] !=null){

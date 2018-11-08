@@ -114,8 +114,37 @@ class _MainScreenState extends State<MainScreen>  {
         });
   }
 
-  Widget _getProfileBuilder() {
-    return ProfileMenuScreen();
+  FutureBuilder<bool> _getProfileBuilder() {
+    return FutureBuilder(
+        future: _checkLoginType(),
+        builder: (ctx,snapshot){
+      switch(snapshot.connectionState){
+        case ConnectionState.active:
+          break;
+        case ConnectionState.waiting:
+          return Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(top: 50.0),
+              child: new CircularProgressIndicator());
+        case ConnectionState.none:
+          return showMessage(stringResources.mNoInternet);
+        case ConnectionState.done:
+          if(snapshot.hasError){
+            print("error  loading bookings ${snapshot.error}");
+            return showMessage(stringResources.mServerError);
+          }else {
+            return ProfileMenuScreen(snapshot.data);
+          }
+
+      }
+    });
+//    return ProfileMenuScreen();
+  }
+
+  Future<bool> _checkLoginType(){
+    return SharedPreferences.getInstance().then((sp){
+      return sp.getBool(ConstantsManager.IS_SOCIAL_LOGIN);
+    });
   }
 
   Future<List<Booking>> _getBookings() {
