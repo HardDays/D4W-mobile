@@ -78,7 +78,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
     _confirmButtonWidth = (_screenWidth * .84);
 
     _stringResources = StringResources.of(context);
-    _price = _neededNumberOfSeats * widget._coWorking.price;
+    _price = _getTimeCoefficient() * _neededNumberOfSeats * widget._coWorking.price;
 
     Gradient orangeBoxDecorationGradient =
         BoxDecorationUtil.getDarkOrangeGradient().gradient;
@@ -390,6 +390,26 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
       setState(() {
         _neededNumberOfSeats--;
       });
+  }
+
+  int _getTimeCoefficient(){
+    bool isStartTimeSet = _starWork !=null && _starWork.length >2;
+    bool isEndTimeSet = _endWork !=null && _endWork.length >2;
+
+    int startHour = isStartTimeSet ? int.parse(_starWork.substring(0, _starWork.indexOf(':'))) : 0;
+    int endHour = isStartTimeSet ?  int.parse(_endWork.substring(0, _endWork.indexOf(':'))) : 0;
+    int startMin = isEndTimeSet ? int.parse(_starWork.substring(_starWork.indexOf(':')+1)) : 0;
+    int endMin = isEndTimeSet ? int.parse(_endWork.substring(_endWork.indexOf(':')+1)) : 0;
+
+    int dayEnd = (startHour > endHour) ? 2 : 1;
+    Duration difference = DateTime(2000,1,dayEnd,endHour, endMin).difference(DateTime(2000,1,1,startHour, startMin));
+    int differenceInMin = difference.inMinutes.abs();
+    int differenceInHours = (differenceInMin /60).ceil();
+
+    differenceInHours = differenceInHours > 0 ? differenceInHours : 1;
+
+    return differenceInHours;
+
   }
 
   void _book() {
