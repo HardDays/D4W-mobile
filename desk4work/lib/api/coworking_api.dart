@@ -67,19 +67,36 @@ class CoWorkingApi {
         stringFilter +=
             'begin_date=${dateTime.day}.${dateTime.month}.${dateTime.year}';
       }
-      if (filter.parkingNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=parking');
-      if (filter.freeParkingNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=free_parking');
-      if (filter.freePrinter ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=free_printing');
 
-      if (filter.kitchenNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=snacks');
-      if (filter.printerNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=printing');
-      if (filter.teaOrCoffeeNeeded ?? false)
-        stringFilter += Uri.encodeQueryComponent('&ementies[]=coffee');
+      List<String> amentiesNeeded = [];
+
+      if (filter.parkingNeeded ?? false) {
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=parking');
+        amentiesNeeded.add('parking');
+      }
+      if (filter.freeParkingNeeded ?? false) {
+        amentiesNeeded.add('free_parking');
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=free_parking');
+      }
+      if (filter.freePrinter ?? false) {
+        amentiesNeeded.add('free_printing');
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=free_printing');
+      }
+
+      if (filter.kitchenNeeded ?? false) {
+        amentiesNeeded.add('snacks');
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=snacks');
+      }
+      if (filter.printerNeeded ?? false) {
+        amentiesNeeded.add('printing');
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=printing');
+      }
+      if (filter.teaOrCoffeeNeeded ?? false) {
+        amentiesNeeded.add('coffee');
+//        stringFilter += Uri.encodeQueryComponent('&amenties[]=coffee');
+      }
+      if (amentiesNeeded.length >0)
+        stringFilter+= '&amenties='+ amentiesNeeded.join(',');
     }
     if (location != null) {
       double lat = location.latitude;
@@ -102,10 +119,12 @@ class CoWorkingApi {
     return _networkUtil.get(url, headers: _headers).then((responseBody) {
       List<CoWorking> coWorkings = [];
 
-      if (!(responseBody is List) && responseBody[ConstantsManager.SERVER_ERROR] != null) {
+      if (!(responseBody is List) &&
+          responseBody[ConstantsManager.SERVER_ERROR] != null) {
         return coWorkings;
       }
-      var respBody = (responseBody is List) ? responseBody : responseBody['coworkings'];
+      var respBody =
+          (responseBody is List) ? responseBody : responseBody['coworkings'];
 
       respBody.forEach((coWorking) {
         CoWorking cw = CoWorking.fromJson(coWorking);
