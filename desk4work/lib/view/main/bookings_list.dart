@@ -18,7 +18,7 @@ class BookingsListScreen extends StatefulWidget {
 
   BookingsListScreen(List<Booking> bookings, this._token){
     _bookings = (bookings ?? []).where((b){
-      return DateTime.now().isBefore(DateTime.parse(b.endDate));
+      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed;
     }).toList();
   }
 
@@ -385,8 +385,7 @@ class _BookingsListState extends State<BookingsListScreen> {
            List<Booking> temp = [];
            for(Booking b in bookings){
              DateTime endDateTime = DateTime.parse(b.endDate);
-             if(endDateTime.isAfter(DateTime.now())){
-               print(' end date $endDateTime');
+             if(endDateTime.isAfter(DateTime.now()) && !b.isClosed){
                temp.add(b);
                int coworkingId = b.coworkingId;
                _getCoWorking(coworkingId).then((coworking){

@@ -153,6 +153,9 @@ class StringResources {
 
   static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
 
+  static final String _messageEndedSession = 'messageEndedSession';
+
+
   StringResources(this.locale);
 
   static StringResources of(BuildContext context) {
@@ -297,6 +300,7 @@ class StringResources {
           'Your booking request has been sent to ',
       _messageBookingRequestSentSuffix: 'See you soon at the reception desk!',
       _messageStopRequestPending: 'Terminate request already sent',
+      _messageEndedSession: 'The administrator has ended your session please go to the reception desk for more information',
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
@@ -442,6 +446,7 @@ class StringResources {
       _messageBookingRequestSentSuffix:
           'и отметьтесь, когда приедете. Скоро увидимся!',
       _messageStopRequestPending: 'Вы уже отправили запрос',
+      _messageEndedSession: 'Администратор закончил вашу сессию, пожалуйста, зайдите на стойку регистрации для получения дополнительной информации',
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
@@ -818,4 +823,7 @@ class StringResources {
 
   String get mBookingRequestSentSuffix =>
       _localizedValues[locale.languageCode][_messageBookingRequestSentSuffix];
+
+  String get mBookingSessionEnded =>
+      _localizedValues[locale.languageCode][_messageEndedSession];
 }

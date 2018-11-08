@@ -20,6 +20,7 @@ class Booking {
   bool isUserCanceling;
   bool isUserLeaving;
   bool isExtendPending;
+  bool isClosed;
   int visitorsCount;
 
   String visitTime;
@@ -47,7 +48,9 @@ class Booking {
         this.visitTime,
         this.leaveTime,
         this.seatNumber,
-        this.updatedAt});
+        this.updatedAt,
+        this.isClosed
+      });
 
   Booking.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -76,7 +79,7 @@ class Booking {
     visitTime = json['visit_time'];
     leaveTime = json['leave_time'];
     seatNumber = json['seat_number'];
-
+    isClosed = json['is_closed'];
   }
 
   Map<String, dynamic> toJson() {

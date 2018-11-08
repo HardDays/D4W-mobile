@@ -8,6 +8,7 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -321,10 +322,11 @@ class _BookingDetailsState extends State<BookingDetails> {
               _booking = booking;
               _isLoading = false;
             });
-            print(
-                'is conffffiiirmed ${_booking.isUserLeaving} and ${_booking.isVisitConfirmed}');
+
             if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
               _showConfirmVisitDialog();
+            if(booking.isClosed !=null && booking.isClosed)
+              _showAdminTerminateDialog();
           }
         } else {
           _showToast(_stringResources.eServer);
@@ -577,6 +579,28 @@ class _BookingDetailsState extends State<BookingDetails> {
     _loadBooking();
   }
 
+  _showAdminTerminateDialog(){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx){
+        return AlertDialog(
+          content: Text(_stringResources.mBookingSessionEnded),
+          actions: <Widget>[
+            FlatButton(onPressed: ()=>_showRefreshedList(), child: Text(_stringResources.tOk.toUpperCase()))
+          ],
+        );
+      }
+    );
+  }
+
+  _showRefreshedList(){
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (ctx) => MainScreen(
+          firstTab: 1,
+        ))
+    );
+  }
   _confirmVisit() {
 //    SharedPreferences.getInstance().then((sp) {
 //      String token = sp.getString(ConstantsManager.TOKEN_KEY);
@@ -702,6 +726,8 @@ class _BookingDetailsState extends State<BookingDetails> {
     _countDownTimer?.cancel();
     super.dispose();
   }
+
+
 
   _showToast(String message) {
     setState(() {
