@@ -46,6 +46,8 @@ PODS:
   - flutter_facebook_login (0.0.1):
     - FBSDKLoginKit (~> 4.29)
     - Flutter
+  - flutter_paystack (0.0.1):
+    - Flutter
   - flutter_webview_plugin (0.0.1):
     - Flutter
   - geolocator (2.1.0):
@@ -121,6 +123,7 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
+  - flutter_paystack (from `.symlinks/plugins/flutter_paystack/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
@@ -139,6 +142,8 @@ EXTERNAL SOURCES:
     :path: .symlinks/flutter/ios-release
   flutter_facebook_login:
     :path: .symlinks/plugins/flutter_facebook_login/ios
+  flutter_paystack:
+    :path: .symlinks/plugins/flutter_paystack/ios
   flutter_webview_plugin:
     :path: .symlinks/plugins/flutter_webview_plugin/ios
   geolocator:
@@ -173,6 +178,7 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 78ba376fcd5b94c001f9999b2cbd3d1f1e56e78d
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   flutter_facebook_login: e3d2f0a348889fe0f49c302bc044b8cc66c691be
+  flutter_paystack: 37e137f43f0effbe2c0ade58aad8b90c129f2588
   flutter_webview_plugin: 116575b48572029304775b768e9f15ebfc316274
   geolocator: 4adbfa4f25078e702f9b790bb49e4ff52158df6d
   google_api_availability: b19830d6be60d6b92dce5fc5b9137c31b04afbf1
