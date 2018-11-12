@@ -57,15 +57,15 @@ class NetworkUtil {
     return http
         .put(url, body: json.encode(body), headers: headers, encoding: encoding)
         .then((http.Response response) {
-      print('post response url ${url}');
-      print('post response headers ${response.headers}');
-      print('post response status ${response.statusCode}');
-      print('post response body ${response.body}');
+      print('put response url ${url}');
+      print('put response headers ${response.headers}');
+      print('put response status ${response.statusCode}');
+      print('put response body ${response.body}');
       final String res = response.body;
       final int statusCode = response.statusCode;
       if (statusCode < 200 || statusCode > 400) {
         //        throw new Exception(res);
-        return {ConstantsManager.SERVER_ERROR: statusCode};
+        return {ConstantsManager.SERVER_ERROR: statusCode, 'body' : res};
       }
       if (json == null) return null;
       return _decoder.convert(res);

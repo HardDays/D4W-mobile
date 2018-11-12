@@ -418,10 +418,12 @@ class _CoWorkingPlaceListScreenState extends State<CoWorkingPlaceListScreen> {
   }
 
   _showToast(String message) {
-    setState(() {
-      _isLoading = false;
-    });
-    _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
+    if(mounted){
+      setState(() {
+        _isLoading = false;
+      });
+      _scaffoldState.currentState.showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 
   _openDetails(CoWorking coWorking) {

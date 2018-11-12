@@ -45,6 +45,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
   String _phone;
 
   double _screenHeight, _screenWidth;
+  final JsonDecoder _decoder = new JsonDecoder();
 
   @override
   void initState() {
@@ -454,26 +455,52 @@ class _ProfileEditState extends State<ProfileEditScreen> {
   }
 
   bool _validateInfo() {
-    if (_email ==null || !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
-      Dialogs.showMessage(context, _stringResources.tError,
-          _stringResources.eWrongEmail, _stringResources.tOk);
-      return false;
-    } else if (_phone ==null || _phone.isEmpty) {
-      Dialogs.showMessage(context, _stringResources.tError,
-          _stringResources.eEmptyPhone, _stringResources.tOk);
-      return false;
+    if(widget.socialLogin ==null || widget.socialLogin ==false){
+      if (_email ==null || !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
+        Dialogs.showMessage(context, _stringResources.tError,
+            _stringResources.eWrongEmail, _stringResources.tOk);
+        return false;
+      } else if (_phone ==null || _phone.isEmpty) {
+        Dialogs.showMessage(context, _stringResources.tError,
+            _stringResources.eEmptyPhone, _stringResources.tOk);
+        return false;
+      }
+    }else{
+      if(_email !=null &&  !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
+        Dialogs.showMessage(context, _stringResources.tError,
+            _stringResources.eWrongEmail, _stringResources.tOk);
+        return false;
+      } else if (_phone !=null && _phone.isEmpty) {
+        Dialogs.showMessage(context, _stringResources.tError,
+            _stringResources.eEmptyPhone, _stringResources.tOk);
+        return false;
+      }
     }
     return true;
   }
 
-  void _onUpdate(User user) {
+  void _onUpdate(Map<String, dynamic> response) {
+    print('user updated front: $response');
     Navigator.pop(context);
-    if (user != null) {
+    if (response != null && response[ConstantsManager.SERVER_ERROR] == null) {
       Dialogs.showMessage(context, _stringResources.tSuccess,
           _stringResources.tProfileChanged, _stringResources.tOk);
     } else {
-      Dialogs.showMessage(context, _stringResources.tError,
-          _stringResources.tTryAgain, _stringResources.tOk);
+      if(response !=null && response[ConstantsManager.SERVER_ERROR] !=null){
+        print('body: ${response['body'].runtimeType}');
+        var body = _decoder.convert(response['body']);
+        print('email: ${body['email'].runtimeType}');
+        if(body['email'][0] == 'ALREADY_TAKEN'){
+          Dialogs.showMessage(context, _stringResources.tError,
+              _stringResources.eTakenEmail, _stringResources.tOk);
+        }else{
+          Dialogs.showMessage(context, _stringResources.tError,
+              _stringResources.tTryAgain, _stringResources.tOk);
+        }
+      }else{
+        Dialogs.showMessage(context, _stringResources.tError,
+            _stringResources.tTryAgain, _stringResources.tOk);
+      }
     }
   }
 }

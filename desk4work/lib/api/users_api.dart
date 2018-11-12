@@ -13,6 +13,7 @@ class UsersApi {
   UsersApi.internal();
   factory UsersApi() => _instance;
 
+
   Future<User> getMe(String token){
     assert(token !=null);
     String url = _usersUrl +"get_me";
@@ -22,13 +23,13 @@ class UsersApi {
     });
   }
   
-  Future<User> updateMe(String token, User user){
+  Future<Map<String, dynamic>> updateMe(String token, User user){
     assert(token !=null);
     assert(user !=null);
     String url = _usersUrl +"update_me";
     _headers[ConstantsManager.TOKEN_HEADER] = token;
     return _networkUtil.put(url, headers: _headers, body: user.toJson()).then((respBody){
-      return User.fromJson(respBody);
+      return respBody;
     });
   }
 
