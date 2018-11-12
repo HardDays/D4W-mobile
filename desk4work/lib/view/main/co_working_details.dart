@@ -647,7 +647,7 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             String message = _isPrinterSelected ? " " : _getMessageStart(
                 amenities[amenity]) +
                 " ${_stringResources.tipPrinter}";
-            Widget printerIconButton = _getEquipmentButton(Icons.print,
+            Widget printerIconButton = _getEquipmentButtonFromPNG('assets/free_printing.png',
                 _stringResources.tPrint, _isPrinterSelected, message, 1);
             amenitiesWidgets.add(printerIconButton);
             break;
@@ -660,11 +660,17 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             amenitiesWidgets.add(coffeeIconButton);
             break;
           case PARKING:
+            bool isFree = amenities[PARKING];
             String message = _isParkingSelected ? " " : _getMessageStart(
                 amenities[amenity]) +
                 " ${_stringResources.tipParking}";
-            Widget parkingIconButton = _getEquipmentButton(
+            Widget parkingIconButton = !isFree ? _getEquipmentButton(
                 Icons.local_parking,
+                _stringResources.tipParking,
+                _isParkingSelected,
+                message,
+                3) : _getEquipmentButtonFromPNG(
+                'assets/free_parking_white.png',
                 _stringResources.tipParking,
                 _isParkingSelected,
                 message,
@@ -702,6 +708,41 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
       _explanations = message;
     });
   }
+
+  Column _getEquipmentButtonFromPNG(String activatedUri,
+      String caption, bool isSelected,
+      String explain, int buttonToSwitch) {
+    return Column(
+      children: <Widget>[
+        Container(
+            height: _screenHeight * .072,
+            width: _screenWidth * .128,
+            padding: EdgeInsets.all(8.0),
+            decoration: (isSelected)
+                ? BoxDecoration(color: Colors.orange, shape: BoxShape.circle)
+                : null,
+            child: InkWell(
+              child: ImageIcon(
+                AssetImage(activatedUri),
+                color: isSelected ? Colors.white : Colors.black26,
+                semanticLabel: caption,
+              ),
+              onTap: () {
+                _setTipText(explain);
+                _switchButton(buttonToSwitch);
+              },
+            )),
+        Text(
+          caption,
+          style: Theme
+              .of(context)
+              .textTheme
+              .caption,
+        )
+      ],
+    );
+  }
+
 
   Column _getEquipmentButton(IconData icon, String caption, bool isSelected,
       String explain, int buttonToSwitch) {
