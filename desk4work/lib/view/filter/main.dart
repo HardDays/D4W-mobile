@@ -19,11 +19,14 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   Filter filter;
   FilterStateContainerState _container;
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
+  bool _isTheNextDay;
 
   @override
   void initState() {
+    _isTheNextDay = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _container.getFilter();
+      _checkNextDay();
     });
     super.initState();
   }
@@ -181,7 +184,9 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                               Padding(
                                 padding: EdgeInsets.only(left: 8.0),
                               ),
-                              Text((filter?.endHour ?? _stringResources.hEnd))
+                              Text((filter?.endHour ?? _stringResources.hEnd)),
+                              Container(width: 24.0,),
+                              _isTheNextDay ?  Text(_stringResources.tNextDay) : Container(),
                             ],
                           ),
                         ),
@@ -319,24 +324,6 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     _container.clearFilter();
   }
 
-
-  String _getDefaultStartHour(){
-    int intHour = DateTime.now().hour + 1;
-    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
-    int intMinutes = DateTime.now().minute;
-    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
-    return '$hour:$minutes';
-  }
-
-
-  String _getDefaultEndHour(){
-    int intHour = DateTime.now().hour + 2;
-    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
-    int intMinutes = DateTime.now().minute;
-    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
-    return '$hour:$minutes';
-  }
-
   void _closeFilter() {
     Navigator.of(context).pop([false]);
   }
@@ -391,6 +378,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         if(dates[0] != dates[dates.length - 1])
           filterDates.add(dateTimeEnd);
         _container.updateFilterInfo(date: filterDates);
+        _checkNextDay();
       }
     });
   }
@@ -435,6 +423,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         int start = int.parse(toParseStart?.substring(0, 2) ?? '0');
         int end = int.parse(toParseEnd?.substring(0, 2) ?? '0');
         _container.updateFilterInfo(startHour: result[0], endHour: result[1]);
+        _checkNextDay();
       }
     });
   }
@@ -443,6 +432,27 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     int places = (filter != null) ? filter.numberOfSeatsNeeded : 1;
     places++;
     _container.updateFilterInfo(numberOfSeatsNeeded: places);
+  }
+
+  _checkNextDay(){
+    int startHour = int.parse(filter.startHour.substring(0,filter.startHour.indexOf(':')));
+    int endHour = int.parse(filter.endHour.substring(0,filter.endHour.indexOf(':')));
+    int endMinutes = int.parse(filter.endHour.substring(filter.endHour.indexOf(':')+1));
+    int startMinutes = int.parse(filter.startHour.substring(filter.startHour.indexOf(':')+1));
+
+    if(filter.date ==null || filter.date.length <2){
+      if((endHour < startHour) || (endHour == startHour && endMinutes <= startMinutes)){
+        setState(() {
+          _isTheNextDay = true;
+        });
+      }else{
+        setState(() {
+          _isTheNextDay = false;
+        });
+      }
+    }
+
+
   }
 
   void _reducePlaces() {

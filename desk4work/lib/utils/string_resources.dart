@@ -155,6 +155,8 @@ class StringResources {
 
   static final String _messageEndedSession = 'messageEndedSession';
 
+  static final String _textNextDay = 'textNextDay';
+
 
   StringResources(this.locale);
 
@@ -269,6 +271,7 @@ class StringResources {
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
       _textNothingToShow: 'There are no coworkings around',
+      _textNextDay : '+1d',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
@@ -416,6 +419,7 @@ class StringResources {
       _textFilterSettingsAlertSuffix: ' пожалуйста',
       _textNothingToShow: 'Вблизи вас нет коворкингов',
       _textNoSeat: 'Нет свобоных мест',
+      _textNextDay : '+1д',
       _errorEmptyLogin: 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль слишком коротый',
       _errorEmptyPasswordConfirm:
@@ -606,6 +610,7 @@ class StringResources {
   String get tHours => _localizedValues[locale.languageCode][_textHours];
 
   String get tMinutes => _localizedValues[locale.languageCode][_textMinutes];
+  String get tNextDay => _localizedValues[locale.languageCode][_textNextDay];
 
   String get tSeconds => _localizedValues[locale.languageCode][_textSeconds];
 
