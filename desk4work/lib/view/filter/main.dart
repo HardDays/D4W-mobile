@@ -319,6 +319,24 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     _container.clearFilter();
   }
 
+
+  String _getDefaultStartHour(){
+    int intHour = DateTime.now().hour + 1;
+    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+    int intMinutes = DateTime.now().minute;
+    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+    return '$hour:$minutes';
+  }
+
+
+  String _getDefaultEndHour(){
+    int intHour = DateTime.now().hour + 2;
+    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+    int intMinutes = DateTime.now().minute;
+    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+    return '$hour:$minutes';
+  }
+
   void _closeFilter() {
     Navigator.of(context).pop([false]);
   }
@@ -355,6 +373,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
       _container.updateFilterInfo(latLong: result);
     }
   }
+
 
   void _openDatePicker() {
     List<DateTime> dates= _getDatesFromFilter();

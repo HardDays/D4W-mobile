@@ -115,8 +115,8 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         filter.place = sp.getString(Filter.FILTER_PLACE) ;
         filter.date = [];
         filter.date = sp.getStringList(Filter.FILTER_DATES);
-        filter.endHour = sp.getString(Filter.FILTER_END_HOUR);
-        filter.startHour = sp.getString(Filter.FILTER_START_HOUR);
+        filter.endHour = sp.getString(Filter.FILTER_END_HOUR) ?? _getDefaultEndHour();
+        filter.startHour = sp.getString(Filter.FILTER_START_HOUR) ?? _getDefaultStartHour();
         filter.parkingNeeded = sp.getBool(Filter.FILTER_PARKING)  ?? false;
         filter.teaOrCoffeeNeeded = sp.getBool(Filter.FILTER_TEA_COFFEE)  ?? false;
         filter.freePrinter = sp.getBool(Filter.FILTER_FREE_PRINTING)  ?? false;
@@ -128,11 +128,34 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         setState(() {
           this.filter = filter;
         });
+      }else{
+        Filter filter = Filter();
+        filter.endHour = _getDefaultEndHour();
+        filter.startHour = _getDefaultStartHour();
+        setState(() {
+          this.filter = filter;
+        });
       }
     });
     }
 
 
+    String _getDefaultStartHour(){
+     int intHour = DateTime.now().hour + 1;
+     String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+     int intMinutes = DateTime.now().minute;
+     String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+     return '$hour:$minutes';
+    }
+
+
+    String _getDefaultEndHour(){
+      int intHour = DateTime.now().hour + 2;
+      String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+      int intMinutes = DateTime.now().minute;
+      String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+      return '$hour:$minutes';
+    }
 
   void updateFilterInfo(
       {String latLong,
