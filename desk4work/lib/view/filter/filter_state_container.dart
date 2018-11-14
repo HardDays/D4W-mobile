@@ -142,6 +142,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
 
     String _getDefaultStartHour(){
      int intHour = DateTime.now().hour + 1;
+     intHour = (intHour >=24) ? 0 : intHour;
      String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
      int intMinutes = DateTime.now().minute;
      String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
@@ -151,11 +152,13 @@ class FilterStateContainerState extends State<FilterStateContainer> {
 
     String _getDefaultEndHour(){
       int intHour = DateTime.now().hour + 2;
+      intHour = (intHour >=24) ? 1 : intHour;
       String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
       int intMinutes = DateTime.now().minute;
       String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
       return '$hour:$minutes';
     }
+
 
   void updateFilterInfo(
       {String latLong,
