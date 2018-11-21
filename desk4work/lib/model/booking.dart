@@ -103,6 +103,7 @@ class Booking {
         ' coworkingImageId: $coworkingImageId, userId: $userId, price: $price, '
         'confirmed: $isVisitConfirmed, beginWork: $beginWork, endWork: $endWork, '
         'date: $date, beginDate: $beginDate, endDate: $endDate, '
+        'canceling: $isUserCanceling, leaving: $isUserLeaving '
         'createdAt: $createdAt}';
   }
 

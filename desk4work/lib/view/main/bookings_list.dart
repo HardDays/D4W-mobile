@@ -9,6 +9,7 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/main/booking_details.dart';
+import 'package:desk4work/view/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +19,7 @@ class BookingsListScreen extends StatefulWidget {
 
   BookingsListScreen(List<Booking> bookings, this._token){
     _bookings = (bookings ?? []).where((b){
-      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed && !b.isUserLeaving;
+      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed && !b.isUserLeaving && !b.isUserCanceling;
     }).toList();
   }
 
@@ -70,6 +71,7 @@ class _BookingsListState extends State<BookingsListScreen> {
       }else{
         for(Booking b in _bookings){
           DateTime endDateTime = DateTime.parse(b.endDate);
+          print('booking list: $b');
           if(endDateTime.isAfter(DateTime.now())){
           int coworkingId = b.coworkingId;
           _getCoWorking(coworkingId).then((coworking){
@@ -395,7 +397,7 @@ class _BookingsListState extends State<BookingsListScreen> {
            List<Booking> temp = [];
            for(Booking b in bookings){
              DateTime endDateTime = DateTime.parse(b.endDate);
-             if(endDateTime.isAfter(DateTime.now()) && !b.isClosed && !b.isUserLeaving){
+             if(endDateTime.isAfter(DateTime.now()) && !b.isClosed && !b.isUserLeaving && !b.isUserCanceling){
                temp.add(b);
                int coworkingId = b.coworkingId;
                _getCoWorking(coworkingId).then((coworking){
@@ -424,11 +426,7 @@ class _BookingsListState extends State<BookingsListScreen> {
         .push(MaterialPageRoute(builder: (ctx) => BookingDetails(booking)))
         .then((b) {
       if (b != null && (b.id == booking.id)) {
-        _bookings.remove(booking);
-        widget.removeBooking(booking.id);
-        setState(() {
-          _bookings = _bookings;
-        });
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx)=>MainScreen(firstTab: 1,)));
       }
     });
   }
