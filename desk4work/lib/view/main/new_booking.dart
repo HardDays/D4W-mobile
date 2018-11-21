@@ -5,6 +5,7 @@ import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/common/theme_util.dart';
 import 'package:desk4work/view/filter/date_filter.dart';
+import 'package:desk4work/view/filter/filter_state_container.dart';
 import 'package:desk4work/view/filter/time_filter.dart';
 import 'package:desk4work/view/main/booking_details.dart';
 import 'package:desk4work/view/main/main.dart';
@@ -52,8 +53,8 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
     int timeEnd = (time < 23) ? time + 1 : 1;
     String timeEndString = (timeEnd < 10) ? '0$timeEnd' : timeEnd.toString();
 
-    _starWork = "$timeStartString:$minString";
-    _endWork = "$timeEndString:$minString";
+    _starWork = FilterStateContainerState.getDefaultStartHour();
+    _endWork = FilterStateContainerState.getDefaultEndHour();
 
     _isLoading = false;
     _selectedDate = DateTime.now();
