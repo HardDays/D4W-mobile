@@ -41,10 +41,8 @@ class Filter {
       this.teaOrCoffeeNeeded = false,
       this.kitchenNeeded = false,
       this.parkingNeeded = false,
-        this.freePrinter = false,
-        this.freeParkingNeeded = false
-      });
-
+      this.freePrinter = false,
+      this.freeParkingNeeded = false});
 
   static Future<Filter> savedFilter() {
     return SharedPreferences.getInstance().then((sp) {
@@ -57,13 +55,12 @@ class Filter {
         filter.date = sp.getStringList(Filter.FILTER_DATES);
         filter.endHour = sp.getString(Filter.FILTER_END_HOUR);
         filter.startHour = sp.getString(Filter.FILTER_START_HOUR);
-        filter.parkingNeeded =
-            sp.getBool(Filter.FILTER_PARKING) ?? false;
+        filter.parkingNeeded = sp.getBool(Filter.FILTER_PARKING) ?? false;
         filter.teaOrCoffeeNeeded =
             sp.getBool(Filter.FILTER_TEA_COFFEE) ?? false;
-        filter.freePrinter =
-            sp.getBool(Filter.FILTER_FREE_PRINTING) ?? false;
-        filter.freeParkingNeeded = sp.getBool(Filter.FILTER_FREE_PARKING) ?? false;
+        filter.freePrinter = sp.getBool(Filter.FILTER_FREE_PRINTING) ?? false;
+        filter.freeParkingNeeded =
+            sp.getBool(Filter.FILTER_FREE_PARKING) ?? false;
 
         filter.printerNeeded = sp.getBool(Filter.FILTER_PRINTER) ?? false;
         filter.kitchenNeeded = sp.getBool(Filter.FILTER_KITCHEN) ?? false;
@@ -80,8 +77,9 @@ class Filter {
     return 'Filter{place: $place, startHour: $startHour, endHour: $endHour, '
         'date: $date, numberOfSeatsNeeded: $numberOfSeatsNeeded,'
         ' printerNeeded: $printerNeeded, teaOrCoffeeNeeded: $teaOrCoffeeNeeded,'
-        ' parkingNeeded: $parkingNeeded, ''freeparkingNeede: $freeParkingNeeded'
-    'freePrintingNeeded: $freePrinter'
+        ' parkingNeeded: $parkingNeeded, '
+        'freeparkingNeede: $freeParkingNeeded'
+        'freePrintingNeeded: $freePrinter'
         'kitchenNeeded: $kitchenNeeded,'
         ' parkForBicycleNeeded: $parkingNeeded}';
   }
@@ -106,29 +104,33 @@ class FilterStateContainer extends StatefulWidget {
 class FilterStateContainerState extends State<FilterStateContainer> {
   Filter filter;
 
-   void getFilter() {
-    SharedPreferences.getInstance().then((sp){
+  void getFilter() {
+    SharedPreferences.getInstance().then((sp) {
       bool isFilterSet = sp.getBool(Filter.FILTER_IS_SET);
       print('gettting filter preferences');
       if (isFilterSet != null && isFilterSet == true) {
         Filter filter = Filter();
-        filter.place = sp.getString(Filter.FILTER_PLACE) ;
+        filter.place = sp.getString(Filter.FILTER_PLACE);
         filter.date = [];
         filter.date = sp.getStringList(Filter.FILTER_DATES);
-        filter.endHour = sp.getString(Filter.FILTER_END_HOUR) ?? _getDefaultEndHour();
-        filter.startHour = sp.getString(Filter.FILTER_START_HOUR) ?? _getDefaultStartHour();
-        filter.parkingNeeded = sp.getBool(Filter.FILTER_PARKING)  ?? false;
-        filter.teaOrCoffeeNeeded = sp.getBool(Filter.FILTER_TEA_COFFEE)  ?? false;
-        filter.freePrinter = sp.getBool(Filter.FILTER_FREE_PRINTING)  ?? false;
-        filter.freeParkingNeeded = sp.getBool(Filter.FILTER_FREE_PARKING) ?? false;
-        filter.printerNeeded = sp.getBool(Filter.FILTER_PRINTER)  ?? false;
-        filter.kitchenNeeded = sp.getBool(Filter.FILTER_KITCHEN)  ?? false;
+        filter.endHour =
+            sp.getString(Filter.FILTER_END_HOUR) ?? _getDefaultEndHour();
+        filter.startHour =
+            sp.getString(Filter.FILTER_START_HOUR) ?? _getDefaultStartHour();
+        filter.parkingNeeded = sp.getBool(Filter.FILTER_PARKING) ?? false;
+        filter.teaOrCoffeeNeeded =
+            sp.getBool(Filter.FILTER_TEA_COFFEE) ?? false;
+        filter.freePrinter = sp.getBool(Filter.FILTER_FREE_PRINTING) ?? false;
+        filter.freeParkingNeeded =
+            sp.getBool(Filter.FILTER_FREE_PARKING) ?? false;
+        filter.printerNeeded = sp.getBool(Filter.FILTER_PRINTER) ?? false;
+        filter.kitchenNeeded = sp.getBool(Filter.FILTER_KITCHEN) ?? false;
         filter.numberOfSeatsNeeded =
             sp.getInt(Filter.FILTER_NUMBER_OF_SEATS_NEEDED) ?? 1;
         setState(() {
           this.filter = filter;
         });
-      }else{
+      } else {
         Filter filter = Filter();
         filter.endHour = _getDefaultEndHour();
         filter.startHour = _getDefaultStartHour();
@@ -137,28 +139,25 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         });
       }
     });
-    }
+  }
 
+  String _getDefaultStartHour() {
+    int intHour = DateTime.now().hour + 1;
+    intHour = (intHour >= 24) ? 0 : intHour;
+    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+    int intMinutes = DateTime.now().minute;
+    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+    return '$hour:$minutes';
+  }
 
-    String _getDefaultStartHour(){
-     int intHour = DateTime.now().hour + 1;
-     intHour = (intHour >=24) ? 0 : intHour;
-     String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
-     int intMinutes = DateTime.now().minute;
-     String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
-     return '$hour:$minutes';
-    }
-
-
-    String _getDefaultEndHour(){
-      int intHour = DateTime.now().hour + 2;
-      intHour = (intHour >=24) ? 1 : intHour;
-      String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
-      int intMinutes = DateTime.now().minute;
-      String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
-      return '$hour:$minutes';
-    }
-
+  String _getDefaultEndHour() {
+    int intHour = DateTime.now().hour + 2;
+    intHour = (intHour >= 24) ? 1 : intHour;
+    String hour = (intHour > 9) ? intHour.toString() : '0$intHour';
+    int intMinutes = DateTime.now().minute;
+    String minutes = (intMinutes > 9) ? intMinutes.toString() : '0$intMinutes';
+    return '$hour:$minutes';
+  }
 
   void updateFilterInfo(
       {String latLong,
@@ -171,8 +170,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
       parkingNeeded,
       kitchenNeeded,
       freeParkingNeeded,
-        freePrinterNeeded
-      }) {
+      freePrinterNeeded}) {
     if (filter == null) {
       filter = Filter(
           place: latLong,
@@ -185,8 +183,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
           parkingNeeded: parkingNeeded ?? false,
           kitchenNeeded: kitchenNeeded ?? false,
           freeParkingNeeded: freeParkingNeeded ?? false,
-        freePrinter: freePrinterNeeded ?? false
-      );
+          freePrinter: freePrinterNeeded ?? false);
 
       setState(() {
         filter = filter;
@@ -201,8 +198,7 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         filter.printerNeeded = printerNeeded ?? filter.printerNeeded;
         filter.teaOrCoffeeNeeded =
             teaOrCoffeeNeeded ?? filter.teaOrCoffeeNeeded;
-        filter.parkingNeeded =
-            parkingNeeded ?? filter.parkingNeeded;
+        filter.parkingNeeded = parkingNeeded ?? filter.parkingNeeded;
         filter.kitchenNeeded = kitchenNeeded ?? filter.kitchenNeeded;
         filter.freeParkingNeeded =
             freeParkingNeeded ?? filter.freeParkingNeeded;
@@ -215,14 +211,35 @@ class FilterStateContainerState extends State<FilterStateContainer> {
       sp.setString(Filter.FILTER_END_HOUR, endHour ?? filter.endHour);
       sp.setString(Filter.FILTER_START_HOUR, startHour ?? filter.startHour);
       sp.setBool(Filter.FILTER_PARKING, parkingNeeded ?? filter.parkingNeeded);
-      sp.setBool(Filter.FILTER_TEA_COFFEE, teaOrCoffeeNeeded ?? filter.teaOrCoffeeNeeded);
-      sp.setBool(Filter.FILTER_FREE_PARKING, freeParkingNeeded ?? filter.freeParkingNeeded);
-      sp.setBool(Filter.FILTER_FREE_PRINTING, freePrinterNeeded ?? filter.freePrinter);
+      sp.setBool(Filter.FILTER_TEA_COFFEE,
+          teaOrCoffeeNeeded ?? filter.teaOrCoffeeNeeded);
+      sp.setBool(Filter.FILTER_FREE_PARKING,
+          freeParkingNeeded ?? filter.freeParkingNeeded);
+      sp.setBool(
+          Filter.FILTER_FREE_PRINTING, freePrinterNeeded ?? filter.freePrinter);
       sp.setBool(Filter.FILTER_PRINTER, printerNeeded ?? filter.printerNeeded);
       sp.setBool(Filter.FILTER_KITCHEN, kitchenNeeded ?? filter.kitchenNeeded);
-      sp.setInt(Filter.FILTER_NUMBER_OF_SEATS_NEEDED, numberOfSeatsNeeded ?? filter.numberOfSeatsNeeded);
+      sp.setInt(Filter.FILTER_NUMBER_OF_SEATS_NEEDED,
+          numberOfSeatsNeeded ?? filter.numberOfSeatsNeeded);
       sp.setBool(Filter.FILTER_IS_SET, true);
     });
+  }
+
+
+  List<String> _compareDate(List<String> filterDate){
+    if(filterDate== null || filterDate.length == 0)
+      return <String>[_getDefaultDate()];
+
+  }
+
+  String _getDefaultDate() {
+    DateTime dateTime = DateTime.now();
+    int dayInt = dateTime.day;
+    String day = (dayInt < 10) ? "0$dayInt" : dayInt.toString();
+    int montInt = dateTime.month;
+    String month = (montInt < 10) ? "0$montInt" : montInt.toString();
+    String year = dateTime.year.toString();
+    return "$day.$month.$year";
   }
 
   void clearFilter() {

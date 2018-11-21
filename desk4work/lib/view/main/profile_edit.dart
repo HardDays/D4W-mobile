@@ -63,6 +63,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
     _emailFocus = FocusNode();
     _phoneFocus = FocusNode();
     _socialLogin = widget.socialLogin ?? false;
+    print("social login: $_socialLogin");
   }
 
   @override
@@ -266,7 +267,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                   color: Colors.white,
                   border: Border.all(color: Colors.grey.withAlpha(100))),
               child: Column(children: <Widget>[
-                Container(
+                _socialLogin ? Container(): Container(
                     padding: EdgeInsets.only(
                         left: 20.0, top: 10.0, bottom: 10.0, right: 20.0),
                     child: Row(
@@ -360,7 +361,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
                         ])),
               ])),
           Padding(padding: EdgeInsets.only(top: 7.0)),
-          GestureDetector(
+        _socialLogin ? Container() :GestureDetector(
               onTap: () {
                 Navigator.push(
                     context,
@@ -434,6 +435,8 @@ class _ProfileEditState extends State<ProfileEditScreen> {
     );
   }
 
+
+
   void _updateProfile() {
     if (_validateInfo()) {
       var user = User(
@@ -455,7 +458,7 @@ class _ProfileEditState extends State<ProfileEditScreen> {
   }
 
   bool _validateInfo() {
-    if(widget.socialLogin ==null || widget.socialLogin ==false){
+    if(!_socialLogin){
       if (_email ==null || !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
         Dialogs.showMessage(context, _stringResources.tError,
             _stringResources.eWrongEmail, _stringResources.tOk);
@@ -466,11 +469,12 @@ class _ProfileEditState extends State<ProfileEditScreen> {
         return false;
       }
     }else{
-      if(_email !=null &&  !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
-        Dialogs.showMessage(context, _stringResources.tError,
-            _stringResources.eWrongEmail, _stringResources.tOk);
-        return false;
-      } else if (_phone !=null && _phone.isEmpty) {
+//      if(_email !=null &&  !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email)) {
+//        Dialogs.showMessage(context, _stringResources.tError,
+//            _stringResources.eWrongEmail, _stringResources.tOk);
+//        return false;
+//      } else
+        if (_phone !=null && _phone.isEmpty) {
         Dialogs.showMessage(context, _stringResources.tError,
             _stringResources.eEmptyPhone, _stringResources.tOk);
         return false;
