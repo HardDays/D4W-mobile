@@ -535,7 +535,8 @@ class _BookingDetailsState extends State<BookingDetails> {
           if (isCanceled != null && isCanceled.length == 0) {
             _loadBooking().then((_) {
               sp.remove(_booking.id.toString());
-              _showToast(_stringResources.mStopRequestSent);
+//              _showToast(_stringResources.mStopRequestSent);
+            Navigator.of(context).pop(widget._booking);
             });
           } else {
             print('can\'t cancel the booking $isCanceled');

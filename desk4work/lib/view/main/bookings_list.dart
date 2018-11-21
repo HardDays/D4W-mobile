@@ -18,8 +18,18 @@ class BookingsListScreen extends StatefulWidget {
 
   BookingsListScreen(List<Booking> bookings, this._token){
     _bookings = (bookings ?? []).where((b){
-      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed;
+      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed && !b.isUserLeaving;
     }).toList();
+  }
+
+  removeBooking(int id){
+    Booking booking;
+    _bookings.forEach((b){
+      if(b.id == id){
+        booking = b;
+      }
+    });
+    if(booking!=null) _bookings.remove(booking);
   }
 
   @override
@@ -385,7 +395,7 @@ class _BookingsListState extends State<BookingsListScreen> {
            List<Booking> temp = [];
            for(Booking b in bookings){
              DateTime endDateTime = DateTime.parse(b.endDate);
-             if(endDateTime.isAfter(DateTime.now()) && !b.isClosed){
+             if(endDateTime.isAfter(DateTime.now()) && !b.isClosed && !b.isUserLeaving){
                temp.add(b);
                int coworkingId = b.coworkingId;
                _getCoWorking(coworkingId).then((coworking){
@@ -413,9 +423,9 @@ class _BookingsListState extends State<BookingsListScreen> {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => BookingDetails(booking)))
         .then((b) {
-      if (b != null) {
-        Booking booking = b;
+      if (b != null && (b.id == booking.id)) {
         _bookings.remove(booking);
+        widget.removeBooking(booking.id);
         setState(() {
           _bookings = _bookings;
         });
