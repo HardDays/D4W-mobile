@@ -24,8 +24,8 @@ class Dialogs {
       )
     );
   }
-  static void showMessage(BuildContext context, String title, String body, String ok){
-    showDialog(context: context, 
+  static Future showMessage(BuildContext context, String title, String body, String ok){
+    return showDialog(context: context,
       child: AlertDialog(
         title: Text(title),
         content: Text(body),

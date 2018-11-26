@@ -88,9 +88,12 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
   }
 
   void _onUpdate(bool res){
+    print('has password changed: $res');
     Navigator.pop(context);
     if (res){
-      Dialogs.showMessage(context, _stringResources.tSuccess, _stringResources.tPasswordChanged, _stringResources.tOk);
+      Dialogs.showMessage(context, _stringResources.tSuccess, _stringResources.tPasswordChanged, _stringResources.tOk).then((_){
+        Navigator.pop(context);
+      });
     }else{
       Dialogs.showMessage(context, _stringResources.tError, _stringResources.tWrongOldPassword, _stringResources.tOk);
     }
