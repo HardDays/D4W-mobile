@@ -431,7 +431,6 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
     Color timeTextColor;
     int weekDay;
 
-    print('working days: ${workingDay.day}');
     switch (workingDay.day) {
       case ConstantsManager.MONDAY:
         day = _stringResources.tMonday;
@@ -621,11 +620,12 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
         case "coffee":
           amenities[COFFEE_OR_TEA] = false;
           break;
+        case "parking":
+          if(!amenities.containsKey(PARKING))
+          amenities[PARKING] = false;
+          break;
         case "free_parking":
           amenities[PARKING] = true;
-          break;
-        case "parking":
-          amenities[PARKING] = false;
           break;
         case "snacks":
           amenities[KITCHEN] = true;
@@ -664,13 +664,13 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
             String message = _isParkingSelected ? " " : _getMessageStart(
                 amenities[amenity]) +
                 " ${_stringResources.tipParking}";
-            Widget parkingIconButton = !isFree ? _getEquipmentButton(
-                Icons.local_parking,
+            Widget parkingIconButton = isFree ?  _getEquipmentButtonFromPNG(
+                'assets/free_parking_white.png',
                 _stringResources.tipParking,
                 _isParkingSelected,
                 message,
-                3) : _getEquipmentButtonFromPNG(
-                'assets/free_parking_white.png',
+                3):_getEquipmentButton(
+                Icons.local_parking,
                 _stringResources.tipParking,
                 _isParkingSelected,
                 message,

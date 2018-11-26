@@ -154,6 +154,7 @@ class StringResources {
   static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
 
   static final String _messageEndedSession = 'messageEndedSession';
+  static final String _messageUnableToGetLocation = 'messageUnableToGetLocation';
 
   static final String _textNextDay = 'textNextDay';
 
@@ -304,6 +305,7 @@ class StringResources {
       _messageBookingRequestSentSuffix: 'See you soon at the reception desk!',
       _messageStopRequestPending: 'Terminate request already sent',
       _messageEndedSession: 'The administrator has ended your session please go to the reception desk for more information',
+      _messageUnableToGetLocation: 'We can\'t get your location, please allow this app to user your gps',
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
@@ -451,6 +453,7 @@ class StringResources {
           'и отметьтесь, когда приедете. Скоро увидимся!',
       _messageStopRequestPending: 'Вы уже отправили запрос',
       _messageEndedSession: 'Администратор закончил вашу сессию, пожалуйста, зайдите на стойку регистрации для получения дополнительной информации',
+      _messageUnableToGetLocation: 'Мы не можем получить ваше местоположение, пожалуйста, разрешите этому приложению использовать ваш gps',
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
@@ -831,4 +834,7 @@ class StringResources {
 
   String get mBookingSessionEnded =>
       _localizedValues[locale.languageCode][_messageEndedSession];
+
+  String get mUnableToAccessLocation =>
+      _localizedValues[locale.languageCode][_messageUnableToGetLocation];
 }
