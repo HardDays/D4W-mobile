@@ -22,12 +22,20 @@ class TimeFilterState extends State<TimeFilterScreen> {
   double _confirmButtonHeight;
   double _confirmButtonWidth;
   bool _isStart;
+  int _defaultMinutes;
 
   @override
   void initState() {
     _tempStart = widget._startTime;
     _tempEnd = widget._endTime;
     _isStart = widget._isStart;
+    if(_tempStart!=null){
+      try{
+        _defaultMinutes = int.parse(_tempStart.substring(_tempStart.indexOf(':')+1));
+      }catch(e){
+        print('default minutes error: $e');
+      }
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_tempStart == null) _getDefaultStart();
 
@@ -148,7 +156,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
                       hours: (_isStart)
                           ? _getTimePickerStart()<24 ? _getTimePickerStart() : 1
                           : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1,
-                    minutes: DateTime.now().minute
+                    minutes: _defaultMinutes ?? DateTime.now().minute
                   ),
                   onTimerDurationChanged: (duration) {
                     String hh = (duration.inMinutes / 60).truncate().toString();
