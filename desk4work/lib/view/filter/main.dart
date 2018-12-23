@@ -435,22 +435,25 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   }
 
   _checkNextDay(){
-    int startHour = int.parse(filter.startHour.substring(0,filter.startHour.indexOf(':')));
-    int endHour = int.parse(filter.endHour.substring(0,filter.endHour.indexOf(':')));
-    int endMinutes = int.parse(filter.endHour.substring(filter.endHour.indexOf(':')+1));
-    int startMinutes = int.parse(filter.startHour.substring(filter.startHour.indexOf(':')+1));
+    if(filter !=null){
+      int startHour = int.parse(filter.startHour.substring(0,filter.startHour.indexOf(':')));
+      int endHour = int.parse(filter.endHour.substring(0,filter.endHour.indexOf(':')));
+      int endMinutes = int.parse(filter.endHour.substring(filter.endHour.indexOf(':')+1));
+      int startMinutes = int.parse(filter.startHour.substring(filter.startHour.indexOf(':')+1));
 
-    if(filter.date ==null || filter.date.length <2){
-      if((endHour < startHour) || (endHour == startHour && endMinutes <= startMinutes)){
-        setState(() {
-          _isTheNextDay = true;
-        });
-      }else{
-        setState(() {
-          _isTheNextDay = false;
-        });
+      if(filter.date ==null || filter.date.length <2){
+        if((endHour < startHour) || (endHour == startHour && endMinutes <= startMinutes)){
+          setState(() {
+            _isTheNextDay = true;
+          });
+        }else{
+          setState(() {
+            _isTheNextDay = false;
+          });
+        }
       }
     }
+
 
 
   }
