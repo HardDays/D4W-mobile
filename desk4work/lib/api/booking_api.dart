@@ -56,19 +56,27 @@ class BookingApi {
     int startTime = int.parse(startHour.substring(0,startHour.indexOf(':')));
     int endTime = int.parse(endHour.substring(0,endHour.indexOf(':')));
 
+    DateTime startDateTime = DateTime.parse("$date $startHour");
+    startDateTime = startDateTime.add(DateTime.now().timeZoneOffset);
 
-    String startDate = date + "T" + startHour;
-    String endDate = date + "T" + endHour;
+    String startDate = startDateTime.toIso8601String();
+
+//    String startDate = date + "T" + startHour;
+//    String endDate = date + "T" + endHour;
+    DateTime endDateTime = DateTime.parse("$date $endHour");
     if(endTime < startTime){
-      String year = date.substring(0,4);
-      String month = (date.substring(6).startsWith('-')) ? date.substring(5,6) : date.substring(5,7);
-      month = (int.parse(month) > 9) ? month : "0"+month;
-      String day = (date.substring(6).startsWith('-')) ? date.substring(7) : date.substring(8);
-      day = (int.parse(day) > 9) ? day : "0"+day;
-      DateTime endDateTime = DateTime.parse('$year$month$day').add(Duration(days: 1));
-      endDate = '${endDateTime.year}-${endDateTime.month}-${endDateTime.day}T$endHour';
+      endDateTime.add(Duration(days: 1));
+//      String year = date.substring(0,4);
+//      String month = (date.substring(6).startsWith('-')) ? date.substring(5,6) : date.substring(5,7);
+//      month = (int.parse(month) > 9) ? month : "0"+month;
+//      String day = (date.substring(6).startsWith('-')) ? date.substring(7) : date.substring(8);
+//      day = (int.parse(day) > 9) ? day : "0"+day;
+//      endDateTime = DateTime.parse('$year$month$day').add(Duration(days: 1));
+//      endDate = '${endDateTime.year}-${endDateTime.month}-${endDateTime.day}T$endHour';
 
     }
+    endDateTime = endDateTime.add(DateTime.now().timeZoneOffset);
+    String endDate = endDateTime.toIso8601String();
     String url = ConstantsManager.BASE_URL + "bookings/create";
 
     _headers[ConstantsManager.TOKEN_HEADER] = token;

@@ -657,20 +657,31 @@ class _BookingDetailsState extends State<BookingDetails> {
     Duration remaining;
     String start = _booking.beginDate;
     String end = _booking.endDate;
+    DateTime now = DateTime.now();
+    Duration offset = now.timeZoneOffset;
     try {
-      DateTime startTime = DateTime.parse(start.substring(0, start.length - 1));
-      DateTime endTime = DateTime.parse(end.substring(0, end.length - 1));
+//      DateTime startTime = DateTime.parse(start.substring(0, start.length - 1));
+      DateTime startTime = DateTime.parse(start);
+      startTime = startTime.add(offset);
+      DateTime endTime = DateTime.parse(end);
+      endTime = endTime.add(offset);
+//      DateTime endTime = DateTime.parse(end.substring(0, end.length - 1));
       print('start :$start, end:$end');
-      DateTime now = DateTime.now();
-      Duration offset = now.timeZoneOffset;
+
       now.toUtc();
 
-      if (now.isBefore(startTime))
-        remaining = endTime.difference(startTime);
-      else if (now.isAfter(startTime) && now.isBefore(endTime))
-        remaining = endTime.difference(now);
-      else
-        remaining = Duration();
+      if (now.isBefore(startTime)) {
+          remaining = endTime.difference(startTime);
+          print('remaining time from condition 1: $remaining');
+        }
+      else if (now.isAfter(startTime) && now.isBefore(endTime)) {
+          remaining = endTime.difference(now);
+          print('remaining time from condition 2: $remaining');
+        }
+      else {
+          remaining = Duration();
+          print('remaining time from condition 3: $remaining');
+        }
     } catch (e) {
       print("error parsing leaving time in booking list $e");
       remaining = Duration();
@@ -684,7 +695,7 @@ class _BookingDetailsState extends State<BookingDetails> {
       });
       remainingTime = '00 : 00 : 00';
     } else {
-      int hours = (remaining.inHours ~/ 60);
+      int hours = (remaining.inMinutes ~/ 60);
       int minutes = (remaining.inMinutes % 60);
       int seconds = (remaining.inSeconds % 60);
 
