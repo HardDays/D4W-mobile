@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:desk4work/view/main/bank_card.dart';
 import 'package:desk4work/view/main/history_list.dart';
+import 'package:desk4work/view/main/payment.dart';
 import 'package:desk4work/view/main/profile_edit.dart';
 import 'package:desk4work/api/users_api.dart';
 import 'package:desk4work/model/user.dart';
@@ -266,43 +267,44 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                       )),
                 ),
                 Divider(height: 2.0),
-//                Container(
-//                    padding: EdgeInsets.only(left: 20.0),
-//                    child: Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                      children: <Widget>[
-//                        Row(
-//                            mainAxisAlignment: MainAxisAlignment.start,
-//                            children: <Widget>[
-//                              Container(
-//                                  width: 20.0,
-//                                  height: 20.0,
-//                                  decoration: BoxDecoration(
-//                                      image: DecorationImage(
-//                                          image: AssetImage(
-//                                              'assets/credit_card.png')))),
-//                              Container(
-//                                margin: EdgeInsets.only(left: 20.0),
-//                                width: _screenWidth - 120,
-//                                child: Text(
-//                                  _stringResources.tPaymentOption,
-//                                  style: TextStyle(
-//                                      fontWeight: FontWeight.w300,
-//                                      color: Colors.black,
-//                                      fontSize: 16.0),
-//                                ),
-//                              ),
-//                            ]),
-//                        IconButton(
-//                          iconSize: 16.0,
-//                          icon: Icon(Icons.arrow_forward_ios),
-//                          onPressed: () {
-//                            Navigator.of(context).push(MaterialPageRoute(
+                Container(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                  width: 20.0,
+                                  height: 20.0,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/credit_card.png')))),
+                              Container(
+                                margin: EdgeInsets.only(left: 20.0),
+                                width: _screenWidth - 120,
+                                child: Text(
+                                  _stringResources.tPaymentOption,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.black,
+                                      fontSize: 16.0),
+                                ),
+                              ),
+                            ]),
+                        IconButton(
+                          iconSize: 16.0,
+                          icon: Icon(Icons.arrow_forward_ios),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => Payment()));
 //                                builder: (ctx) => PaymentPage()));
-//                          },
-//                        )
-//                      ],
-//                    )),
+                          },
+                        )
+                      ],
+                    )),
 //                Divider(height: 2.0),
 //                Container(
 //                  padding: EdgeInsets.only(left: 20.0),
