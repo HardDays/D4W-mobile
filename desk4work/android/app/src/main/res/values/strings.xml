@@ -34,4 +34,7 @@
     <string name="google_pay_available">Google Pay available</string>
     <string name="pay_with_token">Pay with this token</string>
     <string name="button_close">Close</string>
+    <string name="card_number">Card number</string>
+    <string name="card_holder_name">Card holder name</string>
+    <string name="text_scan_card">Scan card</string>
 </resources>

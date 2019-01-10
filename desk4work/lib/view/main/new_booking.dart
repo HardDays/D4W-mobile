@@ -214,6 +214,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                 .textTheme
                 .headline
                 .copyWith(color: Colors.white),
+            maxLines: 2,
           ),
           Padding(
             padding: EdgeInsets.symmetric(
@@ -241,7 +242,7 @@ class _NewBookingScreenState extends State<NewBookingScreen> {
                     Container(
                       width: _screenWidth * .288,
                       child: Text(
-                        widget._coWorking.address,
+                        widget._coWorking.address?? '',
                         overflow: TextOverflow.ellipsis,
                         textScaleFactor: .75,
                         softWrap: true,

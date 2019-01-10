@@ -8,9 +8,13 @@ import 'package:desk4work/utils/constants.dart';
 import 'package:desk4work/utils/dots_indicator.dart';
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/common/dialogs.dart';
+import 'package:desk4work/view/main/payment_method.dart';
 import 'package:desk4work/view/main/main.dart';
+import 'package:desk4work/view/main/payment.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingDetails extends StatefulWidget {
@@ -36,6 +40,8 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   static const _kCurve = Curves.ease;
   GlobalKey<ScaffoldState> _screenState = GlobalKey();
+  static const platform = const MethodChannel('desk4Work/payment');
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +114,7 @@ class _BookingDetailsState extends State<BookingDetails> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPreferences.getInstance().then((sp) {
         int id = sp.getInt(_booking.id.toString());
+        print('booking_id $id');
         if (id != null && id == _booking.id) {
           setState(() {
             _isLoading = false;
@@ -193,8 +200,11 @@ class _BookingDetailsState extends State<BookingDetails> {
     String end;
 
     try {
+      Duration offset = DateTime.now().timeZoneOffset;
       DateTime startTime = DateTime.parse(_booking.beginDate);
+      startTime = startTime.add(offset);
       DateTime endTime = DateTime.parse(_booking.endDate);
+      endTime = endTime.add(offset);
       int startHours = startTime.hour;
       int startMinutes = startTime.minute;
 
@@ -322,6 +332,7 @@ class _BookingDetailsState extends State<BookingDetails> {
               _booking = booking;
               _isLoading = false;
             });
+            _startCountDown();
 
             if (!_booking.isUserLeaving && _booking.isVisitConfirmed)
               _showConfirmVisitDialog();
@@ -526,26 +537,60 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   _terminateBooking() {
     if (!_booking.isUserLeaving) {
-      setState(() {
-        _isLoading = true;
-      });
-      SharedPreferences.getInstance().then((sp) {
-        String token = sp.getString(ConstantsManager.TOKEN_KEY);
-        _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
-          if (isCanceled != null && isCanceled.length == 0) {
-            _loadBooking().then((_) {
-              sp.remove(_booking.id.toString());
+      _launchPayment().then((_){
+        setState(() {
+          _isLoading = true;
+        });
+        SharedPreferences.getInstance().then((sp) {
+          String token = sp.getString(ConstantsManager.TOKEN_KEY);
+          _bookingApi.leaveCoworking(token, _booking.id).then((isCanceled) {
+            if (isCanceled != null && isCanceled.length == 0) {
+              _loadBooking().then((_) {
+                sp.remove(_booking.id.toString());
 //              _showToast(_stringResources.mStopRequestSent);
-            Navigator.of(context).pop(widget._booking);
-            });
-          } else {
-            print('can\'t cancel the booking $isCanceled');
-            _showToast(_stringResources.eServer);
-          }
+                Navigator.of(context).pop(widget._booking);
+              });
+            } else {
+              print('can\'t cancel the booking $isCanceled');
+              _showToast(_stringResources.eServer);
+            }
+          });
         });
       });
     } else {
       _showToast(_stringResources.mStopRequestPending);
+    }
+  }
+
+  Future<bool> _launchPayment()async{
+    double price = _booking.price;
+    String coWorking = _booking.coWorking.shortName;
+    try{
+     return SharedPreferences.getInstance().then((sp){
+        int paymentMethod = sp.getInt(PaymentMethod.PAYMENT_OPTION_KEY);
+        if(paymentMethod == PaymentMethod.CARD_OPTION){
+          platform.invokeMethod('startPaymentProcess', {Payment.AMOUNT_EXTRA : price, Payment.CO_WORKING_NAME : coWorking}).then((_){
+            return Future.value(true);
+            }).catchError((error){
+            print('payment error: $error');
+            return Future.value(false);
+          });
+        }else{
+          Dialogs.showMessage(context, '', _stringResources.tCashPaymentPromt, _stringResources.tOk).then((_){
+            return Future.value(true);
+          });
+        }
+      });
+       
+
+    }on PlatformException catch(e){
+      print("error processing to payment: $e");
+      Dialogs.showMessage(context, ' ', _stringResources.eProcessingPayment, _stringResources.tOk);
+      return Future.value(false);
+    }catch(e){
+      print("error processing to payment: $e");
+      Dialogs.showMessage(context, ' ', _stringResources.eProcessingPayment, _stringResources.tOk);
+      return Future.value(false);
     }
   }
 
@@ -632,11 +677,11 @@ class _BookingDetailsState extends State<BookingDetails> {
   double _getProgress() {
     String start = _booking.beginDate;
     String end = _booking.endDate;
-    DateTime now = DateTime.now();
+    DateTime now = _toLocalDateTime(DateTime.now().toUtc());
     if (start != null && end != null) {
       try {
-        DateTime startTime = DateTime.parse(start.substring(0, start.length - 1));
-        DateTime endTime = DateTime.parse(end.substring(0, start.length - 1));
+        DateTime startTime = _toLocalDateTime(DateTime.parse(start.substring(0, start.length - 1)));
+        DateTime endTime = _toLocalDateTime(DateTime.parse(end.substring(0, start.length - 1)));
         if (now.isAfter(startTime) && now.isBefore(endTime)) {
           int totalTime = endTime.difference(startTime).inSeconds;
           int consumedTime = now.difference(startTime).inSeconds;
@@ -653,6 +698,11 @@ class _BookingDetailsState extends State<BookingDetails> {
     return .0;
   }
 
+  DateTime _toLocalDateTime(DateTime toConvert){
+    Duration offset = DateTime.now().timeZoneOffset;
+    return toConvert.add(offset);
+  }
+
   String _getRemainingTime() {
     Duration remaining;
     String start = _booking.beginDate;
@@ -666,16 +716,18 @@ class _BookingDetailsState extends State<BookingDetails> {
       DateTime endTime = DateTime.parse(end);
       endTime = endTime.add(offset);
 //      DateTime endTime = DateTime.parse(end.substring(0, end.length - 1));
-      print('start :$start, end:$end');
+      print('start :$startTime, end:$endTime');
 
       now.toUtc();
+      DateTime localNow = now.toUtc();
+      localNow = localNow.add(offset);
 
-      if (now.isBefore(startTime)) {
+      if (localNow.isBefore(startTime)) {
           remaining = endTime.difference(startTime);
           print('remaining time from condition 1: $remaining');
         }
-      else if (now.isAfter(startTime) && now.isBefore(endTime)) {
-          remaining = endTime.difference(now);
+      else if (localNow.isAfter(startTime) && localNow.isBefore(endTime)) {
+          remaining = endTime.difference(localNow);
           print('remaining time from condition 2: $remaining');
         }
       else {
@@ -712,10 +764,10 @@ class _BookingDetailsState extends State<BookingDetails> {
 
   _startCountDown() {
     if(_countDownTimer ==null || !_countDownTimer.isActive){
+
       try {
         const oneSec = const Duration(seconds: 1);
         _countDownTimer = Timer.periodic(oneSec, (Timer t) {
-          print('count');
           if (_isTimeUp) {
             t.cancel();
           } else {

@@ -112,6 +112,11 @@ class StringResources {
   static final String _textNothingToShow = 'textNothingToShow';
   static final String _textNoSeat = 'textNoSeat';
   static final String _textPromptConfirmVisit = 'textPromptConfirmVisit';
+  static final String _textPaymentMethods = 'textPaymentMethods';
+  static final String _textPayment = 'textPayment';
+  static final String _textPayByCard = 'textPayByCard';
+  static final String _textPayByCash = 'textPayByCash';
+  static final String _textCashPaymentPrompt = 'textCashPaymentPrompt';
 
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
@@ -138,6 +143,7 @@ class StringResources {
   static final String _errorServer = 'errorServer';
   static final String _errorTakenEmail = 'errorTakenEmail';
   static final String _errorInvalidEmail = 'errorInvalidEmail';
+  static final String _errorPaymentProcessing = 'errorPaymentProcessing';
 
   static final String _messageNoInternet = 'messageNoInternet';
   static final String _messageServerError = 'messageServerError';
@@ -154,10 +160,10 @@ class StringResources {
   static final String _errorShortPasswordConfirm = 'errorShortPasswordConfirm';
 
   static final String _messageEndedSession = 'messageEndedSession';
-  static final String _messageUnableToGetLocation = 'messageUnableToGetLocation';
+  static final String _messageUnableToGetLocation =
+      'messageUnableToGetLocation';
 
   static final String _textNextDay = 'textNextDay';
-
 
   StringResources(this.locale);
 
@@ -272,10 +278,16 @@ class StringResources {
       _textFilterSettingsAlertPrefix: 'The field ',
       _textFilterSettingsAlertSuffix: ' needs to be set',
       _textNothingToShow: 'There are no coworkings around',
-      _textNextDay : '+1d',
+      _textNextDay: '+1d',
+      _textCashPaymentPrompt:
+          'Thanks for your visit!! \n The payment method is cash',
       _hintOldPassword: 'Old password',
       _textNewPassword: 'New password',
       _textTryAgain: 'Please, try again later',
+      _textPaymentMethods: 'Payment methods',
+      _textPayment: 'Payment',
+      _textPayByCard: 'Card',
+      _textPayByCash: 'Cash',
       _errorEmptyLogin: 'Login can\'t be empty',
       _errorEmptyPassword: 'Password too short',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -295,6 +307,8 @@ class StringResources {
       _errorShortPasswordConfirm: "Password Confirm too short(min 6)",
       _errorSameAsOldPassword: "Password is the same as the old one",
       _errorInvalidEmail: 'Not valid email',
+      _errorPaymentProcessing:
+          'Failed to process the payment, please use cash or try again later',
       _messageNoInternet: 'No internet connection',
       _messageServerError: 'Ups! Something went wrong, try again later',
       _messageExtendPending: 'A request to extend is already pending',
@@ -304,8 +318,10 @@ class StringResources {
           'Your booking request has been sent to ',
       _messageBookingRequestSentSuffix: 'See you soon at the reception desk!',
       _messageStopRequestPending: 'Terminate request already sent',
-      _messageEndedSession: 'The administrator has ended your session please go to the reception desk for more information',
-      _messageUnableToGetLocation: 'We can\'t get your location, please allow this app to user your gps',
+      _messageEndedSession:
+          'The administrator has ended your session please go to the reception desk for more information',
+      _messageUnableToGetLocation:
+          'We can\'t get your location, please allow this app to user your gps',
       _tipPrinter: "Printer and scanner",
       _tipKitchen: "Kitchen",
       _tipBikeStorage: "Bike storage",
@@ -363,6 +379,7 @@ class StringResources {
       _textSaturday: 'СБ',
       _textSunday: 'ВС',
       _textParkFilter: 'Парковка',
+      _textCashPaymentPrompt: 'Спасибо за визит!! \n Посещение будет оплачено картой',
       _textFreeParkFilter: 'Бесплатная парковка',
       _textDateExplanation: 'Выберите дату или диапазон дат',
       _textMainInfo: 'Основная информация',
@@ -421,7 +438,11 @@ class StringResources {
       _textFilterSettingsAlertSuffix: ' пожалуйста',
       _textNothingToShow: 'Вблизи вас нет коворкингов',
       _textNoSeat: 'Нет свобоных мест',
-      _textNextDay : '+1д',
+      _textNextDay: '+1д',
+      _textPaymentMethods: 'Способ оплаты',
+      _textPayment: 'Оплата',
+      _textPayByCard: 'По карте',
+      _textPayByCash: 'Наличые',
       _errorEmptyLogin: 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль слишком коротый',
       _errorEmptyPasswordConfirm:
@@ -443,6 +464,8 @@ class StringResources {
       _errorShortPasswordConfirm: "Слишком короткый  (мин 6)",
       _errorSameAsOldPassword: "Новый и старый пароли совпадаются",
       _errorInvalidEmail: 'Неправильный формат',
+      _errorPaymentProcessing:
+          'Не удалось обработать платёж, используйте наличные пожалуйста',
       _messageNoInternet: 'Нет соединение к интернету',
       _messageServerError: 'Что-то пошло не так, повторите попытку позже',
       _messageExtendPending: 'Уже ожидается запрос на продление',
@@ -452,8 +475,10 @@ class StringResources {
       _messageBookingRequestSentSuffix:
           'и отметьтесь, когда приедете. Скоро увидимся!',
       _messageStopRequestPending: 'Вы уже отправили запрос',
-      _messageEndedSession: 'Администратор закончил вашу сессию, пожалуйста, зайдите на стойку регистрации для получения дополнительной информации',
-      _messageUnableToGetLocation: 'Мы не можем получить ваше местоположение, пожалуйста, разрешите этому приложению использовать ваш gps',
+      _messageEndedSession:
+          'Администратор закончил вашу сессию, пожалуйста, зайдите на стойку регистрации для получения дополнительной информации',
+      _messageUnableToGetLocation:
+          'Мы не можем получить ваше местоположение, пожалуйста, разрешите этому приложению использовать ваш gps',
       _tipPrinter: "принтером и сканером",
       _tipKitchen: "Кухной",
       _tipBikeStorage: "парковкой для велосипедов",
@@ -613,6 +638,7 @@ class StringResources {
   String get tHours => _localizedValues[locale.languageCode][_textHours];
 
   String get tMinutes => _localizedValues[locale.languageCode][_textMinutes];
+
   String get tNextDay => _localizedValues[locale.languageCode][_textNextDay];
 
   String get tSeconds => _localizedValues[locale.languageCode][_textSeconds];
@@ -632,11 +658,19 @@ class StringResources {
 
   String get tOk => _localizedValues[locale.languageCode][_textOk];
 
+  String get tCashPaymentPromt => _localizedValues[locale.languageCode][_textCashPaymentPrompt];
+
   String get tNoSeat => _localizedValues[locale.languageCode][_textNoSeat];
 
   String get tSuccess => _localizedValues[locale.languageCode][_textSuccess];
 
   String get tError => _localizedValues[locale.languageCode][_textError];
+
+  String get tPayByCard =>
+      _localizedValues[locale.languageCode][_textPayByCard];
+
+  String get tPayByCash =>
+      _localizedValues[locale.languageCode][_textPayByCash];
 
   String get tProfileChanged =>
       _localizedValues[locale.languageCode][_textProfileChanged];
@@ -656,6 +690,11 @@ class StringResources {
 
   String get tFilterSettingsSuffix =>
       _localizedValues[locale.languageCode][_textFilterSettingsAlertSuffix];
+
+  String get tPayment => _localizedValues[locale.languageCode][_textPayment];
+
+  String get tPaymentMethods =>
+      _localizedValues[locale.languageCode][_textPaymentMethods];
 
   String get eEmptyLogin {
     return _localizedValues[locale.languageCode][_errorEmptyLogin];
@@ -719,6 +758,9 @@ class StringResources {
 
   String get eNewOldPassword =>
       _localizedValues[locale.languageCode][_errorSameAsOldPassword];
+
+  String get eProcessingPayment =>
+      _localizedValues[locale.languageCode][_errorPaymentProcessing];
 
   String get hLogin {
     return _localizedValues[locale.languageCode][_hintLogin];
@@ -806,8 +848,7 @@ class StringResources {
   String get tipTeaCoffee =>
       _localizedValues[locale.languageCode][_tipCoffeeTea];
 
-  String get tipParking =>
-      _localizedValues[locale.languageCode][_tipParking];
+  String get tipParking => _localizedValues[locale.languageCode][_tipParking];
 
   String get tipKitchen => _localizedValues[locale.languageCode][_tipKitchen];
 

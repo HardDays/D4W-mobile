@@ -73,6 +73,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ButtonOrange" parent="ButtonYellow">
+        <item name="android:background">@drawable/bg_rounded_corners_orange</item>
+        <item name="android:textColor">@color/ym_background</item>
+    </style>
+
     <style name="MainPriceValue">
         <item name="android:lineSpacingExtra">3sp</item>
         <item name="android:textSize">25sp</item>

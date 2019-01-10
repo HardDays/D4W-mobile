@@ -53,17 +53,26 @@ class BookingApi {
 
   Future<Booking> book(String token, int coWorkingId, int numberOfSeats,
       String startHour, endHour, String date) {
+    int year = int.parse(date.substring(0, 4));
+    String monthDay = date.substring(5);
+    String month = monthDay.substring(0, monthDay.indexOf('-'));
+    month = month.length < 2 ? '0'+month : month;
+    String day =monthDay.substring(monthDay.indexOf('-')+1);
+    day = day.length < 2 ? '0'+day : day;
+    date = '$year-$month-$day';
     int startTime = int.parse(startHour.substring(0,startHour.indexOf(':')));
     int endTime = int.parse(endHour.substring(0,endHour.indexOf(':')));
-
-    DateTime startDateTime = DateTime.parse("$date $startHour");
-    startDateTime = startDateTime.add(DateTime.now().timeZoneOffset);
+    print('date final: $date');
+    startHour = (startHour.length > 1) ? startHour : '0$startHour';
+    DateTime startDateTime = DateTime.parse("$date $startHour:00");
+    startDateTime = startDateTime.subtract(DateTime.now().timeZoneOffset);
 
     String startDate = startDateTime.toIso8601String();
 
 //    String startDate = date + "T" + startHour;
 //    String endDate = date + "T" + endHour;
-    DateTime endDateTime = DateTime.parse("$date $endHour");
+    endHour = (endHour.length > 1) ? endHour : '0$endHour';
+    DateTime endDateTime = DateTime.parse("$date $endHour:00");
     if(endTime < startTime){
       endDateTime.add(Duration(days: 1));
 //      String year = date.substring(0,4);
@@ -75,7 +84,7 @@ class BookingApi {
 //      endDate = '${endDateTime.year}-${endDateTime.month}-${endDateTime.day}T$endHour';
 
     }
-    endDateTime = endDateTime.add(DateTime.now().timeZoneOffset);
+    endDateTime = endDateTime.subtract(DateTime.now().timeZoneOffset);
     String endDate = endDateTime.toIso8601String();
     String url = ConstantsManager.BASE_URL + "bookings/create";
 

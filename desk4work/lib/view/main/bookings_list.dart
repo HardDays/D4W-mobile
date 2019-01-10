@@ -19,7 +19,7 @@ class BookingsListScreen extends StatefulWidget {
 
   BookingsListScreen(List<Booking> bookings, this._token){
     _bookings = (bookings ?? []).where((b){
-      return DateTime.now().isBefore(DateTime.parse(b.endDate)) && !b.isClosed && !b.isUserLeaving && !b.isUserCanceling;
+      return DateTime.now().isBefore(_BookingsListState.getLocalDateTime(DateTime.parse(b.endDate))) && !b.isClosed && !b.isUserLeaving && !b.isUserCanceling;
     }).toList();
   }
 
@@ -173,7 +173,7 @@ class _BookingsListState extends State<BookingsListScreen> {
                     ),
                     Positioned(
                         top: _screenHeight * .050,
-                        child: _buildDate(DateTime.parse(booking.beginDate))),
+                        child: _buildDate(getLocalDateTime(DateTime.parse(booking.beginDate)))),
                     Positioned(
                       child: _buildRemainingTime(
                           booking.beginDate, booking.endDate),
@@ -396,7 +396,7 @@ class _BookingsListState extends State<BookingsListScreen> {
          if(bookings!=null && bookings.length>0){
            List<Booking> temp = [];
            for(Booking b in bookings){
-             DateTime endDateTime = DateTime.parse(b.endDate);
+             DateTime endDateTime = getLocalDateTime(DateTime.parse(b.endDate));
              if(endDateTime.isAfter(DateTime.now()) && !b.isClosed && !b.isUserLeaving && !b.isUserCanceling){
                temp.add(b);
                int coworkingId = b.coworkingId;
@@ -421,6 +421,11 @@ class _BookingsListState extends State<BookingsListScreen> {
      });
   }
 
+
+  static DateTime getLocalDateTime(DateTime time){
+    Duration offset = DateTime.now().timeZoneOffset;
+    return time.add(offset);
+  }
   _openBooking(Booking booking) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => BookingDetails(booking)))
@@ -489,8 +494,8 @@ class _BookingsListState extends State<BookingsListScreen> {
     Duration remaining;
 
     try {
-      DateTime startTime = DateTime.parse(start);
-      DateTime endTime = DateTime.parse(end);
+      DateTime startTime = getLocalDateTime(DateTime.parse(start));
+      DateTime endTime = getLocalDateTime(DateTime.parse(end));
       DateTime now = DateTime.now();
       if (now.isBefore(startTime))
         remaining = DateTime.parse(end).difference(DateTime.parse(start));
@@ -536,9 +541,9 @@ class _BookingsListState extends State<BookingsListScreen> {
 
   bool _isBookingTimeUp(Booking b) {
     try {
-      DateTime beginDate = DateTime.parse(b.beginDate);
+      DateTime beginDate = getLocalDateTime(DateTime.parse(b.beginDate));
       if (beginDate.isAfter(DateTime.now())) return false;
-      DateTime endWork = DateTime.parse(b.endDate);
+      DateTime endWork = getLocalDateTime(DateTime.parse(b.endDate));
       return endWork.difference(DateTime.now()).isNegative;
     } catch (e) {
       print('dateparsing error: $e');

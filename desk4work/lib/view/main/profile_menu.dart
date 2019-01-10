@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:desk4work/view/main/bank_card.dart';
+import 'package:desk4work/view/main/payment_method.dart';
 import 'package:desk4work/view/main/history_list.dart';
 import 'package:desk4work/view/main/payment.dart';
 import 'package:desk4work/view/main/profile_edit.dart';
@@ -299,8 +299,8 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                           icon: Icon(Icons.arrow_forward_ios),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => Payment()));
-//                                builder: (ctx) => PaymentPage()));
+//                                builder: (ctx) => Payment()));
+                                builder: (ctx) => PaymentMethod()));
                           },
                         )
                       ],
