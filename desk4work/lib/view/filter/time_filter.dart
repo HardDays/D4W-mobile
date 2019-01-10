@@ -252,7 +252,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
   int _getTimePickerStart() {
 
     if (_tempStart == null) {
-      return DateTime.now().hour + 1;
+      return DateTime.now().hour;
     } else {
       print('time before crashhh: $_tempStart');
       return (_tempStart.length > 4)
@@ -264,7 +264,7 @@ class TimeFilterState extends State<TimeFilterScreen> {
 
   int _getTimePickerEnd() {
     if (_tempStart == null && _tempEnd == null) {
-      return _getTimePickerStart() + 1;
+      return _getTimePickerStart() + 2;
     } else if (_tempEnd == null) {
       return (_tempStart.length > 4)
           ? int.parse(_tempStart.substring(0, 2))
