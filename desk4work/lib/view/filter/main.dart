@@ -1,5 +1,6 @@
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/common/calendar_util.dart';
 import 'package:desk4work/view/common/theme_util.dart';
 import 'package:desk4work/view/common/timer_picker_util.dart';
 import 'package:desk4work/view/filter/date_filter.dart';
@@ -23,14 +24,13 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   FilterStateContainerState _container;
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
   bool _isTheNextDay;
-  bool _isStart;
   int _defaultMinutes;
-  ExpansionTile _timeTile;
+  List<DateTime> _selectedDate = [];
+
   @override
   void initState() {
     super.initState();
     _isTheNextDay = false;
-    _isStart =true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(filter?.startHour!=null){
@@ -42,7 +42,11 @@ class FilterMainScreenState extends State<FilterMainScreen> {
           print('default minutes error: $e');
         }
       }
-      _container.getFilter();
+      setState(() {
+
+        _container.getFilter();
+
+      });
       _checkNextDay();
     });
   }
@@ -127,52 +131,69 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                 ],
               ),
               Divider(),
-              new Row(children: <Widget>[
-                Expanded(child: InkWell(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 8.0),
-                    height: textFilterParameterHeight,
-                    width: textFilterParameterWidth,
-                    decoration: BoxDecorationUtil
-                        .getGreyRoundedCornerBoxDecoration(),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.calendar_today),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                        ),
-                        Text(date)
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    _openDatePicker();
-                  },
-                ))
-              ],),
-              new Row(children: <Widget>[
-                Expanded(child: InkWell(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 8.0),
-                    height: textFilterParameterHeight,
-                    width: textFilterParameterWidth,
-                    decoration: BoxDecorationUtil
-                        .getGreyRoundedCornerBoxDecoration(),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.calendar_today),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                        ),
-                        Text(date)
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    _openDatePicker();
-                  },
-                ))
-              ],),
+              ExpansionTile(
+                  title: Text(_getStartDate()),
+                leading: Icon(Icons.calendar_today),
+                trailing: Text(''),
+                children: <Widget>[
+                  _buildCalendar(true)
+                ],
+              ),
+              ExpansionTile(
+                title: Text(_getEndDate()),
+                leading: Icon(Icons.calendar_today),
+                trailing: Text(''),
+                children: <Widget>[
+
+                ],
+              ),
+
+//              new Row(children: <Widget>[
+//                Expanded(child: InkWell(
+//                  child: Container(
+//                    padding: EdgeInsets.only(left: 8.0),
+//                    height: textFilterParameterHeight,
+//                    width: textFilterParameterWidth,
+//                    decoration: BoxDecorationUtil
+//                        .getGreyRoundedCornerBoxDecoration(),
+//                    child: Row(
+//                      children: <Widget>[
+//                        Icon(Icons.calendar_today),
+//                        Padding(
+//                          padding: EdgeInsets.only(left: 8.0),
+//                        ),
+//                        Text(_getStartDate())
+//                      ],
+//                    ),
+//                  ),
+//                  onTap: () {
+//                    _openDatePicker();
+//                  },
+//                ))
+//              ],),
+//              new Row(children: <Widget>[
+//                Expanded(child: InkWell(
+//                  child: Container(
+//                    padding: EdgeInsets.only(left: 8.0),
+//                    height: textFilterParameterHeight,
+//                    width: textFilterParameterWidth,
+//                    decoration: BoxDecorationUtil
+//                        .getGreyRoundedCornerBoxDecoration(),
+//                    child: Row(
+//                      children: <Widget>[
+//                        Icon(Icons.calendar_today),
+//                        Padding(
+//                          padding: EdgeInsets.only(left: 8.0),
+//                        ),
+//                        Text(_getEndDate())
+//                      ],
+//                    ),
+//                  ),
+//                  onTap: () {
+//                    _openDatePicker();
+//                  },
+//                ))
+//              ],),
               Divider(),
 
               ExpansionTile(
@@ -193,62 +214,62 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                   _buildTimePicker(false)
                 ],
               ),
-              new InkWell(
-                onTap: () {
-                  _openTimePicker(true);
-                },
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 8.0),
-                      height: textFilterParameterHeight,
-                      width: textFilterParameterWidth,
-                      decoration: BoxDecorationUtil
-                          .getGreyRoundedCornerBoxDecoration(),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time),
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                          ),
-                          Text(_stringResources.hStart)
-                        ],
-                      ),
-                    ),
-                    Text((filter?.startHour ??
-                        " "))
-                  ],
-                ),
-              ),
-              new InkWell(
-                onTap: () {
-                  _openTimePicker(false);
-                },
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 8.0),
-                      height: textFilterParameterHeight,
-                      width: textFilterParameterWidth,
-                      decoration: BoxDecorationUtil
-                          .getGreyRoundedCornerBoxDecoration(),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time),
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                          ),
-                          Text(_stringResources.hEnd)
-                        ],
-                      ),
-                    ),
-                    Text((filter?.endHour ??
-                        " "))
-                  ],
-                ),
-              ),
+//              new InkWell(
+//                onTap: () {
+//                  _openTimePicker(true);
+//                },
+//                child: new Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                  children: <Widget>[
+//                    Container(
+//                      padding: EdgeInsets.only(left: 8.0),
+//                      height: textFilterParameterHeight,
+//                      width: textFilterParameterWidth,
+//                      decoration: BoxDecorationUtil
+//                          .getGreyRoundedCornerBoxDecoration(),
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.access_time),
+//                          Padding(
+//                            padding: EdgeInsets.only(left: 8.0),
+//                          ),
+//                          Text(_stringResources.hStart)
+//                        ],
+//                      ),
+//                    ),
+//                    Text((filter?.startHour ??
+//                        " "))
+//                  ],
+//                ),
+//              ),
+//              new InkWell(
+//                onTap: () {
+//                  _openTimePicker(false);
+//                },
+//                child: new Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                  children: <Widget>[
+//                    Container(
+//                      padding: EdgeInsets.only(left: 8.0),
+//                      height: textFilterParameterHeight,
+//                      width: textFilterParameterWidth,
+//                      decoration: BoxDecorationUtil
+//                          .getGreyRoundedCornerBoxDecoration(),
+//                      child: Row(
+//                        children: <Widget>[
+//                          Icon(Icons.access_time),
+//                          Padding(
+//                            padding: EdgeInsets.only(left: 8.0),
+//                          ),
+//                          Text(_stringResources.hEnd)
+//                        ],
+//                      ),
+//                    ),
+//                    Text((filter?.endHour ??
+//                        " "))
+//                  ],
+//                ),
+//              ),
               Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -471,7 +492,104 @@ class FilterMainScreenState extends State<FilterMainScreen> {
 
 
   Widget _buildCalendar(bool isStartDate){
+    var daysOfTheWeek = <String>[
+      _stringResources.tSunday,
+      _stringResources.tMonday,
+      _stringResources.tTuesday,
+      _stringResources.tWednesday,
+      _stringResources.tThursday,
+      _stringResources.tFriday,
+      _stringResources.tSaturday
+    ];
+    return Center(
+      child: Container(
+        height: _screenHeight * .4219,
+        child: CalendarCarousel(
+          weekDays: daysOfTheWeek,
+          onDayPressed: (DateTime date) {
+            this.setState(() =>
+              _selectedDate =
+            _addDate(_selectedDate, date)
 
+            );
+            if (_selectedDate != null && _selectedDate.length > 0) {
+              List<String> filterDates = [];
+
+              String dateTimeStart = _getFilterDate(_selectedDate[0]);
+              String dateTimeEnd = _getFilterDate(_selectedDate[_selectedDate.length - 1]);
+
+
+              filterDates.add(dateTimeStart);
+              if(_selectedDate[0] != _selectedDate[_selectedDate.length - 1])
+                filterDates.add(dateTimeEnd);
+              _container.updateFilterInfo(date: filterDates);
+              _checkNextDay();
+            }
+
+          },
+          weekendTextStyle: TextStyle(
+            color: Colors.white,
+          ),
+          thisMonthDayBorderColor: Colors.grey,
+          height: (_screenHeight * .5262),
+          selectedDateTime: _selectedDate,
+          selectedDayTextStyle: TextStyle(color: Colors.white, letterSpacing: _screenWidth < 360.0 ? -1.86 : null),
+          selectedDayButtonColor: Colors.orange,
+          selectedDayBorderColor: Colors.orange,
+          iconColor: Colors.black87,
+          headerTextStyle: TextStyle(color: Colors.black87, fontSize: 20.0),
+          weekdayTextStyle: TextStyle(color: Colors.black87),
+          prevDaysTextStyle: TextStyle(color: Colors.black87.withOpacity(0.54)),
+          daysTextStyle: TextStyle(
+              color: Colors.black87, letterSpacing: _screenWidth < 360.0 ? -1.86 : null),
+          todayTextStyle: TextStyle(color: Colors.black87),
+          weekDayMargin:
+          EdgeInsets.only(bottom: (_screenHeight * .0435).toDouble()),
+        )
+      ),
+    );
+  }
+
+  List<DateTime> _addDate(List<DateTime> oldList, DateTime newDate) {
+    if (oldList.length < 1) {
+      oldList.add(newDate);
+      return oldList;
+    } else {
+      List<DateTime> newList = List();
+      if (oldList.length == 1) {
+        DateTime firstSelectedDate = oldList[0];
+        if (oldList[0] != newDate)
+          oldList.add(newDate);
+        else
+          return oldList;
+
+        if (newDate.isBefore(firstSelectedDate)) swap(oldList, 0, 1);
+
+        int dayDiff = newDate.difference(firstSelectedDate).inDays.abs();
+        print("difff $dayDiff");
+        if (dayDiff > 1) {
+          DateTime start = oldList[0];
+          newList.add(start);
+          int count = 1;
+          while ((dayDiff - count) > 0) {
+            newList.add(start.add(Duration(days: count)));
+            count++;
+          }
+          newList.add(oldList[oldList.length - 1]);
+          return newList;
+        } else
+          return oldList;
+      } else {
+        newList.add(newDate);
+        return newList;
+      }
+    }
+  }
+
+  void swap(List<DateTime> dateTime, int one, int two) {
+    DateTime temp = dateTime[one];
+    dateTime[one] = dateTime[two];
+    dateTime[two] = temp;
   }
 
   Widget _buildTimePicker(bool isStartTime){
@@ -557,6 +675,84 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         _checkNextDay();
       }
     });
+  }
+
+  String _getStartDate(){
+    int day;
+    int month;
+    int year;
+    DateTime dateTime;
+    if(_selectedDate !=null && _selectedDate.isNotEmpty){
+      dateTime = _selectedDate[0];
+    }
+    else if(filter != null && filter.date != null && filter.date.isNotEmpty){
+      String filterStartDate = filter.date[0];
+      day = int.parse(filterStartDate.substring(0,2));
+      month = int.parse(filterStartDate.substring(3,5));
+      year = int.parse(filterStartDate.substring(6));
+      dateTime = DateTime(year,month, day);
+    }else{
+      dateTime = DateTime.now();
+    }
+    String weekDay = _getDayString(dateTime.weekday);
+    String monthOftheYear = _getMonthString(dateTime.month);
+    return '$weekDay, ${dateTime.day} $monthOftheYear';
+  }
+
+  String _getEndDate(){
+    int day;
+    int month;
+    int year;
+    DateTime dateTime;
+    if(_selectedDate !=null && _selectedDate.length > 1){
+      dateTime = _selectedDate[1];
+    }
+    else if(filter != null && filter.date != null && filter.date.length > 1){
+      String filterStartDate = filter.date[1];
+      day = int.parse(filterStartDate.substring(0,2));
+      month = int.parse(filterStartDate.substring(3,5));
+      year = int.parse(filterStartDate.substring(6));
+      dateTime = DateTime(year,month, day);
+    }else{
+      return _getStartDate();
+    }
+    String weekDay = _getDayString(dateTime.weekday);
+    String monthOftheYear = _getMonthString(dateTime.month);
+    return '$weekDay, ${dateTime.day} $monthOftheYear';
+  }
+
+
+
+  String _getDayString(int dayOfTheWeek){
+
+    switch(dayOfTheWeek){
+      case DateTime.monday : return _stringResources.tMondayLong;
+      case DateTime.tuesday : return _stringResources.tTuesdayLong;
+      case DateTime.wednesday : return _stringResources.tWednesdayLong;
+      case DateTime.thursday : return _stringResources.tThursdayLong;
+      case DateTime.friday : return _stringResources.tFridayLong;
+      case DateTime.saturday : return _stringResources.tSaturdayLong;
+      case DateTime.sunday : return _stringResources.tSundayLong;
+      default: return _stringResources.tMondayLong;
+      }
+  }
+
+  String _getMonthString(int month){
+    switch(month){
+      case DateTime.january : return _stringResources.tJanuary.toLowerCase();
+      case DateTime.february : return _stringResources.tFebruary.toLowerCase();
+      case DateTime.march : return _stringResources.tMarch.toLowerCase();
+      case DateTime.april : return _stringResources.tApril.toLowerCase();
+      case DateTime.may : return _stringResources.tMay.toLowerCase();
+      case DateTime.june : return _stringResources.tJune.toLowerCase();
+      case DateTime.july: return _stringResources.tJuly.toLowerCase();
+      case DateTime.august : return _stringResources.tAugust.toLowerCase();
+      case DateTime.september : return _stringResources.tSeptember.toLowerCase();
+      case DateTime.october : return _stringResources.tOctober.toLowerCase();
+      case DateTime.november : return _stringResources.tNovember.toLowerCase();
+      case DateTime.december : return _stringResources.tDecember.toLowerCase();
+      default: return _stringResources.tJanuary.toLowerCase();
+    }
   }
 
   String _getFilterDate(DateTime dateTime) {

@@ -49,12 +49,19 @@ class StringResources {
   static final String _textNearby = 'textNearby';
   static final String _textDateExplanation = 'textDateExplanation';
   static final String _textMonday = 'textMonday';
+  static final String _textMondayLong = 'textMondayLong';
   static final String _textTuesday = 'textTuesday';
+  static final String _textTuesdayLong = 'textTuesdayLong';
   static final String _textWednesday = 'textWednesdayn';
+  static final String _textWednesdayLong = 'textWednesdaynLong';
   static final String _textThursday = 'textThursday';
+  static final String _textThursdayLong = 'textThursdayLong';
   static final String _textFriday = 'textFriday';
+  static final String _textFridayLong = 'textFridayLong';
   static final String _textSaturday = 'textSaturday';
+  static final String _textSaturdayLong = 'textSaturdayLong';
   static final String _textSunday = 'textSunday';
+  static final String _textSundayLong = 'textSundayLong';
   static final String _textMainInfo = 'textMainInfo';
   static final String _textFreePlaces = 'textFreePlaces';
   static final String _textRemainingTime = 'textRemainingTime';
@@ -219,12 +226,19 @@ class StringResources {
       _textNearby: 'Nearby',
       _textWherever: 'Wherever',
       _textMonday: 'Mon',
+      _textMondayLong: 'Monday',
       _textTuesday: 'Tue',
+      _textTuesdayLong: 'Tuesday',
       _textWednesday: 'Wed',
+      _textWednesdayLong: 'Wednesday',
       _textThursday: 'Thur',
+      _textThursdayLong: 'Thursday',
       _textFriday: 'Fri',
+      _textFridayLong: 'Friday',
       _textSaturday: 'Sat',
+      _textSaturdayLong: 'Saturday',
       _textSunday: 'Sun',
+      _textSundayLong: 'Sunday',
       _textDateExplanation: 'pick a date or date interval',
       _textMainInfo: 'Main information',
       _textFreePlaces: 'Free places',
@@ -379,12 +393,19 @@ class StringResources {
       _textNearby: 'Рядом',
       _textWherever: 'Где угодно',
       _textMonday: 'Пн',
+      _textMondayLong: 'Пондельник',
       _textTuesday: 'ВТ',
+      _textTuesdayLong: 'Вторник',
       _textWednesday: 'СР',
+      _textWednesdayLong: 'Среда',
       _textThursday: 'ЧТ',
+      _textThursdayLong: 'Четверг',
       _textFriday: 'ПТ',
+      _textFridayLong: 'Пьятница',
       _textSaturday: 'СБ',
+      _textSaturdayLong: 'Суббота',
       _textSunday: 'ВС',
+      _textSundayLong: 'Воскресенье',
       _textParkFilter: 'Парковка',
       _textCashPaymentPrompt: 'Спасибо за визит!! \n Посещение будет оплачено картой',
       _textFreeParkFilter: 'Бесплатная парковка',
@@ -604,19 +625,27 @@ class StringResources {
       _localizedValues[locale.languageCode][_textDateExplanation];
 
   String get tMonday => _localizedValues[locale.languageCode][_textMonday];
+  String get tMondayLong => _localizedValues[locale.languageCode][_textMondayLong];
 
   String get tTuesday => _localizedValues[locale.languageCode][_textTuesday];
+  String get tTuesdayLong => _localizedValues[locale.languageCode][_textTuesdayLong];
 
   String get tWednesday =>
       _localizedValues[locale.languageCode][_textWednesday];
+  String get tWednesdayLong =>
+      _localizedValues[locale.languageCode][_textWednesdayLong];
 
   String get tThursday => _localizedValues[locale.languageCode][_textThursday];
+  String get tThursdayLong => _localizedValues[locale.languageCode][_textThursdayLong];
 
   String get tFriday => _localizedValues[locale.languageCode][_textFriday];
+  String get tFridayLong => _localizedValues[locale.languageCode][_textFridayLong];
 
+  String get tSaturdayLong => _localizedValues[locale.languageCode][_textSaturdayLong];
   String get tSaturday => _localizedValues[locale.languageCode][_textSaturday];
 
   String get tSunday => _localizedValues[locale.languageCode][_textSunday];
+  String get tSundayLong => _localizedValues[locale.languageCode][_textSundayLong];
 
   String get tJanuary => _localizedValues[locale.languageCode][_textJanuary];
 

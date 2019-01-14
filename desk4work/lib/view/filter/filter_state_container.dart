@@ -128,6 +128,8 @@ class FilterStateContainerState extends State<FilterStateContainer> {
         setState(() {
           this.filter = filter;
         });
+        print('filter $filter');
+
       } else {
         Filter filter = Filter();
         filter.endHour = getDefaultEndHour();
