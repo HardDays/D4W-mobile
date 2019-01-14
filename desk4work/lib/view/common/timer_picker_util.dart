@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 const double _kItemExtent = 32.0;
 const double _kPickerWidth = 330.0;
 /// Considers setting the default background color from the theme, in the future.
-const Color _kBackgroundColor = Colors.orange;
+const Color _kBackgroundColor = Colors.white;
 
 
 // The iOS timer picker has its width fixed to 330.0 in all modes.

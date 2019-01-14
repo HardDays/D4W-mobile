@@ -1,10 +1,13 @@
 import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
+import 'package:desk4work/view/common/theme_util.dart';
+import 'package:desk4work/view/common/timer_picker_util.dart';
 import 'package:desk4work/view/filter/date_filter.dart';
 import 'package:desk4work/view/filter/filter_state_container.dart';
 import 'package:desk4work/view/filter/place_filter.dart';
 import 'package:desk4work/view/filter/time_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class FilterMainScreen extends StatefulWidget {
   @override
@@ -20,15 +23,28 @@ class FilterMainScreenState extends State<FilterMainScreen> {
   FilterStateContainerState _container;
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
   bool _isTheNextDay;
-
+  bool _isStart;
+  int _defaultMinutes;
+  ExpansionTile _timeTile;
   @override
   void initState() {
+    super.initState();
     _isTheNextDay = false;
+    _isStart =true;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(filter?.startHour!=null){
+        try{
+          setState(() {
+            _defaultMinutes = int.parse(filter.startHour.substring(filter.startHour.indexOf(':')+1));
+          });
+        }catch(e){
+          print('default minutes error: $e');
+        }
+      }
       _container.getFilter();
       _checkNextDay();
     });
-    super.initState();
   }
 
   @override
@@ -51,271 +67,443 @@ class FilterMainScreenState extends State<FilterMainScreen> {
         ? filter.date[0].substring(0, 5) + ((filter.date.length <2) ?"" : "-" + filter.date[1].substring(0, 5))
         : _getFilterDate(DateTime.now());
 
-    return Scaffold(
-      key: _scaffoldState,
-      body: Container(
-        decoration: BoxDecorationUtil.getDarkOrangeGradient(),
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                  top: (_screenHeight * .0308).toDouble(),
-                  left: (_screenWidth * .04)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Theme(
+      data: ThemeUtil.getThemeForWhiteBackground(context) ,
+      child: Scaffold(
+        key: _scaffoldState,
+        appBar: AppBar(
+          leading: Center(child: InkWell(
+            child: Text(_stringResources.tClear, style: TextStyle(color: Colors.white)),
+            onTap: () {
+              _clearFilter();
+            },
+          ),),
+          title: Text(_stringResources.tFilter, style: TextStyle(color: Colors.white),),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.close, color: Colors.white,),
+                onPressed: () {
+                  _closeFilter();
+                }),
+          ],
+        ),
+        body: Container(
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: (_screenHeight * .029)),
+              ),
+              new Row(
                 children: <Widget>[
-                  InkWell(
-                    child: Text(_stringResources.tClear),
+                  Expanded(child: InkWell(
+                    child: Container(
+                      height: textFilterParameterHeight,
+                      width: textFilterParameterWidth,
+                      padding: EdgeInsets.only(left: 8.0),
+                      decoration: BoxDecorationUtil
+                          .getGreyRoundedCornerBoxDecoration(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.place),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                          ),
+                          Container(
+                            width: textFilterParameterWidth - 40,
+                            child: Text(
+                              (filter?.place ?? _stringResources.hPlace),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                     onTap: () {
-                      _clearFilter();
+                      _openPlaceSearch(context);
                     },
-                  ),
-                  Text(_stringResources.tFilter),
-                  IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        _closeFilter();
-                      }),
+                  ),)
                 ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: (_screenHeight * .029)),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: (_screenWidth * .048).toDouble()),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      InkWell(
-                        child: Container(
-                          height: textFilterParameterHeight,
-                          width: textFilterParameterWidth,
+              Divider(),
+              new Row(children: <Widget>[
+                Expanded(child: InkWell(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 8.0),
+                    height: textFilterParameterHeight,
+                    width: textFilterParameterWidth,
+                    decoration: BoxDecorationUtil
+                        .getGreyRoundedCornerBoxDecoration(),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.calendar_today),
+                        Padding(
                           padding: EdgeInsets.only(left: 8.0),
-                          decoration: BoxDecorationUtil
-                              .getGreyRoundedCornerBoxDecoration(),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.place),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                              ),
-                              Container(
-                                width: textFilterParameterWidth - 40,
-                                child: Text(
-                                  (filter?.place ?? _stringResources.hPlace),
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                ),
-                              )
-                            ],
-                          ),
                         ),
-                        onTap: () {
-                          _openPlaceSearch(context);
-                        },
-                      ),
-                      InkWell(
-                        child: Container(
-                          padding: EdgeInsets.only(left: 8.0),
-                          height: textFilterParameterHeight,
-                          width: textFilterParameterWidth,
-                          decoration: BoxDecorationUtil
-                              .getGreyRoundedCornerBoxDecoration(),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.calendar_today),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                              ),
-                              Text(date)
-                            ],
-                          ),
-                        ),
-                        onTap: () {
-                          _openDatePicker();
-                        },
-                      )
-                    ],
+                        Text(date)
+                      ],
+                    ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: (_screenHeight * .021)),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      InkWell(
-                        child: Container(
+                  onTap: () {
+                    _openDatePicker();
+                  },
+                ))
+              ],),
+              new Row(children: <Widget>[
+                Expanded(child: InkWell(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 8.0),
+                    height: textFilterParameterHeight,
+                    width: textFilterParameterWidth,
+                    decoration: BoxDecorationUtil
+                        .getGreyRoundedCornerBoxDecoration(),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.calendar_today),
+                        Padding(
                           padding: EdgeInsets.only(left: 8.0),
-                          height: textFilterParameterHeight,
-                          width: textFilterParameterWidth,
-                          decoration: BoxDecorationUtil
-                              .getGreyRoundedCornerBoxDecoration(),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.access_time),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                              ),
-                              Text((filter?.startHour ??
-                                  _stringResources.hStart))
-                            ],
-                          ),
                         ),
-                        onTap: () {
-                          _openTimePicker(true);
-                        },
-                      ),
-                      InkWell(
-                        child: Container(
-                          padding: EdgeInsets.only(left: 8.0),
-                          height: textFilterParameterHeight,
-                          width: textFilterParameterWidth,
-                          decoration: BoxDecorationUtil
-                              .getGreyRoundedCornerBoxDecoration(),
+                        Text(date)
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    _openDatePicker();
+                  },
+                ))
+              ],),
+              Divider(),
 
-                          child: Row(
-                            children: <Widget>[
-                              Icon(Icons.access_time),
-                              Padding(
-                                padding: EdgeInsets.only(left: 8.0),
-                              ),
-                              Text((filter?.endHour ?? _stringResources.hEnd)),
-                              Container(width: 24.0,),
-                              _isTheNextDay ?  Text(_stringResources.tNextDay) : Container(),
-                            ],
+              ExpansionTile(
+                leading: Icon(Icons.access_time),
+                title: Text(_stringResources.hStart),
+                trailing: Text((filter?.startHour ??
+                    " ")),
+                children: <Widget>[
+                  _buildTimePicker(true)
+                ],
+              ),
+              ExpansionTile(
+                leading: Icon(Icons.access_time),
+                title: Text(_stringResources.hEnd),
+                trailing: Text((filter?.endHour ??
+                    " ")),
+                children: <Widget>[
+                  _buildTimePicker(false)
+                ],
+              ),
+              new InkWell(
+                onTap: () {
+                  _openTimePicker(true);
+                },
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(left: 8.0),
+                      height: textFilterParameterHeight,
+                      width: textFilterParameterWidth,
+                      decoration: BoxDecorationUtil
+                          .getGreyRoundedCornerBoxDecoration(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.access_time),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
                           ),
-                        ),
-                        onTap: () {
-                          _openTimePicker(false);
-                        },
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: (_screenHeight * .036)),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                          Text(_stringResources.hStart)
+                        ],
+                      ),
+                    ),
+                    Text((filter?.startHour ??
+                        " "))
+                  ],
+                ),
+              ),
+              new InkWell(
+                onTap: () {
+                  _openTimePicker(false);
+                },
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(left: 8.0),
+                      height: textFilterParameterHeight,
+                      width: textFilterParameterWidth,
+                      decoration: BoxDecorationUtil
+                          .getGreyRoundedCornerBoxDecoration(),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.access_time),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                          ),
+                          Text(_stringResources.hEnd)
+                        ],
+                      ),
+                    ),
+                    Text((filter?.endHour ??
+                        " "))
+                  ],
+                ),
+              ),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Stack(
+                    alignment: AlignmentDirectional.center,
                     children: <Widget>[
+                      Container(
+                        width: 24.0,
+                        height: 24.0,
+                        decoration: BoxDecorationUtil.getOrangeRoundedCornerBoxDecoration(),
+                        child: Container(),
+                      ),
                       IconButton(
-                          icon: Icon(Icons.remove),
+                          icon: Icon(Icons.remove, color: Colors.white,),
                           onPressed: () {
                             _reducePlaces();
                           }),
-                      InkWell(
-                        child: Container(
-                            height: textFilterParameterHeight,
-                            width: placeNumberFilerWidth,
-                            decoration: BoxDecorationUtil
-                                .getGreyRoundedCornerBoxDecoration(),
-                            child: Center(
-                              child: Text("${filter?.numberOfSeatsNeeded ?? 1} "
-                                  "${_stringResources.hPlace}"),
-                            )),
+
+                    ],
+                  ),
+
+                  Container(
+                      height: textFilterParameterHeight,
+                      width: placeNumberFilerWidth,
+                      decoration: BoxDecorationUtil
+                          .getGreyRoundedCornerBoxDecoration(),
+                      child: Center(
+                        child: Text("${filter?.numberOfSeatsNeeded ?? 1} "
+                            "${_stringResources.hPlace}"),
+                      )),
+                  Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      Container(
+                        width: 24.0,
+                        height: 24.0,
+                        decoration: BoxDecorationUtil.getOrangeRoundedCornerBoxDecoration(),
+                        child: Container()
                       ),
                       IconButton(
-                          icon: Icon(Icons.add),
+                          icon: Icon(Icons.add, color: Colors.white,),
                           onPressed: () {
                             _addPlaces();
-                          })
+                          }),
                     ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: (_screenHeight * .036)),
-                  ),
-                  Center(
-                    child: Text(_stringResources.tComfort),
-                  ),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 3,
-                    children: <Widget>[
-//                      _getRoundedIconButton(
-//                          Icons.print,
-//                          _stringResources.tPrint,
-//                          (filter?.printerNeeded ?? false), () {
-//                        _container.updateFilterInfo(
-//                            printerNeeded: (filter != null)
-//                                ? !filter.printerNeeded
-//                                : true);
-//                      }),
-                      _getRoundedIconButton(
-                          Icons.local_cafe,
-                          _stringResources.tTeaOrCoffee,
-                          (filter?.teaOrCoffeeNeeded ?? false), () {
-                        _container.updateFilterInfo(
-                            teaOrCoffeeNeeded: (filter != null)
-                                ? !filter.teaOrCoffeeNeeded
-                                : true);
-                      }),
-                      _getRoundedIconButton(
-                          Icons.local_parking,
-                          _stringResources.tParkingNeeded,
-                          (filter?.parkingNeeded ?? false), () {
-                        container.updateFilterInfo(
-                            parkingNeeded: (filter != null)
-                                ? !filter.parkingNeeded
-                                : true);
-                      }),
-                      _getRoundedIconButton(
-                          Icons.local_dining,
-                          _stringResources.tKitchen,
-                          (filter?.kitchenNeeded ?? false), () {
-                        container.updateFilterInfo(
-                            kitchenNeeded: (filter != null)
-                                ? !filter.kitchenNeeded
-                                : true);
-                      }),
-                      _getRoundedIconButtonFromPng(
-                          'assets/free_printing_orange.png',
-                          'assets/free_printing.png',
-                          _stringResources.tFreePrinter,
-                          (filter?.freePrinter ?? false), () {
-                        container.updateFilterInfo(
-                            freePrinterNeeded: (filter != null)
-                                ? !filter.freePrinter
-                                : true);
-                      }),
-                      _getRoundedIconButtonFromPng(
-                          'assets/free_parking_orange.png',
-                          'assets/free_parking_white.png',
-                          _stringResources.tFreeParkingNeeded,
-                          (filter?.freeParkingNeeded ?? false), () {
-                        container.updateFilterInfo(
-                            freeParkingNeeded: (filter != null)
-                                ? !filter.freeParkingNeeded
-                                : true);
-                      }),
-                    ],
-                  ),
-                  Container(
-                    width: confirmButtonWidth,
-                    height: confirmButtonHeight,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(28.0))),
-                    child: InkWell(
-                      onTap: () {
-                        _search();
-                      },
-                      child: Center(
-                        child: Text(
-                          _stringResources.bConfirm,
-                          style: TextStyle(color: Colors.orange),
-                        ),
-                      ),
-                    ),
-                  )
+
                 ],
               ),
-            )
-          ],
+              Divider(),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.printerNeeded ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(printerNeeded: value);
+                  }),
+                  Text(_stringResources.tPrint),
+                ],
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.teaOrCoffeeNeeded ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(teaOrCoffeeNeeded: value);
+                  }),
+                  Text(_stringResources.tTeaOrCoffee),
+                ],
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.parkingNeeded ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(parkingNeeded: value);
+                  }),
+                  Text(_stringResources.tParkingNeeded),
+                ],
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.kitchenNeeded ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(kitchenNeeded: value);
+                  }),
+                  Text(_stringResources.tKitchen),
+                ],
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.freeParkingNeeded ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(freeParkingNeeded: value);
+                  }),
+                  Text(_stringResources.tFreeParkingNeeded),
+                ],
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(value: filter?.freePrinter ?? false,
+                      onChanged: (value){
+                    _container.updateFilterInfo(freePrinterNeeded: value);
+                  }),
+                  Text(_stringResources.tFreePrinter),
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.all(24.0),
+                width: confirmButtonWidth,
+                height: confirmButtonHeight,
+                decoration:
+                BoxDecorationUtil.getOrangeGradientRoundedCornerDecoration(),
+                child: InkWell(
+                  onTap: () {
+                    _search();
+                  },
+                  child: Center(
+                    child: Text(
+                      _stringResources.bConfirm,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+
+
+
+//              new Container(
+//                padding: EdgeInsets.symmetric(
+//                    horizontal: (_screenWidth * .048).toDouble()),
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.start,
+//                  children: <Widget>[
+//
+//
+////                    Padding(
+////                      padding: EdgeInsets.only(top: (_screenHeight * .036)),
+////                    ),
+////                    Center(
+////                      child: Text(_stringResources.tComfort),
+////                    ),
+//                    GridView.count(
+//                      shrinkWrap: true,
+//                      crossAxisCount: 3,
+//                      children: <Widget>[
+////                      _getRoundedIconButton(
+////                          Icons.print,
+////                          _stringResources.tPrint,
+////                          (filter?.printerNeeded ?? false), () {
+////                        _container.updateFilterInfo(
+////                            printerNeeded: (filter != null)
+////                                ? !filter.printerNeeded
+////                                : true);
+////                      }),
+//
+//                        _getRoundedIconButton(
+//                            Icons.local_cafe,
+//                            _stringResources.tTeaOrCoffee,
+//                            (filter?.teaOrCoffeeNeeded ?? false), () {
+//                          _container.updateFilterInfo(
+//                              teaOrCoffeeNeeded: (filter != null)
+//                                  ? !filter.teaOrCoffeeNeeded
+//                                  : true);
+//                        }),
+//                        _getRoundedIconButton(
+//                            Icons.local_parking,
+//                            _stringResources.tParkingNeeded,
+//                            (filter?.parkingNeeded ?? false), () {
+//                          container.updateFilterInfo(
+//                              parkingNeeded: (filter != null)
+//                                  ? !filter.parkingNeeded
+//                                  : true);
+//                        }),
+//                        _getRoundedIconButton(
+//                            Icons.local_dining,
+//                            _stringResources.tKitchen,
+//                            (filter?.kitchenNeeded ?? false), () {
+//                          container.updateFilterInfo(
+//                              kitchenNeeded: (filter != null)
+//                                  ? !filter.kitchenNeeded
+//                                  : true);
+//                        }),
+//                        _getRoundedIconButtonFromPng(
+//                            'assets/free_printing_orange.png',
+//                            'assets/free_printing.png',
+//                            _stringResources.tFreePrinter,
+//                            (filter?.freePrinter ?? false), () {
+//                          container.updateFilterInfo(
+//                              freePrinterNeeded: (filter != null)
+//                                  ? !filter.freePrinter
+//                                  : true);
+//                        }),
+//                        _getRoundedIconButtonFromPng(
+//                            'assets/free_parking_orange.png',
+//                            'assets/free_parking_white.png',
+//                            _stringResources.tFreeParkingNeeded,
+//                            (filter?.freeParkingNeeded ?? false), () {
+//                          container.updateFilterInfo(
+//                              freeParkingNeeded: (filter != null)
+//                                  ? !filter.freeParkingNeeded
+//                                  : true);
+//                        }),
+//                      ],
+//                    ),
+//
+//                  ],
+//                ),
+//              )
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+
+  Widget _buildCalendar(bool isStartDate){
+
+  }
+
+  Widget _buildTimePicker(bool isStartTime){
+    return Container(
+      height: _screenHeight * .3219,
+      child: CupertinoTimerPicker(
+        mode: CupertinoTimerPickerMode.hm,
+        initialTimerDuration: Duration(
+            hours: (isStartTime)
+                ? _getTimePickerStart()<24 ? _getTimePickerStart() : 1
+                : _getTimePickerEnd()<24 ? _getTimePickerEnd() : 1,
+            minutes: _defaultMinutes ?? DateTime.now().minute
+        ),
+        onTimerDurationChanged: (duration) {
+          String hh = (duration.inMinutes / 60).truncate().toString();
+          if (int.parse(hh) < 10) hh = '0' + hh;
+          String mm = (duration.inMinutes % 60).toString();
+          if (int.parse(mm) < 10) mm = '0' + mm;
+          if (isStartTime) {
+            setState(() {
+              int hour = int.parse(hh);
+//                          _tempStart = "$hour:$mm";
+              _container.updateFilterInfo(startHour:"$hour:$mm" );
+            });
+          } else {
+            int hour = int.parse(hh);
+            _container.updateFilterInfo(endHour:"$hour:$mm");
+//                        setState(() {
+//                          _tempEnd = "$hour:$mm";
+//                        });
+          }
+        },
       ),
     );
   }
@@ -333,18 +521,6 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     String suffix = _stringResources.tFilterSettingsSuffix;
 
     Navigator.of(context).pop([true, filter]);
-//    if (filter != null){
-//      if(filter.place ==null)
-//        _showMessage(prefix + _stringResources.hPlace + suffix);
-//      else if(filter.date == null || filter.date.length <1)
-//        _showMessage(prefix + _stringResources.hDate + suffix);
-//      else if (filter.startHour == null)
-//        _showMessage(prefix + _stringResources.hStart + suffix);
-//      else if(filter.endHour == null)
-//        _showMessage(prefix + _stringResources.hEnd + suffix);
-//      else{
-//      }
-//    }
   }
 
   _showMessage(String message) {
@@ -525,5 +701,31 @@ class FilterMainScreenState extends State<FilterMainScreen> {
     );
   }
 
+
+  int _getTimePickerStart() {
+
+    if (filter?.startHour == null) {
+      return DateTime.now().hour;
+    } else {
+      print('time before crashhh: ${filter.startHour}');
+      return (filter.startHour.length > 4)
+          ? int.parse(filter.startHour.substring(0, 2))
+          : int.parse(filter.startHour.substring(0,1));
+    }
+  }
+
+  int _getTimePickerEnd() {
+    if (filter.startHour == null && filter.endHour == null) {
+      return _getTimePickerStart() + 2;
+    } else if (filter.endHour == null) {
+      return (filter.startHour.length > 4)
+          ? int.parse(filter.startHour.substring(0, 2))
+          : int.parse(filter.startHour.substring(0,1));
+    } else {
+      return (filter.endHour.length > 4)
+          ? int.parse(filter.endHour.substring(0, 2))
+          : int.parse(filter.endHour.substring(0,1));
+    }
+  }
 
 }
