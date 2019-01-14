@@ -15,6 +15,7 @@ public class MainActivity extends FlutterActivity {
   private static final String CHANNEL = "desk4Work/payment";
   private Double amount;
   private String coWorkingName;
+  private int paymentMethod;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,8 @@ public class MainActivity extends FlutterActivity {
                 if (methodCall.method.equals("startPaymentProcess")){
                     amount = methodCall.argument(PaymentActivity.KEY_AMOUNT);
                     coWorkingName = methodCall.argument(PaymentActivity.KEY_CO_WORKING_NAME);
-                    startPaymentProcess(amount, coWorkingName);
+                    paymentMethod = methodCall.argument(PaymentActivity.KEY_PAYMENT_METHOD);
+                    startPaymentProcess();
                 }else{
                   Log.d("not starting", "payment activity");
                 }
@@ -38,10 +40,11 @@ public class MainActivity extends FlutterActivity {
     );
   }
 
-  private void startPaymentProcess(Double amount, @Nullable String coWorkingName){
+  private void startPaymentProcess(){
     Intent i = new Intent(MainActivity.this,PaymentActivity.class);
     i.putExtra(PaymentActivity.KEY_AMOUNT, amount);
     i.putExtra(PaymentActivity.KEY_CO_WORKING_NAME, coWorkingName);
+    i.putExtra(PaymentActivity.KEY_PAYMENT_METHOD, paymentMethod);
     startActivityForResult(i,PAYMENT_REQUEST_CODE);
   }
 

@@ -116,8 +116,11 @@ class StringResources {
   static final String _textPayment = 'textPayment';
   static final String _textPayByCard = 'textPayByCard';
   static final String _textPayByCash = 'textPayByCash';
+  static final String _textPayByGooglePay = 'textPayByGooglePay';
+  static final String _textPayByYandexMoney = 'textPayByYandexMoney';
+  static final String _textPayBySberbank = 'textPayBySberbank';
   static final String _textCashPaymentPrompt = 'textCashPaymentPrompt';
-
+  static final String _textRecent = 'textRecent';
   static final String _tipPrinter = "toolTipPrinter";
   static final String _tipKitchen = "toolTipKitchen";
   static final String _tipBikeStorage = "toolTipBikeStorage";
@@ -288,6 +291,10 @@ class StringResources {
       _textPayment: 'Payment',
       _textPayByCard: 'Card',
       _textPayByCash: 'Cash',
+      _textRecent: 'Recent',
+      _textPayByGooglePay: 'Google pay',
+      _textPayByYandexMoney: 'Yandex Money',
+      _textPayBySberbank: 'Sberbank',
       _errorEmptyLogin: 'Login can\'t be empty',
       _errorEmptyPassword: 'Password too short',
       _errorEmptyPasswordConfirm: 'This field can\'t be empty',
@@ -414,6 +421,7 @@ class StringResources {
       _textChangePassword: 'Сменить пароль',
       _textLogout: 'Выйти',
       _textOk: 'ОК',
+      _textRecent: 'Последнее',
       _textSuccess: 'Успешно',
       _textError: 'Ошибка',
       _textProfileChanged: 'Профиль успешно обновлен',
@@ -443,6 +451,9 @@ class StringResources {
       _textPayment: 'Оплата',
       _textPayByCard: 'По карте',
       _textPayByCash: 'Наличые',
+      _textPayByGooglePay: 'Google pay',
+      _textPayByYandexMoney: 'Яндекс деньги',
+      _textPayBySberbank: 'Сбербанк',
       _errorEmptyLogin: 'Логин не может быть пустым',
       _errorEmptyPassword: 'Пароль слишком коротый',
       _errorEmptyPasswordConfirm:
@@ -645,6 +656,8 @@ class StringResources {
 
   String get tProfile => _localizedValues[locale.languageCode][_textProfile];
 
+  String get tRecent => _localizedValues[locale.languageCode][_textRecent];
+
   String get tChangeEmail =>
       _localizedValues[locale.languageCode][_textChangeEmail];
 
@@ -671,6 +684,13 @@ class StringResources {
 
   String get tPayByCash =>
       _localizedValues[locale.languageCode][_textPayByCash];
+
+  String get tPayByGoogleplay =>
+      _localizedValues[locale.languageCode][_textPayByGooglePay];
+
+  String get tPayByYandexMoney =>
+      _localizedValues[locale.languageCode][_textPayByYandexMoney];
+
 
   String get tProfileChanged =>
       _localizedValues[locale.languageCode][_textProfileChanged];
@@ -842,6 +862,8 @@ class StringResources {
   String get tExtend => _localizedValues[locale.languageCode][_textExtend];
 
   String get tPrice => _localizedValues[locale.languageCode][_textPrice];
+
+  String get tPaybySberbank => _localizedValues[locale.languageCode][_textPayBySberbank];
 
   String get tipPrinter => _localizedValues[locale.languageCode][_tipPrinter];
 

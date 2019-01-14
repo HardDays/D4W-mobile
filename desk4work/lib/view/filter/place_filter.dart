@@ -2,6 +2,7 @@ import 'package:desk4work/utils/string_resources.dart';
 import 'package:desk4work/view/common/box_decoration_util.dart';
 import 'package:desk4work/view/common/theme_util.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlaceFilterScreen extends StatefulWidget {
   final String _place;
@@ -26,11 +27,21 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
   String _tempSelection;
   String _place;
 
+  List<String> _recents;
+  final String RECENT_KEY = "recents";
 
   @override
   void initState() {
     _place = widget._place;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SharedPreferences.getInstance().then((sp){
+          _recents = sp.getStringList(RECENT_KEY);
+        if(_recents !=null && _recents.isNotEmpty){
+          _recents = _recents;
+        }
+      });
+    });
   }
 
   @override
@@ -44,268 +55,327 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
     final double textFilterParameterHeight = (_screenHeight * .0599);
     final double textFilterParameterWidth = (_screenWidth * .43);
 
-    return Theme(
-      data: ThemeUtil.getThemeForOrangeBackground(context),
-      child: Scaffold(
-          body: Container(
-        decoration: BoxDecorationUtil.getDarkOrangeGradient(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                top: (_screenHeight * .0615).toDouble(),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  BackButton(),
-                  Text(_stringResources.tFilter),
-                  IconButton(
-                      icon: Icon(Icons.check),
-                      onPressed: () {
-                        _validate();
-                      }),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: (_screenHeight * .029)),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: (_screenWidth * .048).toDouble()),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: textFilterParameterHeight,
-                    padding: EdgeInsets.only(left: 8.0),
-                    decoration:
-                        BoxDecorationUtil.getGreyRoundedCornerBoxDecoration(),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.place),
-                        Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                        ),
-                        Text((_place ??
-                            _tempSelection ??
-                            _stringResources.hPlace))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: (_screenHeight * .042)),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                      top: BorderSide(color: Colors.white, width: .5),
-                      bottom: BorderSide(color: Colors.white, width: .5),
-                    )),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(_stringResources.tWherever),
-                                        ],
-                                      ),
-                                    onTap: (){
-                                        _choosePlace(_stringResources.tWherever);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0507).toDouble()),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                        ),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                      splashColor: Colors.white,
-                                      onTap: () {
-                                        _choosePlace(_stringResources.tNearby);
-                                      },
-                                      child: Text(_stringResources.tNearby)),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0567).toDouble()),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                          padding: EdgeInsets.only(
-                              top: (_screenHeight * .057).toDouble(),
-                              bottom: (_screenHeight * .015).toDouble(),
-                              left: (_screenWidth * .0567).toDouble()),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                _stringResources.hPopular,
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(color: Colors.white,),
+        title: Title(color: Colors.white, child: Text(_stringResources.tFilter, style: TextStyle(color: Colors.white),)),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.check, color: Colors.white,),
+              onPressed: () {
+                _validate();
+              })
+        ],
+      ),
+              body: Container(
+          color: Colors.white,
+//        decoration: BoxDecorationUtil.getDarkOrangeGradient(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+//          Container(
+//            decoration: BoxDecorationUtil.getDarkOrangeGradient(),
+////            margin: EdgeInsets.only(
+////              top: (_screenHeight * .0615).toDouble(),
+////            ),
+//            child: Row(
+//              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//              children: <Widget>[
+//                BackButton(),
+//                Text(_stringResources.tFilter),
+//                IconButton(
+//                    icon: Icon(Icons.check),
+//                    onPressed: () {
+//                      _validate();
+//                    }),
+//              ],
+//            ),
+//          ),
+//          Padding(
+//            padding: EdgeInsets.only(top: (_screenHeight * .002)),
+//          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: (_screenWidth * .048).toDouble()),
+            child: Column(
+              children: <Widget>[
+//                  Container(
+//                    height: textFilterParameterHeight,
+//                    padding: EdgeInsets.only(left: 8.0),
+//                    decoration:
+//                        BoxDecorationUtil.getGreyRoundedCornerBoxDecoration(),
+//                    child: Row(
+//                      children: <Widget>[
+//                        Icon(Icons.place),
+//                        Padding(
+//                          padding: EdgeInsets.only(left: 8.0),
+//                        ),
+//                        Text((_place ??
+//                            _tempSelection ??
+//                            _stringResources.hPlace))
+//                      ],
+//                    ),
+//                  ),
+                Padding(
+                  padding: EdgeInsets.only(top: (_screenHeight * .042)),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                    top: BorderSide(color: Colors.black12, width: .5),
+                    bottom: BorderSide(color: Colors.black12, width: .5),
+                  )),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.orangeAccent,
                                     child: Row(
                                       children: <Widget>[
-                                        Text(
-                                          PlaceFilterScreen.KAZAN,
-                                        ),
+                                        _getText(_stringResources.tWherever,),
                                       ],
                                     ),
-                                    onTap: () {
-                                      _choosePlace(PlaceFilterScreen.KAZAN);
-                                    },
-                                  ),
+                                  onTap: (){
+                                      _choosePlace(_stringResources.tWherever);
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0567).toDouble()),
+                            ),
+                          ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
-                                    child: Text(
-                                      PlaceFilterScreen.MOSCOW,
-                                    ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0507).toDouble()),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12, width: .5))),
+                      ),
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                    splashColor: Colors.orangeAccent,
                                     onTap: () {
-                                      _choosePlace(PlaceFilterScreen.MOSCOW);
+                                      _choosePlace(_stringResources.tNearby);
                                     },
-                                  ),
-                                ),
+                                    child: _getText(_stringResources.tNearby)),
                               ),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0567).toDouble()),
+                            ),
+                          ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
-                                    child: Text(
-                                      PlaceFilterScreen.YEKATERINBURG,
-                                    ),
-                                    onTap: () {
-                                      _choosePlace(PlaceFilterScreen.YEKATERINBURG);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0567).toDouble()),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.white, width: .5))),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    splashColor: Colors.white,
-                                    child: Container(
-                                      child: Text(
-                                        PlaceFilterScreen.SAINT_PETERSBURG,
+
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0567).toDouble()),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12, width: .5))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  child: Row(
+                                    children: <Widget>[
+                                      _getText(
+                                        PlaceFilterScreen.KAZAN,
                                       ),
-                                    ),
-                                    onTap: () {
-                                      _choosePlace(PlaceFilterScreen.SAINT_PETERSBURG);
-                                    },
+                                    ],
                                   ),
+                                  onTap: () {
+                                    _choosePlace(PlaceFilterScreen.KAZAN);
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: (_screenHeight * .0225).toDouble(),
-                              horizontal: (_screenWidth * .0567).toDouble()),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0567).toDouble()),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12, width: .5))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  child: _getText(
+                                    PlaceFilterScreen.MOSCOW,
+                                  ),
+                                  onTap: () {
+                                    _choosePlace(PlaceFilterScreen.MOSCOW);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0567).toDouble()),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12, width: .5))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  child: _getText(
+                                    PlaceFilterScreen.YEKATERINBURG,
+                                  ),
+                                  onTap: () {
+                                    _choosePlace(PlaceFilterScreen.YEKATERINBURG);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0567).toDouble()),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black12, width: .5))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  child: Container(
+                                    child: _getText(
+                                      PlaceFilterScreen.SAINT_PETERSBURG,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    _choosePlace(PlaceFilterScreen.SAINT_PETERSBURG);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: (_screenHeight * .0225).toDouble(),
+                            horizontal: (_screenWidth * .0567).toDouble()),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+//                  child: Column(
+//                    children:_buildRecentWidgets(),
+//                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    ));
+  }
+
+  List<Widget> _buildRecentWidgets(){
+    if(_recents!=null && _recents.isNotEmpty){
+      print('_recents $_recents');
+      List<Widget> recent  = _recents.where((s)=> s!=null).map<Widget>((s){return _buildRecentWidget(s);}).toList();
+      print('recent $recent');
+
+    recent.add(Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  color: Colors.white, width: .5))),
+      padding: EdgeInsets.only(
+          top: (_screenHeight * .057).toDouble(),
+          bottom: (_screenHeight * .015).toDouble(),
+          left: (_screenWidth * .0567).toDouble()),
+      child: Row(
+        children: <Widget>[
+          Text(
+            _stringResources.tRecent,
+            style: TextStyle(color: Colors.white70),
+          ),
+
+        ],
+      ),
+    ));
+//    recent = recent.reversed.toList();
+    return recent;}
+    else return <Widget>[Container()];
+  }
+
+
+  TextStyle _getTextStyle(String place){
+    return TextStyle(color: (_place == place || _tempSelection == place)? Colors.orangeAccent : Colors.black);
+  }
+
+  Text _getText(String place){
+    return Text(place, style: _getTextStyle(place));
+  }
+
+  Widget _buildRecentWidget(String place){
+    print('choosing place: $place');
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: (){ _choosePlace(place);},
+              child: Row(children: <Widget>[
+                Icon(Icons.place, color: (place == place || place == _tempSelection) ? Colors.orangeAccent : Colors.grey,),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16.0)),
+                Text(place, style: TextStyle(color: (_place == place || _tempSelection == place) ? Colors.orangeAccent : Colors.black),)
+
+              ],),
+            ),
+          ),
         ),
-      )),
+      ],
     );
   }
 
@@ -317,7 +387,17 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
   }
 
   void _validate() {
-    Navigator.pop(context, _tempSelection);
+    SharedPreferences.getInstance().then((sp){
+      if(_recents == null )
+        _recents = List<String>();
+      if(!_recents.contains(_tempSelection)){
+        _recents.add(_tempSelection);
+        sp.setStringList(RECENT_KEY, _recents).then((_){
+          Navigator.pop(context, _tempSelection);
+
+        });
+      }
+    });
 //    if(_tempSelection !=null)
 //      containerFilterState.updateFilterInfo(latLong: _tempSelection);
   }

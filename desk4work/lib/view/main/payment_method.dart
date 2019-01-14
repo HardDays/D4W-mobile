@@ -10,6 +10,9 @@ class PaymentMethod extends StatefulWidget {
   final String _secretKey = 'sk_test_e761fd68f0ca88d9b1c1e95707a47e818f18cc59';
   final String _publicKey = 'pk_test_92503ad13564b7f601e84f1cae0d639fd5bfe838';
   static const String PAYMENT_OPTION_KEY = "paymentOption";
+  static const int SBERBANK_OPTION = 5;
+  static const int YANDEX_MONEY_OPTION = 4;
+  static const int GOOGLE_PAY_OPTION = 3;
   static const int CASH_OPTION = 2;
   static const int CARD_OPTION = 1;
 
@@ -17,7 +20,7 @@ class PaymentMethod extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _PaymentMethodState();
 }
-enum PaymentOption {Card, Cash, Undefined}
+enum PaymentOption {Card, Cash, GooglePay, YandexMoney, Sberbank, Undefined}
 
 class _PaymentMethodState extends State<PaymentMethod> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -54,6 +57,18 @@ class _PaymentMethodState extends State<PaymentMethod> {
             _paymentOption = PaymentOption.Cash;
           });
 
+        }else if(paymentOption == PaymentMethod.GOOGLE_PAY_OPTION){
+          setState(() {
+            _paymentOption = PaymentOption.GooglePay;
+          });
+        }else if(paymentOption == PaymentMethod.YANDEX_MONEY_OPTION){
+          setState(() {
+            _paymentOption = PaymentOption.YandexMoney;
+          });
+        }else if(paymentOption == PaymentMethod.SBERBANK_OPTION){
+          setState(() {
+            _paymentOption = PaymentOption.Sberbank;
+          });
         }
         else{
           setState(() {
@@ -107,6 +122,27 @@ class _PaymentMethodState extends State<PaymentMethod> {
                         groupValue: _paymentOption,
                         onChanged: _handleRadioValueChanged,
                       ),
+                      Divider(),
+                      RadioListTile<PaymentOption>(
+                        title: Text(_stringResources.tPayByYandexMoney),
+                        value: PaymentOption.YandexMoney,
+                        groupValue: _paymentOption,
+                        onChanged: _handleRadioValueChanged,
+                      ),
+                      Divider(),
+                      RadioListTile<PaymentOption>(
+                        title: Text(_stringResources.tPayByGoogleplay),
+                        value: PaymentOption.GooglePay,
+                        groupValue: _paymentOption,
+                        onChanged: _handleRadioValueChanged,
+                      ),
+//                      Divider(),
+//                      RadioListTile<PaymentOption>(
+//                        title: Text(_stringResources.tPaybySberbank),
+//                        value: PaymentOption.Sberbank,
+//                        groupValue: _paymentOption,
+//                        onChanged: _handleRadioValueChanged,
+//                      ),
                     ],
                   ),
                 )
@@ -126,6 +162,12 @@ class _PaymentMethodState extends State<PaymentMethod> {
       _sp.setInt(PaymentMethod.PAYMENT_OPTION_KEY, PaymentMethod.CASH_OPTION);
       else if(value == PaymentOption.Card)
         _sp.setInt(PaymentMethod.PAYMENT_OPTION_KEY, PaymentMethod.CARD_OPTION);
+      else if (value == PaymentOption.GooglePay)
+        _sp.setInt(PaymentMethod.PAYMENT_OPTION_KEY, PaymentMethod.GOOGLE_PAY_OPTION);
+      else if (value == PaymentOption.YandexMoney)
+        _sp.setInt(PaymentMethod.PAYMENT_OPTION_KEY, PaymentMethod.YANDEX_MONEY_OPTION);
+      else if (value == PaymentOption.Sberbank)
+        _sp.setInt(PaymentMethod.PAYMENT_OPTION_KEY, PaymentMethod.SBERBANK_OPTION);
 
     }else{
       SharedPreferences.getInstance().then((_){
@@ -162,7 +204,7 @@ int _toInt(String source) {
   return value;
 }
 
-var banks = ['Selectable', 'Bank', 'Card'];
+var banks = ['Selectable', 'Bank', 'Card', 'Google pay', 'Yandex money'];
 
 CheckoutMethod _parseStringToMethod(String string) {
   CheckoutMethod method = CheckoutMethod.selectable;

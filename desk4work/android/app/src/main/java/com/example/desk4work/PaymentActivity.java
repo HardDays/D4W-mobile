@@ -8,16 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
-import com.example.desk4work.utils.AmountFormatter;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -38,6 +31,13 @@ public class PaymentActivity extends AppCompatActivity {
     public static final String KEY_AMOUNT = "amount";
     public static final String KEY_CO_WORKING_NAME = "coWorkingName";
 
+    public static final String KEY_PAYMENT_METHOD = "paymentMethod";
+    public static final int SBERBANK_OPTION = 5;
+    public static final int YANDEX_MONEY_OPTION = 4;
+    public static final int GOOGLE_PAY_OPTION = 3;
+//    public static final int CASH_OPTION = 2;
+    public static final int CARD_OPTION = 1;
+    private static int paymentType;
 
     @Nullable
     private View buyButton;
@@ -122,7 +122,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         setTitle(R.string.main_toolbar_title);
         Intent i = getIntent();
-
+        paymentType = i.getIntExtra(KEY_PAYMENT_METHOD, CARD_OPTION);
         Double price = i.getDoubleExtra(PaymentActivity.KEY_AMOUNT,0);
         price = 300.0;
         placeName = i.getStringExtra(PaymentActivity.KEY_CO_WORKING_NAME);
@@ -184,9 +184,25 @@ public class PaymentActivity extends AppCompatActivity {
     @NonNull
     private static Set<PaymentMethodType> getPaymentMethodTypes(Settings settings) {
         final Set<PaymentMethodType> paymentMethodTypes = new HashSet<>();
-        paymentMethodTypes.add(PaymentMethodType.BANK_CARD);
-        paymentMethodTypes.add(PaymentMethodType.SBERBANK);
-        paymentMethodTypes.add(PaymentMethodType.GOOGLE_PAY);
+
+        switch (paymentType){
+            case YANDEX_MONEY_OPTION:
+                paymentMethodTypes.add(PaymentMethodType.YANDEX_MONEY);
+                break;
+            case CARD_OPTION:
+                paymentMethodTypes.add(PaymentMethodType.BANK_CARD);
+                break;
+            case SBERBANK_OPTION:
+                paymentMethodTypes.add(PaymentMethodType.SBERBANK);
+                break;
+            case GOOGLE_PAY_OPTION:
+                paymentMethodTypes.add(PaymentMethodType.GOOGLE_PAY);
+                break;
+
+
+
+
+        }
 
 
 //        if (settings.isYandexMoneyAllowed()) {
