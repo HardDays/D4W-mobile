@@ -100,18 +100,19 @@ class FilterMainScreenState extends State<FilterMainScreen> {
               ),
               new Row(
                 children: <Widget>[
+
                   Expanded(child: InkWell(
                     child: Container(
                       height: textFilterParameterHeight,
                       width: textFilterParameterWidth,
-                      padding: EdgeInsets.only(left: 8.0),
+                      padding: EdgeInsets.only(left: 16.0),
                       decoration: BoxDecorationUtil
                           .getGreyRoundedCornerBoxDecoration(),
                       child: Row(
                         children: <Widget>[
                           Icon(Icons.place),
                           Padding(
-                            padding: EdgeInsets.only(left: 8.0),
+                            padding: EdgeInsets.only(left: 32.0),
                           ),
                           Container(
                             width: textFilterParameterWidth - 40,
@@ -141,7 +142,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
               ),
               ExpansionTile(
                 title: Text(_getEndDate()),
-                leading: Icon(Icons.calendar_today),
+                leading: Text(""),
                 trailing: Text(''),
                 children: <Widget>[
 
@@ -206,7 +207,7 @@ class FilterMainScreenState extends State<FilterMainScreen> {
                 ],
               ),
               ExpansionTile(
-                leading: Icon(Icons.access_time),
+                leading: Text(""),
                 title: Text(_stringResources.hEnd),
                 trailing: Text((filter?.endHour ??
                     " ")),
@@ -517,8 +518,6 @@ class FilterMainScreenState extends State<FilterMainScreen> {
 
               String dateTimeStart = _getFilterDate(_selectedDate[0]);
               String dateTimeEnd = _getFilterDate(_selectedDate[_selectedDate.length - 1]);
-
-
               filterDates.add(dateTimeStart);
               if(_selectedDate[0] != _selectedDate[_selectedDate.length - 1])
                 filterDates.add(dateTimeEnd);

@@ -113,6 +113,34 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
                 child: Image.asset('assets/placeholder.png'),
               )),
           Container(
+            height: _screenHeight * .0825,
+            margin: EdgeInsets.symmetric(
+              vertical: _screenHeight * .081,
+              horizontal: _screenWidth * .0413,
+            ),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                gradient: BoxDecorationUtil
+                    .getOrangeGradient()
+                    .gradient,
+                borderRadius: BorderRadius.all(Radius.circular(28.0))),
+            child: InkWell(
+              onTap: _bookPlace,
+              child: Center(
+                  child: Text(
+                    _hasFreeSeats
+                        ? _stringResources.bBook
+                        : _stringResources.tNoSeat,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .button
+                        .copyWith(color: Colors.white),
+                  )),
+            ),
+          ),
+          Container(
             margin: EdgeInsets.symmetric(
               vertical: _screenHeight * .03,
               horizontal: _screenWidth * .0413,
@@ -226,34 +254,34 @@ class _CoWorkingDetailsScreenState extends State<CoWorkingDetailsScreen> {
           _getWorkingHours(),
           _getAmenitiesContainer(),
           _getContactContainer(),
-          Container(
-            height: _screenHeight * .0825,
-            margin: EdgeInsets.symmetric(
-              vertical: _screenHeight * .081,
-              horizontal: _screenWidth * .0413,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.rectangle,
-                gradient: BoxDecorationUtil
-                    .getOrangeGradient()
-                    .gradient,
-                borderRadius: BorderRadius.all(Radius.circular(28.0))),
-            child: InkWell(
-              onTap: _bookPlace,
-              child: Center(
-                  child: Text(
-                    _hasFreeSeats
-                        ? _stringResources.bBook
-                        : _stringResources.tNoSeat,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .button
-                        .copyWith(color: Colors.white),
-                  )),
-            ),
-          )
+//          Container(
+//            height: _screenHeight * .0825,
+//            margin: EdgeInsets.symmetric(
+//              vertical: _screenHeight * .081,
+//              horizontal: _screenWidth * .0413,
+//            ),
+//            decoration: BoxDecoration(
+//                color: Colors.white,
+//                shape: BoxShape.rectangle,
+//                gradient: BoxDecorationUtil
+//                    .getOrangeGradient()
+//                    .gradient,
+//                borderRadius: BorderRadius.all(Radius.circular(28.0))),
+//            child: InkWell(
+//              onTap: _bookPlace,
+//              child: Center(
+//                  child: Text(
+//                    _hasFreeSeats
+//                        ? _stringResources.bBook
+//                        : _stringResources.tNoSeat,
+//                    style: Theme
+//                        .of(context)
+//                        .textTheme
+//                        .button
+//                        .copyWith(color: Colors.white),
+//                  )),
+//            ),
+//          )
         ],
       ),
     );

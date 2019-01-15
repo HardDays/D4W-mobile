@@ -392,11 +392,11 @@ class PlaceFilterScreenState extends State<PlaceFilterScreen> {
         _recents = List<String>();
       if(!_recents.contains(_tempSelection)){
         _recents.add(_tempSelection);
-        sp.setStringList(RECENT_KEY, _recents).then((_){
-          Navigator.pop(context, _tempSelection);
-
-        });
       }
+      sp.setStringList(RECENT_KEY, _recents).then((_){
+        Navigator.pop(context, _tempSelection);
+
+      });
     });
 //    if(_tempSelection !=null)
 //      containerFilterState.updateFilterInfo(latLong: _tempSelection);
